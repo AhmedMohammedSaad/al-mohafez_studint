@@ -1,0 +1,786 @@
+{
+   "home": "الرئيسية",
+
+   "passLenError": "يجب أن تكون كلمة المرور مكونة من 6 أرقام على الأقل.",
+   "passNotMatch": "يجب أن تتطابق كلمة المرور مع تأكيد كلمة المرور.",
+   "digitText": "يرجى إزالة الأرقام.",
+   "specialText": "يرجى إزالة أي أحرف خاصة.",
+   "dateError": "صيغة التاريخ غير صحيحة.",
+   "birthDateError": "تاريخ الميلاد غير صالح.",
+   "emailError": "يرجى إدخال بريد إلكتروني صالح.",
+   "phoneError": "يجب أن يتكون رقم الهاتف من 8 رقمًا.",
+   "cardError": "يجب أن يتكون رقم البطاقة من 12 رقمًا.",
+   "nationalIdError": "يجب أن يتكون الرقم القومي من 14 رقمًا.",
+   "requiredError": "حقل {fieldName} مطلوب.",
+   "priceError": "يرجى إدخال سعر صالح.",
+   "Full Name": "الاسم الكامل",
+   "Username": "اسم المستخدم",
+   "National ID": "الرقم القومي",
+   "E-mail": "البريد الإلكتروني",
+   "Password": "كلمة المرور",
+   "Confirm Password": "تأكيد كلمة المرور",
+   "Remember Me": "تذكرني",
+   "Forgot Password": "هل نسيت كلمة المرور؟",
+   "Login": "تسجيل الدخول",
+   "Don't have an account?": "ليس لديك حساب؟",
+   "Sign Up": "إنشاء حساب",
+   "Continue With Google": "المتابعة باستخدام جوجل",
+   "Continue With Facebook": "المتابعة باستخدام فيسبوك",
+   "Continue With Apple": "المتابعة باستخدام أبل",
+   "genderError": "الجنس يجب أن يكون ذكرًا أو أنثى.",
+   "weightError": "الوزن غير صحيح.",
+   "heightError": "الطول غير صحيح.",
+   "birthDate": "تاريخ الميلاد",
+   "nationalID": "الرقم القومي",
+   "gender": "الجنس",
+   "country": "البلد",
+   "width": "الوزن",
+   "height": "الطول",
+   "blood": "فصيلة الدم",
+   "drugAllergies": "حساسية الأدوية",
+   "foodAllergies": "حساسية الطعام",
+   "longTermConditions": "الحالات المزمنة",
+   "success": "تمت الإضافة بنجاح!!",
+   "Ok": "حسنًا",
+   "Your Information": "معلوماتك",
+   "Language": "اللغة",
+   "Font": "الخط",
+   "Settings": "الإعدادات",
+   "Drug Allergies": "حساسية الأدوية",
+   "Food Allergies": "حساسية الطعام",
+   "Search": "بحث",
+   "app_name": "المحفظ",
+   "sign_in_to_continue": "تسجيل الدخول للمتابعة",
+   "welcome_back": "مرحبًا مجددًا!",
+   "enter_your_email": "أدخل بريدك الإلكتروني",
+   "enter_your_password": "أدخل كلمة المرور الخاصة بك",
+   "remember_me": "تذكرني",
+   "forgot_password": "هل نسيت كلمة المرور؟",
+    "or": "أو",
+   "create_account": "إنشاء حساب",
+   "dont_have_account": "ليس لديك حساب؟",
+   "or_continue_with": "أو المتابعة باستخدام",
+   "first_name": "الاسم الأول",
+   "last_name": "الاسم الأخير",
+   "create_password": "إنشاء كلمة المرور",
+   "confirm_password": "تأكيد كلمة المرور",
+   "i_agree_to": "أوافق على",
+   "terms_and_conditions": "شروط وأحكام",
+   "onboarding_title": "رحلتك مع القرآن تبدأ من هنا",
+   "onboarding_description": "اختر معلمك بسهولة، وحدد وقتك كما يناسبك، وتابع تقدمك…\nوادخل المسابقات لتحصل على جوائز مميزة",
+   "start_journey": "ابدأ رحلتك",
+   "Medication": "الأدوية",
+   "“Event Name”": "“اسم الحدث”",
+   "10 - 10:30 AM": "10 - 10:30 صباحًا",
+   "add event": "إضافة حدث",
+   "Wed": "الأربعاء",
+   "All": "الكل",
+   "Update": "تحديث",
+   "AddFamilyMember": "إضافة فرد من العائلة",
+   "Add": "إضافة",
+   "save": "حفظ",
+   "ifNot": "إذا لم تظهر النتائج الصحيحة، اختر التصنيف.",
+   "Prescription": "وصفة طبية",
+   "Radiology": "أشعة",
+   "Urine": "تحليل البول",
+   "CBC": "تحليل صورة الدم",
+   "Hepatitis": "تحليل التهاب الكبد",
+   "Renal": "تحليل وظائف الكلى",
+   "Delete": "حذف",
+   "Summary": "ملخص",
+   "selectLanguage": "اختر اللغة",
+   "selectFont": "اختر الخط",
+   "dynamic_text": "هذا نص ديناميكي. غيّر الخط أو اللغة لرؤية التأثير.",
+   "homeSearch": "البحث",
+   "homeMore": "المزيد",
+   "homeSaved": "المحفوظ",
+   "appName": "داين نوردر",
+   "confirm": "تأكيد",
+   "images": "الصور",
+   "sendAgain": "إعادة الإرسال",
+   "youDidNotReceiveCode": "لم تتلقَ الرمز؟",
+   "welcomeOnBoarding": "مرحبًا!",
+   "easy": "سهولة",
+   "safe": "أمان",
+   "credibility": "مصداقية",
+   "next": "التالي",
+   "previous": "السابق",
+   "skip": "تخطي",
+   "male": "ذكر",
+   "female": "أنثى",
+   "sleepOver": "مبيت",
+   "year": "سنة دراسية",
+   "withWifi": "نعم",
+   "withoutWifi": "لا",
+   "normal": "عادي",
+   "saved": "المحفوظ",
+   "welcome": "مرحبًا",
+   "myFriend": "يا صديقي",
+   "exist": "يوجد",
+   "notExist": "لا يوجد",
+   "passwordMismatch": "كلمة المرور غير متطابقة",
+   "pleaseConfirmPassword": "يرجى تأكيد كلمة المرور",
+   "pleaseEnterPassword": "يرجى إدخال كلمة المرور",
+   "pleaseEnterEmail": "يرجى إدخال البريد الإلكتروني",
+   "pleaseEnterValidEmail": "يرجى إدخال بريد إلكتروني صحيح",
+   "pleaseEnterYourName": "يرجى إدخال اسمك",
+   "continue_with_google": "متابعة مع جوجل",
+   "back_to_login": "عودة إلى تسجيل الدخول",
+   "send_reset_link": "إرسال الرابط",
+   "instructions": "تعليمات",
+   "reset_password_instructions": "يرجى إدخال بريدك الإلكتروني لإعادة تعيين كلمة المرور",
+   "enter_email_to_reset": "أدخل بريدك الإلكتروني لإعادة تعيين كلمة المرور",
+   "passwordMustBeAtLeast6CharactersLong": "يجب أن تكون كلمة المرور مكونة من 6 أحرف على الأقل.",
+   "price": "السعر",
+   "join_us_today": "انضم إلينا اليوم",
+   "enter_full_name": "يرجى إدخال اسمك بالكامل",
+   "enter_first_name": "يرجى إدخال اسمك الأول",
+   "enter_last_name": "يرجى إدخال اسمك الأخير",
+   "enter_email": "يرجى إدخال بريدك الإلكتروني",
+   "privacy_policy": "سياسة الخصوصية",
+   "terms_of_service": "شروط الخدمة",
+   "area": "المنطقة",
+   "and": "و",
+   "userName": "اسم المستخدم",
+   "verificationCode": "رمز تأكيد البريد الإلكتروني",
+   "verificationCodeResetPassword": "رمز إعادة تعيين كلمة المرور",
+   "weHaveSentYouVerificationCode": "لقد أرسلنا رمز تأكيد إلى بريدك الإلكتروني",
+   "governrate": "المحافظة",
+   "chooseGovernrate": "اختر المحافظة",
+   "chooseArea": "اختر المنطقة",
+   "login": "تسجيل الدخول",
+   "sendOtp": "إرسال رمز التأكيد",
+   "likeGuest": "الدخول كزائر",
+   "loginLater": "التسجيل لاحقًا",
+   "register": "التسجيل",
+   "resetPassword": "إعادة تعيين كلمة المرور",
+   "forgotYourPassword": "هل نسيت كلمة المرور؟",
+   "doNotHaveAccount": "ليس لديك حساب؟",
+   "haveAnAccount": "لديك حساب بالفعل؟",
+   "createAccount": "إنشاء حساب",
+   "typeOfHousing": "نوع السكن",
+   "rentalType": "نوع الإيجار",
+   "wifi": "الإنترنت",
+   "clearSearchFilter": "مسح تصفية البحث",
+   "sex": "الجنس",
+   "sorryThisProvinceIsCurrentlyUnavailable": "عذرًا، هذه المحافظة غير متوفرة حاليًا.",
+   "numberOfRooms": "عدد الغرف",
+   "rooms": "غرف النوم",
+   "numberOfBed": "عدد الأسرة",
+   "bathrooms": "الحمامات",
+   "airConditioner": "مكيف الهواء",
+   "joinUs": "انضم إلينا!",
+   "airCondition": "مكيف",
+   "bed": "سرير",
+   "availableBed": "الأسرة المتوفرة",
+   "noResultFound": "لا توجد نتائج",
+   "month": "الشهر",
+   "egyptianPounds": "ج.م/",
+   "about": "الوصف",
+   "updateAvailable": "تحديث متاح",
+   "availableUpdate": "يتوفر إصدار جديد من التطبيق. يرجى التحديث للحصول على أفضل تجربة.",
+   "update": "تحديث",
+   "readMore": "اقرأ المزيد...",
+   "readLess": "اقرأ أقل",
+   "show": "عرض",
+   "search": "بحث",
+   "cancel": "إلغاء",
+   "discardChanges":"تجاهل التغييرات",
+   "continue": "متابعة",
+   "searchFilteringActivated": "تم تفعيل تصفية البحث",
+   "email": "البريد الإلكتروني",
+   "emailOrPhone": "البريد الإلكتروني أو رقم الهاتف",
+   "password": "كلمة المرور",
+   "newPassword": "كلمة المرور الجديدة",
+   "confirmPassword": "تأكيد كلمة المرور",
+   "yourCurrentLocation": "موقعك الحالي",
+   "normalPlaces": "سكن عادي",
+   "seeMore": "عرض المزيد",
+   "seeAll": "عرض الكل",
+   "airConditionedPlaces": "سكن مكيف",
+   "details": "التفاصيل",
+   "contactUs": "تواصل معنا",
+   "maintenance": "الصيانة",
+   "privacyPolicy": "سياسة الخصوصية",
+   "logOut": "تسجيل الخروج",
+   "phoneNotMatch": "يرجى إدخال رقم هاتف صالح.",
+   "theFirstApplicationForRentingStudentHousingInEgypt": "أول تطبيق لإيجار سكن الطلاب في مصر",
+   "weAlsoOfferAnOvernightStayServiceInsteadOfTraditionalRental": "نقدم خدمة المبيت بدلاً من الإيجار التقليدي.",
+   "youWillFindTheHousingYouNeedEasilyAndWithoutHassle": "ستجد السكن الذي تحتاجه بسهولة وبدون عناء.",
+   "guaranteeYourMoneyWithoutScamsCommissionsOrBrokers": "نضمن أموالك بدون عمليات نصب أو عمولة أو وساطة.",
+   "youWillFindHousingAsItAppearsInTheApplicationInTheNaturalWayWithoutAnyDifference": "السكن كما هو موجود في التطبيق ستجده كما هو في الواقع.",
+   "inOrderToCreateASavedListYouMustFirstCreateAnAccount": "لإنشاء قائمة محفوظة، يجب عليك إنشاء حساب أولاً.",
+   "thereAreCurrentlyNoArchives": "لا توجد أي أرشيفات حاليًا.",
+   "requiredFields": "يرجى ملء الحقول المطلوبة.",
+   "apartmentNumber": "رقم الشقة",
+   "whatIsTheIssue": "ما هي المشكلة؟",
+   "send": "إرسال",
+   "apartmentIssue": "مشكلة في مكيف الهواء",
+   "youHaveNotChosenLocationYet": "لم تختر الموقع بعد.",
+   "call": "اتصال",
+   "messenger": "ماسنجر",
+   "whatsapp": "واتساب",
+   "yourIssueHasBeenSubmitted": "تم إرسال مشكلتك بنجاح.",
+   "pleaseLoginFirst": "يرجى تسجيل الدخول أولاً.",
+   "searchLengthError": "يجب أن يكون البحث أكثر من 8 أحرف.",
+   "referenceError": "يجب أن يتكون رقم الشقة من أكثر من 8 أحرف.",
+   "areYouSure": "هل أنت متأكد؟",
+   "doYouWantToExit": "هل تريد الخروج من التطبيق؟",
+   "yes": "نعم",
+   "no": "لا",
+   "deleteAccount": "حذف الحساب",
+   "aFewSeconds": "يرجى الانتظار بضع ثوانٍ.",
+
+   "edit_image": "تعديل الصورة",
+   "back": "رجوع",
+   "loading": "جاري التحميل",
+   "select_image_source": "اختر مصدر الصورة",
+   "gallery": "المعرض",
+   "camera": "الكاميرا",
+   "sentOtp":"ارسال رمز التاكيد",
+   "phoneNumber": "رقم الهاتف",
+   "age": "العمر",
+   "ageError": "الرجاء إدخال عمر صحيح.",
+   "ageTooYoungError": "يجب أن تكون على الأقل 18 عامًا.",
+   "ageTooOldError": "يجب أن يكون العمر أقل من 100.",
+   "letsGetTraining": "Let's Get Training",
+   "ourGoalIsToEnsureThatYouHaveEverythingYouNeedOfLearning": "Our goal is to ensure that you have everything you need of learning, and training, and ready to make an impact.",
+   "getStarted": "Get Started",
+   "nextOnboarding": "Next →",
+   "letsStartWork": "Let’s Start Work",
+   "greatEarnYourMoney": "Great! Earn your money",
+   "forget": "Forget?",
+   "alreadyHasAnAccount": "Already has an account?",
+   "firstName": "First Name",
+   "secondName": "Second Name",
+   "confirm_your_password": "يرجى إدخال تأكيد كلمة المرور.",
+   "orContinueWith": "Or Continue with",
+   "sign_in": "تسجيل الدخول",
+   "sign_up": "إنشاء حساب",
+   "pay_rent_title": "ادفع الإيجار،\nبدون توتر!",
+   "pay_rent_desc": "ادفع الإيجار ببطاقتك الائتمانية.",
+   "earn_points_title": "اكسب النقاط مع\nكل إيجار!",
+   "earn_points_desc": "اكسب نقاط تيرن ونقاط البنك",
+   "redeem_title": "استبدل مع\nالتجار المفضلين لديك",
+   "redeem_desc": "حول النقاط إلى مزايا تحبها.",
+   "get_started": "ابدأ الآن",
+   "next_onboarding": "التالي",
+   "uae_pass": "Sign in with UAE PASS",
+   "categories": "التصنيفات",
+   "account_settings": "Account Settings",
+   "wallet": "Wallet",
+   "free_credit": "Free Credit",
+   "language": "Language",
+   "personal_information": "Personal Information",
+   "change_password": "Change Password",
+   "notifications": "Notifications",
+   "delete_account": "Delete Account",
+   "confirm_delete": " Are you sure you want to\ndelete your account?",
+   "generalNotifications": "General Notifications:",
+   "rewardsPointsUpdates": "Rewards & Points Updates:",
+   "rewardsPointsUpdatesDesc": "Stay updated on points earned, rewards redeemed, and exclusive bonus offers.",
+   "exclusiveDeals": "Exclusive Deals",
+   "exclusiveDealsDesc": "Be the first to know about limited-time offers from our partners and special promotions.",
+   "newRedemptionOpportunities": "New Redemption Opportunities",
+   "newRedemptionOpportunitiesDesc": "Receive updates when new merchants or rewards are added to redeem points.",
+   "appUpdates": "App Updates:",
+   "featureAnnouncements": "Feature Announcements",
+   "featureAnnouncementsDesc": "Hear about new features and improvements to the app.",
+   "maintenanceNotifications": "Maintenance Notifications",
+   "maintenanceNotificationsDesc": "Stay informed about scheduled maintenance or downtime.",
+   "current_password": "Enter Current Password",
+   "new_password": "Enter New Password",
+   "confirm_new_password": "Confirm New Password",
+   "password_changed": "Password Changed!",
+   "save_changes": "Save Changes",
+   "password_changed_msg": "Your account password has been updated, you can login with your new password now.",
+   "savedPaymentMethods": "Your Saved Payment Methods :",
+   "addCard": "Add Card",
+   "enterCardInformation": "Enter your card information",
+   "cardNumber": "Card Number",
+   "enterCardNumber": "Write your card number here",
+   "expiryDate": "Expiry Date",
+   "cvv": "CVV",
+   "cardholderName": "Cardholder Name",
+   "enterCardholderName": "Enter the name on your card",
+   "invalidCardNumber": "Please enter valid card number",
+   "invalidDate": "Invalid date",
+   "invalidCVV": "Invalid CVV",
+   "refer": "Refer and Earn",
+   "referFriend": "referFriend",
+
+   "tagline_part1": "هو مكانك لـ",
+   "tagline_part2": "التحكم في كل تفاصيل",
+   "tagline_part3": "مطعمك، كل شيء في مكان واحد.",
+
+   "unread": "غير مقروء",
+   "mark_all_as_read": "وضع الكل كمقروء",
+   "change_table": "تغيير الطاولة",
+   "mark_attendance": "تسجيل الحضور",
+   "notification": "الإشعارات",
+
+   "addCategory":"اضافة فئة جديدة",
+   "items":"عناصر",
+   "addMenuItem":"اضافة عنصر قائمة",
+   "selectIconHere":"اختر ايقونة",
+   "changeIcon":"غير الايقونة",
+   "categoryName":"اسم الفئة",
+   "enterCategoryName":"ادخل اسم الفئة",
+   "selectMenu":"اختر قائمة",
+   "description":"الوصف",
+   "addDescription":"اضف وصف",
+
+   "addNewUser": "إضافة مستخدم جديد",
+   "role": "الدور",
+   "access": "الصلاحيات",
+   "dashboard": "لوحة التحكم",
+   "pos": "نقطة البيع",
+   "menu": "القائمة",
+   "customers": "العملاء",
+   "table": "الطاولات",
+   "stuff": "الموظفين",
+   "inventory": "المخزون",
+   "reports": "التقارير",
+   "orders": "الطلبات",
+   "reservations": "الحجوزات",
+   "admin": "مدير",
+   "subAdmin": "مدير فرعي",
+   "profile": "الملف الشخصي",
+   "change":"تغيير",
+   "enter_your_pin":"أدخل رقمك السري",
+
+   "itemStock":"مخزون الصنف",
+   "itemCosts":"سعر الصنف",
+   "addPrice":"اضف سعر",
+   "priceForBusiness":"سعر الاعمال",
+   "priceForCustomer":"سعر الافراد",
+   "inventoryCost":"سعر المخزون",
+   "addConsumptionRate":"اضافة معدل الاستهلاك",
+   "piece":"قطعة",
+   "gram":"جرام",
+   "kilogram":"كيلوجرام",
+   "liter":"لتر",
+   "milliliter":"مللي لتر",
+   "selectUnit":"اختر الوحدة",
+   "quantity":"الكمية",
+   "tips_amount": "مبلغ الإكراميات",
+   "total": "إجمالي",
+   "sendToKitchen": "إرسال إلى المطبخ",
+   "addTip":"أضف إكرامية",
+   "received":"تم الاستلام",
+   "orderCompleted":"تم إكمال الطلب",
+   "eWallet":"المحفظة الالكترونية",
+   "debitCard":"بطاقة الائتمان",
+   "cash":"نقداً",
+   "paymentMethod":"طريقة الدفع",
+   "paymentDetails":"تفاصيل الدفع",
+   "kitchen":"المطبخ",
+   "roastedChicken":"دجاج مشوي",
+   "order":"الطلب",
+   "payBill":"ادفع الفاتورة",
+   "orderHistory":"تاريخ الطلبات",
+   "customerHub":"مركز العملاء",
+   "editeCustomerdata":"تعديل بيانات العميل",
+   "title":"العنوان",
+   "pleaseEnterSecondName":"الرجاء إدخال الاسم الثاني",
+   "pleaseEnterPhoneNumber":"الرجاء إدخال رقم الهاتف",
+   "name":"الاسم",
+   "phone":"الهاتف",
+   "spentAmount":"مبلغ المدفوع",
+   "actions":"الإجراءات",
+   "viewOrders": "عرض الطلبات",
+   "subTotal": "المجموع الفرعي",
+   "Contactless": "الدفع اللاتلامسي",
+   "OnAccount": "دفع على الحساب",
+   "numberError":"برجاء ادخال رقم صالح",
+   "inProgress":"قيد التنفيذ",
+   "completed":"مكتمل",
+   "cancelled":"ملغي",
+   "pending":"معلق",
+   "orderDetails":"تفاصيل الطلب",
+   "all":"كل شيء",
+   "inProcess":"قيد التنفيذ",
+   "pleaseSelectAnImageFirst":"برجاء اختيار صورة",
+   
+   "revenueAndProfitCardMessage": "لا توجد بيانات للإيرادات والأرباح متاحة",
+  "revenueAndProfitCardSubMessage": "ستظهر بيانات الإيرادات والأرباح هنا",
+
+  "peakHoursCardMessage": "لا توجد بيانات لساعات الذروة",
+
+  "welcome_greeting": "مرحبًا، {username} 👋",
+  "sign_up_with_google": "تسجيل الدخول مع Google",
+  
+  "welcome_message": "نتمنى لك يومًا مثمرًا في التعلم",
+  "current_competitions": "المسابقات الحالية 🏆",
+  "competition_title": "مسابقة حفظ سورة البقرة",
+  "already_have_account": "هل لديك حساب بالفعل؟",
+   "view_details": "عرض التفاصيل",
+  "top_students_title": "أفضل 10 طلاب هذا الشهر 🌟",
+  "banner_message_1": "ابدأ رحلتك في حفظ القرآن بسهولة وبخطوات بسيطة 🎯",
+  "banner_message_2": "تعلّم مع شيخك مباشرة عبر جلسات تفاعلية مصممة لك 📖",
+  "banner_message_3": "تابع تقدمك واحصل على تقييمات وملاحظات بعد كل جلسة 📊",
+  "banner_message_4": "شارك في مسابقات التحفيظ واربح جوائز محفزة 🏅",
+  "banner_message_5": "شهر تجريبي مجاني — جرّب التطبيق الآن ✨",
+  "peakHoursCardSubMessage": "ستظهر البيانات هنا بمجرد توفرها",
+
+  "tableOccupancyMessage": "لا توجد بيانات عن الطاولات متاحة",
+  "tableOccupancySubMessage": "ستظهر البيانات هنا بمجرد توفرها",
+
+  "popularDishesMessage": "لا توجد أطباق شائعة",
+  "popularDishesSubMessage": "ستظهر الأطباق الشائعة هنا",
+
+  "generalAvailableMessage": "البيانات متوفرة ولكن لا يتم عرضها",
+  "generalAvailableSubMessage": "توجد بيانات ولكن قد لا تكون بالتنسيق المتوقع. تحقق من وحدة التحكم لمزيد من التفاصيل.",
+
+  "dailyMessage": "لا توجد بيانات يومية متاحة",
+  "dailySubMessage": "لم يتم العثور على بيانات تحليلات يومية. يرجى التحقق من مصدر البيانات.",
+
+  "monthlyMessage": "لا توجد بيانات شهرية متاحة",
+  "monthlySubMessage": "لم يتم العثور على بيانات تحليلات شهرية. يرجى التحقق من مصدر البيانات.",
+
+  "yearlyMessage": "لا توجد بيانات سنوية متاحة",
+  "yearlySubMessage": "لم يتم العثور على بيانات تحليلات سنوية. يرجى التحقق من مصدر البيانات.",
+
+  "generalMessage": "لا توجد بيانات تحليلات متاحة",
+  "generalSubMessage": "لم يتم العثور على بيانات تحليلات. يرجى التحقق من مصدر البيانات.",
+
+  "reservationNotificationTitle": "حجز جديد",
+  "inventoryNotificationTitle": "تنبيه انخفاض المخزون",
+  "orderNotificationTitle": "طلب جديد",
+  "staffNotificationTitle": "تنبيه الموظفين",
+
+  "recentOrdersMessage": "لا توجد طلبات حديثة",
+  "recentOrdersSubMessage": "ستظهر الطلبات هنا",
+
+  "nav_home": "الرئيسية",
+  "nav_teachers": "المعلمون",
+  "nav_sessions": "الجلسات",
+  "nav_progress": "التقدم",
+  "nav_profile": "الملف الشخصي",
+
+  "teachers_gender_selection_title": "اختر نوع المحفظ المناسب لك",
+  "teachers_male_option": "محفظون رجال",
+  "teachers_male_subtitle": "اختر من بين المحفظين الرجال المتاحين",
+  "teachers_female_option": "محفظات نساء",
+  "teachers_female_subtitle": "اختر من بين المحفظات النساء المتاحات",
+  "teachers_male_list_title": "المحفظون الرجال",
+  "teachers_female_list_title": "المحفظات النساء",
+  "teachers_loading_message": "جاري تحميل المحفظين...",
+  "teachers_error_unexpected": "حدث خطأ غير متوقع",
+  "teachers_retry_button": "إعادة المحاولة",
+  "teachers_empty_title": "لا يوجد محفظين متاحين حالياً",
+  "teachers_empty_subtitle": "جرب تغيير الخيارات أو عد لاحقاً",
+  "teachers_found_count": "تم العثور على {count} محفظ متاح",
+  "teachers_available": "متاح",
+  "teachers_unavailable": "غير متاح",
+  "teachers_sessions_count": "{count} جلسة",
+  "teachers_profile_title": "الملف الشخصي",
+  "teachers_book_session": "احجز جلسة",
+  "teachers_rating_label": "التقييم",
+  "teachers_experience_label": "الخبرة",
+  "teachers_qualifications_label": "المؤهلات",
+  "teachers_about_label": "نبذة عن المحفظ",
+  "teachers_schedule_label": "الجدول الزمني",
+  "teachers_reviews_label": "التقييمات",
+  "teachers_contact_label": "التواصل",
+
+  "booking_confirm": "تأكيد الحجز",
+  "booking_error_select_plan": "يرجى اختيار خطة الحجز",
+  "booking_error_select_schedule": "يرجى اختيار الأيام والأوقات المناسبة",
+  "booking_error_general": "حدث خطأ أثناء تأكيد الحجز. يرجى المحاولة مرة أخرى",
+
+  "payment_complete_payment": "إتمام الدفع",
+  "payment_booking_summary": "ملخص الحجز",
+  "payment_tutor_label": "الشيخ:",
+  "payment_plan_type": "نوع الخطة:",
+  "payment_plan_type_desc": "اختر نوع الخطة المناسب لك",
+  "payment_mobile_wallet_desc": "ادفع باستخدام محفظتك الإلكترونية",
+
+  "payment_individual_plan": "خطة فردية",
+  "payment_group_plan": "خطة جماعية",
+  "payment_selected_times": "الأوقات المختارة:",
+  "payment_scheduled_time": "الوقت المحدد:",
+  "payment_notes": "الملاحظات:",
+  "payment_total_amount": "المبلغ الإجمالي:",
+  "payment_method": "طريقة الدفع",
+  "payment_credit_card": "بطاقة ائتمانية",
+  "payment_credit_card_desc": "ادفع بأمان باستخدام بطاقتك الائتمانية",
+  "payment_e_wallet": "محفظة إلكترونية",
+  "payment_e_wallet_desc": "ادفع باستخدام محفظتك الإلكترونية المفضلة",
+  "payment_bank_transfer": "تحويل بنكي",
+  "payment_bank_transfer_desc": "حول المبلغ مباشرة إلى حسابنا البنكي",
+  "payment_secure_payment": "دفع آمن ومحمي",
+  "payment_security_description": "جميع المعاملات محمية بتشفير SSL 256-bit. لن يتم حفظ بيانات البطاقة الائتمانية على خوادمنا.",
+  "payment_refund_policy": "سياسة الاسترداد",
+  "payment_refund_description": "يمكن استرداد المبلغ خلال 24 ساعة من الحجز في حالة الإلغاء",
+  "payment_confirm_payment_amount": "تأكيد الدفع - {amount} جنيه",
+  "payment_success_title": "تم الدفع بنجاح!",
+  "payment_success_message": "تم تأكيد حجزك مع {tutorName}. سيتم التواصل معك قريباً لتأكيد موعد الجلسة.",
+  "payment_return_home": "العودة للرئيسية",
+
+  "tutor_profile_book_session": "احجز جلسة الآن",
+  "tutor_profile_sessions_count": "عدد الجلسات",
+  "tutor_profile_rating": "التقييم",
+  "tutor_profile_reviews": "المراجعات",
+  "tutor_profile_bio": "النبذة التعريفية",
+  "tutor_profile_qualifications": "المؤهلات والخبرات",
+  "tutor_profile_availability": "أوقات التوفر",
+  "tutor_profile_contact_methods": "وسائل التواصل",
+  "tutor_profile_student_reviews": "مراجعات الطلاب",
+  "tutor_profile_no_reviews": "لا توجد مراجعات بعد",
+
+  "booking_plans_individual_session": "البوكينج سيشن",
+  "booking_choose_days_times": "اختر يوم ووقت",
+  "booking_two_days_only": "يومين فقط",
+  "payment_amount_egp": "المبلغ الإجمالي",
+  "payment_tutor": "اسم الشيخ",
+  "booking_schedule_description": "اختر يومًا ووقتًا مناسبًا للجلسة",
+  "booking_choose_plan":"اختر خطة الحجز",
+  "booking_session_with": "جلسة مع",
+  "booking_plans_group_session": "البوكينج شوز بلاند",
+  "booking_plans_individual_description": "جلسة فردية مخصصة مع المحفظ",
+  "booking_plans_group_description": "جلسة جماعية مع مجموعة من الطلاب",
+  "booking_plans_monthly_package": "الباقة الشهرية",
+  "booking_plans_monthly_description": "باقة شهرية تشمل عدة جلسات",
+  "booking_plans_intensive_course": "الدورة المكثفة",
+  "booking_plans_intensive_description": "دورة مكثفة لتحفيظ القرآن الكريم",
+
+  "booking_status_confirmed": "مؤكد",
+  "booking_status_pending": "معلق",
+  "booking_status_cancelled": "ملغي",
+  "booking_status_completed": "مكتمل",
+  "booking_choose_plan_title": "اختر خطة الحجز",
+
+  "days_saturday": "السبت",
+  "days_sunday": "الأحد",
+  "days_monday": "الاثنين",
+  "days_tuesday": "الثلاثاء",
+  "days_wednesday": "الأربعاء",
+  "days_thursday": "الخميس",
+  "days_friday": "الجمعة",
+
+  "time_morning": "صباحاً",
+  "time_afternoon": "بعد الظهر",
+  "time_evening": "مساءً",
+
+  "contact_whatsapp": "واتساب",
+  "contact_voice_call": "مكالمة صوتية",
+  "contact_video_call": "مكالمة فيديو",
+  "contact_telegram": "تليجرام",
+  "contact_email": "البريد الإلكتروني",
+
+  "gender_male": "ذكر",
+  "gender_female": "أنثى",
+  "gender_selection_title": "اختر النوع المفضل للمحفظ",
+  "gender_selection_subtitle": "يمكنك اختيار نوع المحفظ المناسب لك",
+
+  "teachers_no_tutors_available": "لا يوجد محفظين متاحين حالياً وفق الفلاتر المختارة. جرب تغيير الخيارات أو عد لاحقاً.",
+
+  "booking_notes_title": "ملاحظات للشيخ (اختياري)",
+  "booking_notes_hint": "أضف أي ملاحظات أو متطلبات خاصة للشيخ",
+  "booking_selected_times": "الأوقات المختارة:",
+  "booking_loading_schedule": "جاري تحميل الجدول الأسبوعي...",
+  "booking_schedule_error": "حدث خطأ في تحميل الجدول الأسبوعي",
+  "booking_sessions_weekly": "جلسات أسبوعياً",
+  "booking_sessions_monthly": "جلسة شهرياً",
+
+  "booking_plan_private_name": "الخطة الفردية",
+  "booking_plan_private_description": "جلسات خاصة مع الشيخ",
+  "booking_plan_group_name": "الخطة الجماعية",
+  "booking_plan_group_description": "جلسات جماعية مع مجموعة",
+
+  "sessions_error_loading": "حدث خطأ في تحميل الجلسات",
+  "sessions_booking_redirect": "سيتم توجيهك لشاشة الحجز قريباً",
+  "sessions_retry": "إعادة المحاولة",
+  "sessions_upcoming": "القادمة",
+  "sessions_completed": "المكتملة",
+  "sessions_join_error": "خطأ في الانضمام للجلسة",
+  "sessions_minutes": "دقيقة",
+  "sessions_starts_in": "تبدأ بعد",
+  "sessions_today": "اليوم",
+  "sessions_tomorrow": "غداً",
+  "sessions_yesterday": "أمس",
+  "sessions_at": "في",
+  "sessions_minutes_short": "دق",
+  "sessions_seconds_short": "ث",
+
+  "session_rating_title": "تقييم الجلسة",
+  "session_rating_question": "كيف كانت جلستك اليوم؟",
+  "session_rating_with": "مع",
+  "session_rating_rate": "قيّم الجلسة",
+  "session_rating_what_liked": "ما الذي أعجبك في الجلسة؟",
+  "session_rating_feedback": "اكتب رأيك في الشيخ",
+  "session_rating_feedback_hint": "اختياري - شاركنا تجربتك لمساعدة الطلاب الآخرين",
+  "session_rating_comment_hint": "اكتب تعليقك هنا...",
+  "session_rating_submit": "إرسال التقييم",
+  "session_rating_very_poor": "ضعيف جداً",
+  "session_rating_poor": "ضعيف",
+  "session_rating_fair": "مقبول",
+  "session_rating_good": "جيد",
+  "session_rating_excellent": "ممتاز",
+  "session_rating_please_rate": "يرجى اختيار تقييم للجلسة",
+  "session_rating_thank_you": "شكراً لتقييمك! 🙏",
+  "session_rating_error": "حدث خطأ في إرسال التقييم",
+
+  "session_rating_tag_excellent": "ممتاز",
+  "session_rating_tag_helpful": "مفيد",
+  "session_rating_tag_clear": "واضح",
+  "session_rating_tag_patient": "صبور",
+  "session_rating_tag_skilled": "متمكن",
+  "session_rating_tag_inspiring": "ملهم",
+  "session_rating_tag_organized": "منظم",
+  "session_rating_tag_interactive": "تفاعلي",
+
+  "session_rating_level_excellent": "ممتاز",
+  "session_rating_level_very_good": "جيد جداً",
+  "session_rating_level_good": "جيد",
+  "session_rating_level_fair": "مقبول",
+  "session_rating_level_poor": "ضعيف",
+
+  "meeting_recording_started": "بدأ التسجيل",
+  "meeting_recording_stopped": "توقف التسجيل",
+  "meeting_end_title": "إنهاء الجلسة",
+  "meeting_end_confirm": "هل أنت متأكد من إنهاء الجلسة؟",
+  "meeting_cancel": "إلغاء",
+  "meeting_end": "إنهاء",
+  "meeting_camera_off": "الكاميرا مغلقة",
+  "meeting_you": "أنت",
+  "meeting_session": "جلسة",
+  "meeting_with": "مع",
+  "meeting_teacher": "المعلم",
+  "meeting_recording": "جاري التسجيل",
+
+  "session_details_title": "تفاصيل الجلسة",
+  "session_details_error": "حدث خطأ في تحميل تفاصيل الجلسة",
+  "session_details_ready": "جاهزة للانضمام",
+  "session_details_upcoming": "قادمة",
+  "session_details_ongoing": "جارية الآن",
+  "session_details_completed": "مكتملة",
+  "session_details_cancelled": "ملغاة",
+  "session_details_date_time": "التاريخ والوقت",
+  "session_details_duration": "المدة",
+  "session_details_type": "نوع الجلسة",
+  "session_details_id": "رقم الجلسة",
+  "session_details_starts_in": "تبدأ بعد",
+  "session_details_notes": "ملاحظات",
+  "session_details_rating": "التقييم",
+  "session_details_no_rating": "لم يتم تقييم هذه الجلسة بعد",
+  "session_details_add_note": "إضافة ملاحظة",
+  "session_details_cancel_session": "إلغاء الجلسة",
+  "session_details_join": "دخول الجلسة",
+  "session_details_not_started": "لم تبدأ بعد",
+  "session_details_ongoing_button": "الجلسة جارية",
+  "session_details_rate": "قيّم الجلسة",
+  "session_details_ended": "انتهت الجلسة",
+  "session_details_cancelled_button": "تم الإلغاء",
+  "session_details_cancel_confirm_title": "إلغاء الجلسة",
+  "session_details_cancel_confirm": "هل أنت متأكد من إلغاء هذه الجلسة؟",
+  "session_details_cancel_no": "لا",
+  "session_details_cancel_yes": "نعم، إلغاء",
+  "session_details_cancelled_success": "تم إلغاء الجلسة بنجاح",
+  "session_details_cancel_error": "خطأ في إلغاء الجلسة",
+  "session_details_add_note_coming": "ميزة إضافة الملاحظات قريباً",
+
+  "empty_sessions_upcoming_title": "لا توجد جلسات قادمة",
+  "empty_sessions_upcoming_subtitle": "احجز جلسة جديدة مع أحد المحفظين المتاحين",
+  "empty_sessions_upcoming_action": "احجز جلسة جديدة",
+  "empty_sessions_completed_title": "لا توجد جلسات مكتملة",
+  "empty_sessions_completed_subtitle": "ستظهر هنا الجلسات التي أكملتها مع المحفظين",
+  "empty_sessions_general_title": "لا توجد جلسات",
+  "empty_sessions_general_subtitle": "ابدأ رحلتك في تعلم القرآن الكريم",
+  "empty_sessions_general_action": "احجز أول جلسة",
+
+  "session_type_recitation": "تلاوة",
+  "session_type_review": "مراجعة",
+  "session_type_tajweed": "تجويد",
+  "session_type_memorization": "حفظ",
+  "session_format_online": "أونلاين",
+  "session_format_in_person": "حضوري",
+
+  "sessions_statistics_title": "إحصائيات الجلسات",
+  "sessions_statistics_total": "المجموع",
+  "sessions_statistics_upcoming": "القادمة",
+  "sessions_statistics_completed": "المكتملة",
+  "sessions_statistics_cancelled": "الملغاة",
+
+  "sessions_service_success": "تم تحميل الجلسات بنجاح",
+  "sessions_service_error": "حدث خطأ في تحميل الجلسات",
+  "sessions_service_cancelled": "تم الإلغاء",
+  "sessions_service_rated": "تم التقييم",
+  "sessions_service_rate": "قيّم الجلسة",
+  "sessions_service_ended": "انتهت الجلسة",
+  "sessions_service_join": "دخول الجلسة",
+  "sessions_service_not_started": "لم تبدأ بعد",
+  "sessions_service_notification": "لديك جلسة مع {tutorName} الساعة {time} — اضغط للدخول.",
+  "sessions_service_am": "ص",
+  "sessions_service_pm": "م",
+
+  "sessions_seconds": "ثانية",
+  "session_join_error": "خطأ في الانضمام للجلسة",
+  "session_add_note_coming_soon": "ميزة إضافة الملاحظات قريباً",
+  "session_cancel_title": "إلغاء الجلسة",
+  "session_cancel_confirmation": "هل أنت متأكد من إلغاء هذه الجلسة؟",
+  "common_no": "لا",
+  "session_cancel_yes": "نعم، إلغاء",
+  "session_cancelled_success": "تم إلغاء الجلسة بنجاح",
+  "session_cancel_error": "خطأ في إلغاء الجلسة",
+
+  "session_rating_rate_session": "قيّم الجلسة",
+   "session_rating_feedback_title": "اكتب رأيك في الشيخ",
+  "session_rating_feedback_subtitle": "اختياري - شاركنا تجربتك لمساعدة الطلاب الآخرين",
+  "session_rating_feedback_placeholder": "اكتب تعليقك هنا...",
+   "session_rating_level_very_poor": "ضعيف جداً",
+   "session_rating_level_acceptable": "مقبول",
+   "session_rating_select_rating": "يرجى اختيار تقييم للجلسة",
+  "session_rating_success": "شكراً لتقييمك! 🙏",
+   "session_status_ready_to_join": "جاهزة للانضمام",
+  "session_status_upcoming": "قادمة",
+  "session_status_ongoing": "جارية الآن",
+  "session_status_completed": "مكتملة",
+  "session_status_cancelled": "ملغاة",
+  "session_details_section_title": "تفاصيل الجلسة",
+   "session_details_cancel": "إلغاء الجلسة",
+  "payment_mobile_wallet": "الدفع من المحفظة الالكترونية",
+ 
+  "meeting_end_confirmation": "هل أنت متأكد من إنهاء الجلسة؟",
+  "common_cancel": "إلغاء",
+  "meeting_end_button": "إنهاء",
+ 
+  "meeting_recording_in_progress": "جاري التسجيل",
+  
+  "sessions_service_load_success": "تم تحميل الجلسات بنجاح",
+  "sessions_service_load_error": "حدث خطأ في تحميل الجلسات",
+  "session_service_rated": "تم التقييم",
+  "session_service_notification": "لديك جلسة مع {tutorName} الساعة {time} — اضغط للدخول.",
+  "session_service_am": "ص",
+  "session_service_pm": "م",
+
+  "progress_title": "تقدمك في الحفظ",
+  "progress_subtitle": "تابع مستوى تقدمك وجلساتك الأخيرة مع الشيخ",
+  "progress_loading_error": "حدث خطأ في تحميل البيانات",
+  "progress_loading_error_subtitle": "يرجى المحاولة مرة أخرى لاحقاً",
+  "progress_empty_message": "ابدأ أول جلسة لتتبع تقدمك في الحفظ",
+  "progress_empty_subtitle": "ستظهر هنا إحصائياتك وتقييماتك بعد بدء الجلسات",
+  "progress_overall_label": "من إجمالي الحفظ",
+  
+  "progress_chart_title": "أداؤك اليومي في الحفظ",
+  "progress_chart_no_data": "لا توجد بيانات يومية متاحة",
+  
+  "progress_recent_sessions": "جلساتك الأخيرة",
+  "progress_recent_sessions_empty": "لا توجد جلسات سابقة",
+  
+  "progress_teacher_notes": "ملاحظات الشيخ الأخيرة",
+  "progress_teacher_notes_empty": "لا توجد ملاحظات من الشيخ",
+  "progress_time_today": "اليوم",
+  "progress_time_yesterday": "أمس",
+  "progress_time_days_ago": "منذ {days} أيام",
+  "progress_time_weeks_ago": "منذ {weeks} أسابيع",
+  
+  "progress_day_monday": "الاثنين",
+  "progress_day_tuesday": "الثلاثاء",
+  "progress_day_wednesday": "الأربعاء",
+  "progress_day_thursday": "الخميس",
+  "progress_day_friday": "الجمعة",
+  "progress_day_saturday": "السبت",
+  "progress_day_sunday": "الأحد"
+}

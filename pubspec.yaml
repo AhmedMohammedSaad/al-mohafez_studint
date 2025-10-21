@@ -1,0 +1,224 @@
+name: almohafez
+description: "A new Flutter project."
+# The following line prevents the package from being accidentally published to
+# pub.dev using `flutter pub publish`. This is preferred for private packages.
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+# The following defines the version and build number for your application.
+# A version number is three numbers separated by dots, like 1.2.43
+# followed by an optional build number separated by a +.
+# Both the version and the builder number may be overridden in flutter
+# build by specifying --build-name and --build-number, respectively.
+# In Android, build-name is used as versionName while build-number used as versionCode.
+# Read more about Android versioning at https://developer.android.com/studio/publish/versioning
+# In iOS, build-name is used as CFBundleShortVersionString while build-number is used as CFBundleVersion.
+# Read more about iOS versioning at
+# https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
+# In Windows, build-name is used as the major, minor, and patch parts
+# of the product and file versions while build-number is used as the build suffix.
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.8.0
+
+
+dependencies:
+  app_links: ^6.4.0
+  badges: ^3.1.2
+  bloc: ^8.1.4
+  cached_network_image: ^3.4.1
+  calendar_date_picker2: ^1.1.9
+  carousel_slider: ^5.0.0
+  chewie: ^1.8.5
+  clipboard: ^0.1.3
+  collection: ^1.18.0
+  color_filter_extension: ^0.0.2
+  colorfilter_generator: ^0.0.8
+  country_code_picker: ^3.1.0
+  country_phone_validator: ^1.0.1
+  crop_your_image: ^2.0.0
+  cross_file: ^0.3.4+2
+  cupertino_icons: ^1.0.8
+  dartz: ^0.10.1
+  device_preview: ^1.2.0
+  device_preview_plus: any
+  dio: ^5.7.0
+  dotted_border: ^3.0.1
+  dropdown_search: ^6.0.1
+  easy_localization: ^3.0.7+1
+  equatable: ^2.0.7
+  file_picker: ^8.1.7
+  flutter:
+    sdk: flutter
+  flutter_animate: ^4.5.2
+  flutter_bloc: ^8.1.6
+  flutter_cache_manager: ^3.4.1
+  flutter_html: ^3.0.0-beta.2
+  flutter_image_filters: ^0.0.25
+  flutter_map: ^8.1.1
+  flutter_native_splash: ^2.4.4
+  flutter_rating_bar: ^4.0.1
+  flutter_screenutil: ^5.9.3
+  flutter_secure_storage: ^9.2.4
+  flutter_sound: ^9.28.0
+  flutter_svg: ^2.0.16
+  flutter_time_picker_spinner: ^2.0.0
+  gal: ^2.3.0
+  geolocator: ^14.0.1
+  get_it: ^8.0.2
+  go_router: ^14.6.2
+  google_maps_flutter: ^2.12.2
+  google_sign_in: ^6.2.2
+  hugeicons: ^0.0.7
+  image: ^4.5.4
+  image_cropper: ^8.0.2
+  image_editor: ^1.6.0
+  image_picker: ^1.1.2
+  intl: ^0.20.2
+  intl_phone_number_input: ^0.7.4
+  introduction_screen: ^3.1.14
+  latlong2: ^0.9.1
+  logger: ^2.5.0
+  lottie: ^3.2.0
+  nb_utils: ^7.0.7
+  open_file: ^3.5.10
+  path: ^1.9.0
+  path_provider: ^2.1.5
+  permission_handler: ^11.3.1
+  persistent_bottom_nav_bar_v2: ^5.3.1
+  photo_manager: ^3.6.4
+  photo_view: ^0.15.0
+  pin_code_fields: ^8.0.1
+  pretty_dio_logger: ^1.3.1
+  pull_to_refresh: ^2.0.0
+  qr_flutter: ^4.1.0
+  readmore: ^3.0.0
+  sentry_flutter: ^8.11.0
+  share_plus: ^11.0.0
+  shimmer: ^3.0.0
+  sign_in_with_apple: ^6.1.4
+  skeletonizer: ^1.4.2
+  smooth_page_indicator: ^1.2.0+3
+  syncfusion_flutter_charts: ^27.2.5
+  syncfusion_flutter_pdfviewer: ^27.2.5
+  timeago: ^3.7.0
+  timeline_tile: ^2.0.0
+  url_launcher: ^6.3.1
+  uuid: ^4.5.1
+  video_editor_2: ^3.1.1
+  video_player: ^2.4.0
+  youtube_player_flutter: ^9.1.1
+  stream_transform: ^2.1.1
+  date_picker_timeline: ^1.2.7
+  geocoding: ^4.0.0
+
+
+dependency_overrides:
+  intl: ^0.19.0
+  get_thumbnail_video: ^0.7.3
+
+dev_dependencies:
+  change_app_package_name: ^1.5.0
+
+  # For Dependency Validator
+  dependency_validator: ^4.1.2
+
+  # For Assets
+  flutter_gen_runner: ^5.8.0
+
+  # For App Icon
+  flutter_launcher_icons: ^0.14.3
+
+  # For Analyzer
+  flutter_lints: ^5.0.0
+  flutter_test:
+    sdk: flutter
+
+# flutter_launcher_icons:
+  # android: true
+  # ios: true
+  # image_path: "assets/logo/logoName.png"
+  # adaptive_icon_background: "#ffffff"
+  # adaptive_icon_foreground: "assets/logo/logoName.png"
+
+# flutter_native_splash:
+#   color: "#FFFFFF"
+#   image: "assets/logo/logoName.png"
+#   android: true
+#   ios: true
+#   fullscreen: true
+  # Remove any other parameters like "customize" or "image"
+flutter_gen:
+  integrations:
+    flutter_svg: true
+    rive: true
+    lottie: true
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+    - assets/svgs/
+    - assets/translations/
+    - assets/lottie/
+
+
+  # fonts:
+  #   - family: Roboto
+  #     fonts:
+  #       - asset: assets/fonts/Roboto/static/Roboto-ThinItalic.ttf
+  #         weight: 100
+  #         style: italic
+  #       - asset: assets/fonts/Roboto/static/Roboto-ExtraLight.ttf
+  #         weight: 200
+  #       - asset: assets/fonts/Roboto/static/Roboto-ExtraLightItalic.ttf
+  #         weight: 200
+  #         style: italic
+  #       - asset: assets/fonts/Roboto/static/Roboto-Light.ttf
+  #         weight: 300
+  #       - asset: assets/fonts/Roboto/static/Roboto-LightItalic.ttf
+  #         weight: 300
+  #         style: italic
+  #       - asset: assets/fonts/Roboto/static/Roboto-Regular.ttf
+  #         weight: 400
+  #       - asset: assets/fonts/Roboto/static/Roboto-Italic.ttf
+  #         weight: 400
+  #         style: italic
+  #       - asset: assets/fonts/Roboto/static/Roboto-Medium.ttf
+  #         weight: 500
+  #       - asset: assets/fonts/Roboto/static/Roboto-MediumItalic.ttf
+  #         weight: 500
+  #         style: italic
+  #       - asset: assets/fonts/Roboto/static/Roboto-SemiBold.ttf
+  #         weight: 600
+  #       - asset: assets/fonts/Roboto/static/Roboto-SemiBoldItalic.ttf
+  #         weight: 600
+  #         style: italic
+  #       - asset: assets/fonts/Roboto/static/Roboto-Bold.ttf
+  #         weight: 700
+  #       - asset: assets/fonts/Roboto/static/Roboto-BoldItalic.ttf
+  #         weight: 700
+  #         style: italic
+  #       - asset: assets/fonts/Roboto/static/Roboto-ExtraBold.ttf
+  #         weight: 800
+  #       - asset: assets/fonts/Roboto/static/Roboto-ExtraBoldItalic.ttf
+  #         weight: 800
+  #         style: italic
+  #       - asset: assets/fonts/Roboto/static/Roboto-Black.ttf
+  #         weight: 900
+  #       - asset: assets/fonts/Roboto/static/Roboto-BlackItalic.ttf
+  #         weight: 900
+  #         style: italic
+
+  #   - family: RobotoVariable
+  #     fonts:
+  #       - asset: assets/fonts/Roboto/Roboto-VariableFont_wdth,wght.ttf
+  #       - asset: assets/fonts/Roboto/Roboto-Italic-VariableFont_wdth,wght.ttf
+  #         style: italic
+
+  # Cairo Font Family for Arabic Text
+  fonts:
+    - family: Cairo
+      fonts:
+        - asset: assets/fonts/Cairo-Variable.ttf

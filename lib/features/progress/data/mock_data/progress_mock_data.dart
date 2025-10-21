@@ -6,20 +6,18 @@ class ProgressMockData {
     return ProgressModel(
       overallProgress: 65.0,
       dailyPerformance: [
-        DailyPerformance(date: '2024-01-15', percentage: 45.0, dayName: 'progress_day_monday'.tr()),
-        DailyPerformance(date: '2024-01-16', percentage: 60.0, dayName: 'progress_day_tuesday'.tr()),
-        DailyPerformance(date: '2024-01-17', percentage: 75.0, dayName: 'progress_day_wednesday'.tr()),
-        DailyPerformance(date: '2024-01-18', percentage: 65.0, dayName: 'progress_day_thursday'.tr()),
-        DailyPerformance(date: '2024-01-19', percentage: 80.0, dayName: 'progress_day_friday'.tr()),
-        DailyPerformance(date: '2024-01-20', percentage: 70.0, dayName: 'progress_day_saturday'.tr()),
-        DailyPerformance(date: '2024-01-21', percentage: 85.0, dayName: 'progress_day_sunday'.tr()),
-        DailyPerformance(date: '2024-01-22', percentage: 90.0, dayName: 'progress_day_monday'.tr()),
-        DailyPerformance(date: '2024-01-23', percentage: 55.0, dayName: 'progress_day_tuesday'.tr()),
-        DailyPerformance(date: '2024-01-24', percentage: 95.0, dayName: 'progress_day_wednesday'.tr()),
-        DailyPerformance(date: '2024-01-25', percentage: 78.0, dayName: 'progress_day_thursday'.tr()),
-        DailyPerformance(date: '2024-01-26', percentage: 88.0, dayName: 'progress_day_friday'.tr()),
-        DailyPerformance(date: '2024-01-27', percentage: 72.0, dayName: 'progress_day_saturday'.tr()),
-        DailyPerformance(date: '2024-01-28', percentage: 92.0, dayName: 'progress_day_sunday'.tr()),
+        // Week 1
+        DailyPerformance(date: '2024-01-15', percentage: 75.0, dayName: 'اليوم 1'),
+        DailyPerformance(date: '2024-01-18', percentage: 82.0, dayName: 'اليوم 2'),
+        // Week 2
+        DailyPerformance(date: '2024-01-22', percentage: 68.0, dayName: 'اليوم 1'),
+        DailyPerformance(date: '2024-01-25', percentage: 90.0, dayName: 'اليوم 2'),
+        // Week 3
+        DailyPerformance(date: '2024-01-29', percentage: 85.0, dayName: 'اليوم 1'),
+        DailyPerformance(date: '2024-02-01', percentage: 78.0, dayName: 'اليوم 2'),
+        // Week 4
+        DailyPerformance(date: '2024-02-05', percentage: 92.0, dayName: 'اليوم 1'),
+        DailyPerformance(date: '2024-02-08', percentage: 88.0, dayName: 'اليوم 2'),
       ],
       recentSessions: [
         RecentSession(

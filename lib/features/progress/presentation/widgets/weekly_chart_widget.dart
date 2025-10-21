@@ -8,11 +8,8 @@ class DailyChartWidget extends StatefulWidget {
   final List<DailyPerformance> dailyData;
   final double height;
 
-  const DailyChartWidget({
-    Key? key,
-    required this.dailyData,
-    this.height = 200,
-  }) : super(key: key);
+  const DailyChartWidget({Key? key, required this.dailyData, this.height = 200})
+    : super(key: key);
 
   @override
   State<DailyChartWidget> createState() => _DailyChartWidgetState();
@@ -139,7 +136,7 @@ class _DailyChartWidgetState extends State<DailyChartWidget>
                     child: CustomPaint(
                       size: Size(
                         widget.dailyData.length * 60.0 + 40,
-                        widget.height - 80,
+                        widget.height - 60,
                       ),
                       painter: DailyChartPainter(
                         dailyData: widget.dailyData,
@@ -161,10 +158,7 @@ class DailyChartPainter extends CustomPainter {
   final List<DailyPerformance> dailyData;
   final double animationValue;
 
-  DailyChartPainter({
-    required this.dailyData,
-    required this.animationValue,
-  });
+  DailyChartPainter({required this.dailyData, required this.animationValue});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -175,19 +169,17 @@ class DailyChartPainter extends CustomPainter {
       ..strokeWidth = 3
       ..strokeCap = StrokeCap.round;
 
-    final fillPaint = Paint()
-      ..style = PaintingStyle.fill;
+    final fillPaint = Paint()..style = PaintingStyle.fill;
 
-    final dotPaint = Paint()
-      ..style = PaintingStyle.fill;
+    final dotPaint = Paint()..style = PaintingStyle.fill;
 
     final textPainter = TextPainter(
-      textDirection: ui.TextDirection.rtl,
+      textDirection: ui.TextDirection.ltr,
       textAlign: TextAlign.center,
     );
 
-    // Calculate dimensions
-    final chartHeight = size.height - 60;
+    // Calculate dimensions (increased top margin for percentage labels)
+    final chartHeight = size.height - 80;
     final chartWidth = size.width - 40;
     final itemWidth = chartWidth / (dailyData.length - 1);
 
@@ -200,7 +192,7 @@ class DailyChartPainter extends CustomPainter {
     // Draw Y-axis labels
     for (int i = 0; i <= 5; i++) {
       final value = (scaledMaxValue / 5) * i;
-      final y = chartHeight - (chartHeight / 5) * i + 20;
+      final y = chartHeight - (chartHeight / 5) * i + 40;
 
       textPainter.text = TextSpan(
         text: '${value.toInt()}%',
@@ -216,10 +208,7 @@ class DailyChartPainter extends CustomPainter {
 
     // Create gradient for line
     final gradient = LinearGradient(
-      colors: [
-        const Color(0xFF00E0FF),
-        const Color(0xFF0077B6),
-      ],
+      colors: [const Color(0xFF00E0FF), const Color(0xFF0077B6)],
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
     );
@@ -230,18 +219,18 @@ class DailyChartPainter extends CustomPainter {
     // Create path for line chart
     final path = Path();
     final fillPath = Path();
-    
+
     for (int i = 0; i < dailyData.length; i++) {
       final animatedIndex = (i * animationValue).clamp(0, dailyData.length - 1);
       if (animatedIndex < i) continue;
 
       final x = 40 + i * itemWidth;
       final normalizedValue = dailyData[i].percentage / scaledMaxValue;
-      final y = chartHeight - (normalizedValue * chartHeight) + 20;
+      final y = chartHeight - (normalizedValue * chartHeight) + 40;
 
       if (i == 0) {
         path.moveTo(x, y);
-        fillPath.moveTo(x, chartHeight + 20);
+        fillPath.moveTo(x, chartHeight + 40);
         fillPath.lineTo(x, y);
       } else {
         path.lineTo(x, y);
@@ -269,7 +258,7 @@ class DailyChartPainter extends CustomPainter {
     // Complete fill path
     if (dailyData.isNotEmpty) {
       final lastX = 40 + (dailyData.length - 1) * itemWidth;
-      fillPath.lineTo(lastX, chartHeight + 20);
+      fillPath.lineTo(lastX, chartHeight + 40);
       fillPath.close();
 
       // Draw fill area with gradient
@@ -295,7 +284,7 @@ class DailyChartPainter extends CustomPainter {
 
       final x = 40 + i * itemWidth;
       final normalizedValue = dailyData[i].percentage / scaledMaxValue;
-      final y = chartHeight - (normalizedValue * chartHeight) + 20;
+      final y = chartHeight - (normalizedValue * chartHeight) + 40;
 
       // Outer circle (white)
       dotPaint.color = Colors.white;
@@ -307,23 +296,49 @@ class DailyChartPainter extends CustomPainter {
       );
       canvas.drawCircle(Offset(x, y), 4, dotPaint);
 
-      // Draw percentage value on hover effect
-      if (dailyData[i].percentage > 80) {
-        textPainter.text = TextSpan(
-          text: '${dailyData[i].percentage.toInt()}%',
-          style: const TextStyle(
-            color: Color(0xFF0077B6),
-            fontSize: 10,
-            fontWeight: FontWeight.bold,
-            fontFamily: 'Cairo',
-          ),
-        );
-        textPainter.layout();
-        textPainter.paint(
-          canvas,
-          Offset(x - textPainter.width / 2, y - 20),
-        );
-      }
+      // Draw percentage value above each point
+      textPainter.text = TextSpan(
+        text: '${dailyData[i].percentage.toInt()}%',
+        style: const TextStyle(
+          color: Color(0xFF0077B6),
+          fontSize: 12,
+          fontWeight: FontWeight.bold,
+          fontFamily: 'Cairo',
+        ),
+      );
+      textPainter.layout();
+
+      // Position the text above the point with some padding
+      final textY = y - 25;
+      final textX = x - textPainter.width / 2;
+
+      // Draw a small background for better readability
+      final backgroundRect = RRect.fromRectAndRadius(
+        Rect.fromLTWH(
+          textX - 4,
+          textY - 2,
+          textPainter.width + 8,
+          textPainter.height + 4,
+        ),
+        const Radius.circular(4),
+      );
+
+      final backgroundPaint = Paint()
+        ..color = Colors.white.withOpacity(0.9)
+        ..style = PaintingStyle.fill;
+
+      canvas.drawRRect(backgroundRect, backgroundPaint);
+
+      // Draw border around background
+      final borderPaint = Paint()
+        ..color = const Color(0xFF0077B6).withOpacity(0.2)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1;
+
+      canvas.drawRRect(backgroundRect, borderPaint);
+
+      // Draw the percentage text
+      textPainter.paint(canvas, Offset(textX, textY));
     }
   }
 

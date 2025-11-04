@@ -1,0 +1,70 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:easy_localization/easy_localization.dart';
+
+class ProfileHeaderWidget extends StatelessWidget {
+  const ProfileHeaderWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(24.w),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16.r),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          // صورة دائرية كبيرة (90px)
+          Container(
+            width: 90.w,
+            height: 90.w,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: const Color(0xFF0A1D64).withOpacity(0.1),
+                width: 3,
+              ),
+            ),
+            child: CircleAvatar(
+              radius: 45.r,
+              backgroundColor: const Color(0xFF0A1D64).withOpacity(0.1),
+              backgroundImage: const AssetImage(
+                'assets/images/placeholder.webp',
+              ),
+            ),
+          ),
+          SizedBox(height: 16.h),
+          // الاسم: Bold، حجم 20px، لون #0A1D64
+          Text(
+            'profile_user_name'.tr(),
+            style: TextStyle(
+              fontFamily: 'Cairo',
+              fontSize: 20.sp,
+              fontWeight: FontWeight.bold,
+              color: const Color(0xFF0A1D64),
+            ),
+          ),
+          SizedBox(height: 8.h),
+          // البريد الإلكتروني: خط رمادي متوسط
+          Text(
+            'profile_user_email'.tr(),
+            style: TextStyle(
+              fontFamily: 'Cairo',
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w500,
+              color: const Color(0xFF6B7280),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

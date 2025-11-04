@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';
+import '../widgets/profile_header_widget.dart';
+import '../widgets/statistics_cards_widget.dart';
+import '../widgets/action_buttons_widget.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -8,12 +11,12 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: const Color(0xFFF9FAFB),
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
         title: Text(
-          'الحساب',
+          'profile_title'.tr(),
           style: TextStyle(
             fontFamily: 'Cairo',
             fontSize: 22.sp,
@@ -23,35 +26,16 @@ class ProfileScreen extends StatelessWidget {
         ),
         centerTitle: true,
       ),
-      body: Center(
+      body: SingleChildScrollView(
+        padding: EdgeInsets.all(16.w),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.person_rounded,
-              size: 80.sp,
-              color: const Color(0xFF00E0FF),
-            ),
-            SizedBox(height: 20.h),
-            Text(
-              'الملف الشخصي',
-              style: TextStyle(
-                fontFamily: 'Cairo',
-                fontSize: 24.sp,
-                fontWeight: FontWeight.bold,
-                color: const Color(0xFF0A1D64),
-              ),
-            ),
-            SizedBox(height: 10.h),
-            Text(
-              'هنا ستجد معلوماتك الشخصية والإعدادات',
-              style: TextStyle(
-                fontFamily: 'Cairo',
-                fontSize: 16.sp,
-                color: const Color(0xFF5B6C9F),
-              ),
-              textAlign: TextAlign.center,
-            ),
+            const ProfileHeaderWidget(),
+            SizedBox(height: 24.h),
+            const StatisticsCardsWidget(),
+            SizedBox(height: 24.h),
+            const ActionButtonsWidget(),
+            SizedBox(height: 65.h),
           ],
         ),
       ),

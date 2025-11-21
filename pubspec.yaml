@@ -133,6 +133,7 @@ dev_dependencies:
   flutter_lints: ^5.0.0
   flutter_test:
     sdk: flutter
+  supabase_flutter: ^2.10.3
 
 # flutter_launcher_icons:
   # android: true

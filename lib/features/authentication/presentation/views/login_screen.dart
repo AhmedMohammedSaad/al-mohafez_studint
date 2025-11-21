@@ -2,17 +2,21 @@ import 'package:almohafez/core/presentation/view/main_navigation_screen.dart';
 import 'package:almohafez/core/presentation/view/main_screen.dart';
 import 'package:almohafez/core/presentation/view/widgets/app_custom_image_view.dart';
 import 'package:almohafez/core/routing/app_route.dart';
+import 'package:almohafez/features/authentication/presentation/views/sign_up_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_style.dart';
 import '../../../../core/services/navigation_service/global_navigation_service.dart';
-import '../../../../core/data/local_data/caching_helper.dart';
 import '../widgets/auth_header.dart';
 import '../widgets/auth_text_field.dart';
 import '../widgets/auth_button.dart';
 import '../widgets/social_login_button.dart';
+import '../../data/auth_service.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import '../../../../core/utils/supabase_error_handler.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -26,7 +30,6 @@ class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _isLoading = false;
-  bool _rememberMe = false;
 
   @override
   void dispose() {
@@ -96,54 +99,22 @@ class _LoginScreenState extends State<LoginScreen> {
 
                 SizedBox(height: 16.h),
 
-                // Remember Me & Forgot Password Row
-                Row(
-                  children: [
-                    // Remember Me Checkbox
-                    Row(
-                      children: [
-                        SizedBox(
-                          width: 20.w,
-                          height: 20.h,
-                          child: Checkbox(
-                            value: _rememberMe,
-                            onChanged: (value) {
-                              setState(() {
-                                _rememberMe = value ?? false;
-                              });
-                            },
-                            activeColor: AppColors.primaryBlueViolet,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(4.r),
-                            ),
-                          ),
-                        ),
-                        SizedBox(width: 8.w),
-                        Text(
-                          'remember_me'.tr(),
-                          style: AppTextStyle.medium14.copyWith(
-                            color: AppColors.textSecondary,
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    // const Spacer(),
-
-                    // // Forgot Password
-                    // GestureDetector(
-                    //   onTap: _navigateToForgotPassword,
-                    //   child: Text(
-                    //     'forgot_password'.tr(),
-                    //     style: AppTextStyle.medium14.copyWith(
-                    //       color: AppColors.primaryBlueViolet,
-                    //       fontWeight: FontWeight.w600,
-                    //     ),
-                    //   ),
-                    // ),
-                  ],
-                ),
-
+                // Forgot Password (commented out for now)
+                // Row(
+                //   children: [
+                //     const Spacer(),
+                //     GestureDetector(
+                //       onTap: _navigateToForgotPassword,
+                //       child: Text(
+                //         'forgot_password'.tr(),
+                //         style: AppTextStyle.medium14.copyWith(
+                //           color: AppColors.primaryBlueViolet,
+                //           fontWeight: FontWeight.w600,
+                //         ),
+                //       ),
+                //     ),
+                //   ],
+                // ),
                 SizedBox(height: 32.h),
 
                 // Login Button
@@ -156,41 +127,40 @@ class _LoginScreenState extends State<LoginScreen> {
                 SizedBox(height: 24.h),
 
                 // Divider
-                Row(
-                  children: [
-                    Expanded(
-                      child: Divider(
-                        color: AppColors.borderLight,
-                        thickness: 1,
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16.w),
-                      child: Text(
-                        'or_continue_with'.tr(),
-                        style: AppTextStyle.medium14.copyWith(
-                          color: AppColors.textSecondary,
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Divider(
-                        color: AppColors.borderLight,
-                        thickness: 1,
-                      ),
-                    ),
-                  ],
-                ),
+                // Row(
+                //   children: [
+                //     Expanded(
+                //       child: Divider(
+                //         color: AppColors.borderLight,
+                //         thickness: 1,
+                //       ),
+                //     ),
+                //     Padding(
+                //       padding: EdgeInsets.symmetric(horizontal: 16.w),
+                //       child: Text(
+                //         'or_continue_with'.tr(),
+                //         style: AppTextStyle.medium14.copyWith(
+                //           color: AppColors.textSecondary,
+                //         ),
+                //       ),
+                //     ),
+                //     Expanded(
+                //       child: Divider(
+                //         color: AppColors.borderLight,
+                //         thickness: 1,
+                //       ),
+                //     ),
+                //   ],
+                // ),
 
-                SizedBox(height: 24.h),
+                // SizedBox(height: 24.h),
 
-                // Social Login Buttons
-                SocialLoginButton(
-                  type: SocialLoginType.google,
-                  onPressed: _handleGoogleLogin,
-                  customText: 'continue_with_google'.tr(),
-                ),
-
+                // // Social Login Buttons
+                // SocialLoginButton(
+                //   type: SocialLoginType.google,
+                //   onPressed: _handleGoogleLogin,
+                //   customText: 'continue_with_google'.tr(),
+                // ),
                 SizedBox(height: 32.h),
 
                 // Sign Up Link
@@ -256,23 +226,27 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     try {
-      await Future.delayed(const Duration(seconds: 2));
+      final authService = AuthService();
+      final response = await authService.signIn(
+        email: _emailController.text.trim(),
+        password: _passwordController.text,
+      );
 
-      // Save login state
-      // await AppCacheHelper.saveSecureString('access_token', 'dummy_token_${DateTime.now().millisecondsSinceEpoch}');
-      // await AppCacheHelper.saveBool('is_logged_in', true);
-
-      // // Save user email if remember me is checked
-      // if (_rememberMe) {
-      //   await AppCacheHelper.saveString('user_email', _emailController.text);
-      // }
-      NavigationService.goTo(AppRouter.kMainScreen);
-      // Navigate to main app or dashboard
-      // if (mounted) {
-      // NavigationService.goTo(AppRouter.kMainScreen);
-      // }
+      if (response.session != null && mounted) {
+        // Supabase automatically persists the session
+        // Just navigate to main screen
+        NavigationService.goTo(AppRouter.kMainScreen);
+      }
+    } on AuthException catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(SupabaseErrorHandler.getErrorMessage(e)),
+            backgroundColor: AppColors.primaryError,
+          ),
+        );
+      }
     } catch (e) {
-      // TODO: Handle login error
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -317,6 +291,6 @@ class _LoginScreenState extends State<LoginScreen> {
   // }
 
   void _navigateToSignUp() {
-    NavigationService.goTo(AppRouter.kSignUpScreen);
+    Navigator.push(context, MaterialPageRoute(builder: (_) => SignUpScreen()));
   }
 }

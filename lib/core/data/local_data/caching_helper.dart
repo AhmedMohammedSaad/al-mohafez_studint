@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:nb_utils/nb_utils.dart';
 
@@ -25,6 +24,7 @@ class AppCacheHelper {
   static const String guestKey = 'guest';
   static const String recentSearchKey = 'recentSearch';
   static const String selectedLangCode = 'selectedLangCode';
+  static const String rememberMeKey = 'rememberMe';
 
   static Future<void> saveRegistrationData({
     required String token,
@@ -55,6 +55,18 @@ class AppCacheHelper {
     } catch (e) {
       rethrow;
     }
+  }
+
+  static Future<void> saveRememberMe(bool value) async {
+    try {
+      cacheString(key: rememberMeKey, value: value);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  static bool getRememberMe() {
+    return getCachedBool(key: rememberMeKey);
   }
 
   // Secure storage methods

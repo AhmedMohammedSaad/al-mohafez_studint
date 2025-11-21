@@ -1,6 +1,13 @@
+import 'package:almohafez/features/authentication/presentation/views/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import '../../logic/profile_bloc.dart';
+import '../../logic/profile_event.dart';
+import '../../logic/profile_state.dart';
+import '../../../../core/routing/app_route.dart';
 import 'action_button_widget.dart';
 
 class ActionButtonsWidget extends StatelessWidget {
@@ -35,31 +42,187 @@ class ActionButtonsWidget extends StatelessWidget {
           title: 'profile_delete_account'.tr(),
           icon: Icons.delete_forever,
           color: const Color(0xFFEF4444),
-          onPressed: () => _handleDeleteAccount(context),
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (context) {
+                return Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: AlertDialog(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16.r),
+                    ),
+                    title: Text(
+                      'profile_delete_account_message'.tr(),
+                      style: TextStyle(
+                        fontFamily: 'Cairo',
+                        fontSize: 18.sp,
+                        fontWeight: FontWeight.bold,
+                        color: const Color(0xFF0A1D64),
+                      ),
+                    ),
+                    content: Text(
+                      'profile_delete_account_confirm'.tr(),
+                      style: TextStyle(
+                        fontFamily: 'Cairo',
+                        fontSize: 14.sp,
+                        color: const Color.fromARGB(255, 198, 4, 4),
+                      ),
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        child: Text(
+                          'profile_cancel'.tr(),
+                          style: TextStyle(
+                            fontFamily: 'Cairo',
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w600,
+                            color: const Color(0xFF6B7280),
+                          ),
+                        ),
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          context.read<ProfileBloc>().add(DeleteAccountEvent());
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFFEF4444),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.r),
+                          ),
+                        ),
+                        child: Text(
+                          "Confirm",
+                          style: TextStyle(
+                            fontFamily: 'Cairo',
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            );
+          },
         ),
         SizedBox(height: 12.h),
-        ActionButtonWidget(
-          title: 'profile_logout'.tr(),
-          icon: Icons.logout,
-          color: const Color(0xFF6B7280),
-          onPressed: () => _handleLogout(context),
+        BlocBuilder<ProfileBloc, ProfileState>(
+          builder: (context, state) {
+            return ActionButtonWidget(
+              title: 'profile_logout'.tr(),
+              icon: Icons.logout,
+              color: const Color(0xFF6B7280),
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: AlertDialog(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16.r),
+                        ),
+                        title: Text(
+                          'profile_logout_title'.tr(),
+                          style: TextStyle(
+                            fontFamily: 'Cairo',
+                            fontSize: 18.sp,
+                            fontWeight: FontWeight.bold,
+                            color: const Color(0xFF0A1D64),
+                          ),
+                        ),
+                        content: Text(
+                          'profile_logout_message'.tr(),
+                          style: TextStyle(
+                            fontFamily: 'Cairo',
+                            fontSize: 14.sp,
+                            color: const Color(0xFF6B7280),
+                          ),
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.of(context).pop(),
+                            child: Text(
+                              'profile_cancel'.tr(),
+                              style: TextStyle(
+                                fontFamily: 'Cairo',
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w600,
+                                color: const Color(0xFF6B7280),
+                              ),
+                            ),
+                          ),
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                              context.read<ProfileBloc>().add(LogoutEvent());
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF6B7280),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8.r),
+                              ),
+                            ),
+                            child: Text(
+                              "Confirm",
+                              style: TextStyle(
+                                fontFamily: 'Cairo',
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                );
+              },
+              // onPressed: () => _showConfirmationDialog(
+              // context,
+              // 'profile_logout_title'.tr(),
+              // 'profile_logout_message'.tr(),
+              // 'profile_logout_confirm'.tr(),
+              // const Color(0xFF6B7280),
+              // () {
+              // context.read<ProfileBloc>().add(LogoutEvent());
+              // if (state is ProfileLoaded) {
+              // Navigator.pop(context);
+              // }
+              // Navigator.of(context).pop();
+              // },
+              // ),
+            );
+          },
         ),
       ],
     );
   }
 
   void _handleEditProfile(BuildContext context) {
-    // TODO: Navigate to edit profile screen
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text('profile_edit_data_message'.tr())));
+    // Get current profile data from BLoC
+    final profileBloc = context.read<ProfileBloc>();
+    final state = profileBloc.state;
+
+    if (state is ProfileLoaded) {
+      context.push(
+        AppRouter.kEditProfileScreen,
+        extra: {
+          'firstName': state.profile.firstName,
+          'lastName': state.profile.lastName,
+        },
+      );
+    }
   }
 
   void _handleChangePassword(BuildContext context) {
-    // TODO: Navigate to change password screen
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('profile_change_password_message'.tr())),
-    );
+    context.push(AppRouter.kChangePasswordScreen);
   }
 
   void _handleContactUs(BuildContext context) {
@@ -77,31 +240,25 @@ class ActionButtonsWidget extends StatelessWidget {
       'profile_delete_account_confirm'.tr(),
       const Color(0xFFEF4444),
       () {
-        // TODO: Implement account deletion
         Navigator.of(context).pop();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('profile_delete_account_success'.tr())),
-        );
+        context.read<ProfileBloc>().add(DeleteAccountEvent());
       },
     );
   }
-
-  void _handleLogout(BuildContext context) {
-    _showConfirmationDialog(
-      context,
-      'profile_logout_title'.tr(),
-      'profile_logout_message'.tr(),
-      'profile_logout_confirm'.tr(),
-      const Color(0xFF6B7280),
-      () {
-        // TODO: Implement logout
-        Navigator.of(context).pop();
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('profile_logout_success'.tr())));
-      },
-    );
-  }
+  //
+  // void _handleLogout(BuildContext context) {
+  // _showConfirmationDialog(
+  // context,
+  // 'profile_logout_title'.tr(),
+  // 'profile_logout_message'.tr(),
+  // 'profile_logout_confirm'.tr(),
+  // const Color(0xFF6B7280),
+  // () {
+  // context.read<ProfileBloc>().add(LogoutEvent());
+  // Navigator.of(context).pop();
+  // },
+  // );
+  // }
 
   void _showConfirmationDialog(
     BuildContext context,

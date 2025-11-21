@@ -9,6 +9,7 @@ import '../widgets/central_illustration_widget.dart';
 import '../widgets/main_content_widget.dart';
 import '../widgets/language_toggle_widget.dart';
 import '../widgets/cta_button_widget.dart';
+import 'package:nb_utils/nb_utils.dart';
 
 class WelcomeOnboardingScreen extends StatefulWidget {
   const WelcomeOnboardingScreen({super.key});
@@ -68,8 +69,8 @@ class _WelcomeOnboardingScreenState extends State<WelcomeOnboardingScreen> {
               children: [
                 // شعار التطبيق
                 AppLogoWidget(
-              key: ValueKey('app_logo_${context.locale.languageCode}'),
-            ),
+                  key: ValueKey('app_logo_${context.locale.languageCode}'),
+                ),
 
                 Expanded(
                   child: Column(
@@ -82,8 +83,10 @@ class _WelcomeOnboardingScreenState extends State<WelcomeOnboardingScreen> {
 
                       // النص الرئيسي
                       MainContentWidget(
-                      key: ValueKey('main_content_${context.locale.languageCode}'),
-                    ),
+                        key: ValueKey(
+                          'main_content_${context.locale.languageCode}',
+                        ),
+                      ),
 
                       SizedBox(height: 30.h),
 
@@ -97,8 +100,10 @@ class _WelcomeOnboardingScreenState extends State<WelcomeOnboardingScreen> {
 
                       // زر الدعوة للعمل
                       CTAButtonWidget(
-                          key: ValueKey('cta_button_${context.locale.languageCode}'),
-                          onPressed: () => _onStartJourney(context),
+                        key: ValueKey(
+                          'cta_button_${context.locale.languageCode}',
+                        ),
+                        onPressed: () => _onStartJourney(context),
                       ),
                     ],
                   ),
@@ -111,10 +116,18 @@ class _WelcomeOnboardingScreenState extends State<WelcomeOnboardingScreen> {
     );
   }
 
+  void _onStartJourney(BuildContext context) async {
+    // حفظ أن المستخدم شاهد الـ onboarding
+    await setValue('onBoardingShow', true);
+    print('✅ [Onboarding] Saved onBoardingShow = true');
 
+    // التأكد من الحفظ
+    final saved = getBoolAsync('onBoardingShow');
+    print('🔍 [Onboarding] Verification: onBoardingShow = $saved');
 
-  void _onStartJourney(BuildContext context) {
     // الانتقال إلى شاشة تسجيل الدخول
-    NavigationService.goTo(AppRouter.kLoginScreen);
+    if (mounted) {
+      NavigationService.goTo(AppRouter.kLoginScreen);
+    }
   }
 }

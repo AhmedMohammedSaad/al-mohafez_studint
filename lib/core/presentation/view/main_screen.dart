@@ -18,11 +18,29 @@ Color navBackgroundColor = AppColors.secondary;
 Color navActiveColor = AppColors.primaryColor2;
 Color navInactiveColor = const Color(0xFF8A8A8A);
 
-class MainScreen extends StatelessWidget {
+class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
 
+  @override
+  State<MainScreen> createState() => _MainScreenState();
+}
+
+class _MainScreenState extends State<MainScreen> {
   static final GlobalKey<ScaffoldState> scaffoldKey =
       GlobalKey<ScaffoldState>();
+  late PersistentTabController _bottomNavController;
+
+  @override
+  void initState() {
+    super.initState();
+    _bottomNavController = PersistentTabController(initialIndex: 0);
+  }
+
+  @override
+  void dispose() {
+    _bottomNavController.dispose();
+    super.dispose();
+  }
 
   PersistentTabConfig _buildNavItem({
     required String iconPath,
@@ -96,13 +114,6 @@ class MainScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ValueNotifier<int> currentIndexNotifier = ValueNotifier(0);
-    final ValueNotifier<int> previousIndexNotifier = ValueNotifier(0);
-
-    final PersistentTabController bottomNavController = PersistentTabController(
-      initialIndex: 0,
-    );
-
     return SafeArea(
       bottom: true,
       left: false,
@@ -115,7 +126,7 @@ class MainScreen extends StatelessWidget {
           navBarHeight: 70.h,
           //gestureNavigationEnabled: true,
           tabs: _navBarsItems(),
-          controller: bottomNavController,
+          controller: _bottomNavController,
           backgroundColor: Colors.white,
           resizeToAvoidBottomInset: true,
           popAllScreensOnTapAnyTabs: true,
@@ -124,9 +135,7 @@ class MainScreen extends StatelessWidget {
             duration: Duration(milliseconds: 200),
           ),
           onTabChanged: (index) async {
-            previousIndexNotifier.value = currentIndexNotifier.value;
-            currentIndexNotifier.value = index;
-            bottomNavController.jumpToTab(index);
+            _bottomNavController.jumpToTab(index);
           },
           navBarBuilder: (navBarConfig) => Style7BottomNavBar(
             navBarConfig: navBarConfig,

@@ -5,16 +5,42 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';
 
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:nb_utils/nb_utils.dart';
+
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:almohafez/core/presentation/view_model/cubit/app_cubit.dart';
+import 'package:almohafez/features/profile/logic/profile_bloc.dart';
+import 'package:almohafez/features/profile/data/repos/profile_repo.dart';
+import 'package:almohafez/features/profile/logic/profile_event.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
+
+  await Supabase.initialize(
+    url: 'https://tghyxcxvvnvkcaflsohk.supabase.co',
+    anonKey: 'sb_secret_3nsmTWIOuaNwrpGwA3HG1w_JlyPDnUj',
+  );
+
+  // Initialize nb_utils for SharedPreferences
+  await initialize();
 
   runApp(
     EasyLocalization(
       supportedLocales: const [Locale('ar'), Locale('en')],
       path: 'assets/translations',
       fallbackLocale: const Locale('ar'),
-      child: const MyApp(),
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider(create: (context) => AppCubit()),
+          BlocProvider(
+            create: (context) =>
+                ProfileBloc(ProfileRepo())..add(LoadProfileEvent()),
+          ),
+        ],
+        child: const MyApp(),
+      ),
     ),
   );
 }

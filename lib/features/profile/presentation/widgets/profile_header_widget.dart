@@ -3,7 +3,16 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 class ProfileHeaderWidget extends StatelessWidget {
-  const ProfileHeaderWidget({super.key});
+  final String fullName;
+  final String email;
+  final String? avatarUrl;
+
+  const ProfileHeaderWidget({
+    super.key,
+    required this.fullName,
+    required this.email,
+    this.avatarUrl,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -36,15 +45,15 @@ class ProfileHeaderWidget extends StatelessWidget {
             child: CircleAvatar(
               radius: 45.r,
               backgroundColor: const Color(0xFF0A1D64).withOpacity(0.1),
-              backgroundImage: const AssetImage(
-                'assets/images/placeholder.webp',
-              ),
+              backgroundImage: avatarUrl != null && avatarUrl!.isNotEmpty
+                  ? NetworkImage(avatarUrl!) as ImageProvider
+                  : const AssetImage('assets/images/placeholder.webp'),
             ),
           ),
           SizedBox(height: 16.h),
           // الاسم: Bold، حجم 20px، لون #0A1D64
           Text(
-            'profile_user_name'.tr(),
+            fullName.isNotEmpty ? fullName : 'profile_user_name'.tr(),
             style: TextStyle(
               fontFamily: 'Cairo',
               fontSize: 20.sp,
@@ -55,7 +64,7 @@ class ProfileHeaderWidget extends StatelessWidget {
           SizedBox(height: 8.h),
           // البريد الإلكتروني: خط رمادي متوسط
           Text(
-            'profile_user_email'.tr(),
+            email.isNotEmpty ? email : 'profile_user_email'.tr(),
             style: TextStyle(
               fontFamily: 'Cairo',
               fontSize: 14.sp,

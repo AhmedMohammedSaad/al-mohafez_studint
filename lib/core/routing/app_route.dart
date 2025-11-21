@@ -7,10 +7,14 @@ import 'package:almohafez/features/sessions/presentation/views/sessions_screen.d
 import 'package:almohafez/features/sessions/presentation/views/session_details_screen.dart';
 import 'package:almohafez/features/sessions/presentation/views/session_rating_screen.dart';
 import 'package:almohafez/features/sessions/presentation/views/meeting_screen.dart';
+import 'package:almohafez/features/profile/presentation/views/edit_profile_screen.dart';
+import 'package:almohafez/features/profile/presentation/views/change_password_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../services/navigation_service/global_navigation_service.dart';
 import '../data/local_data/caching_helper.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:nb_utils/nb_utils.dart';
 
 enum PageRouteAnimation { fade, scale, rotate, slide, slideBottomTop }
 
@@ -37,6 +41,10 @@ class AppRouter {
   static const String kSessionDetailsScreen = '/session-details';
   static const String kSessionRatingScreen = '/session-rating';
   static const String kMeetingScreen = '/meeting';
+
+  // Profile Routes
+  static const String kEditProfileScreen = '/edit-profile';
+  static const String kChangePasswordScreen = '/change-password';
 
   // Router configuration
   static final GoRouter router = GoRouter(
@@ -172,6 +180,38 @@ class AppRouter {
           );
         },
       ),
+
+      // Profile Routes
+      GoRoute(
+        path: kEditProfileScreen,
+        name: 'EditProfile',
+        pageBuilder: (context, state) {
+          final Map<String, dynamic> args =
+              state.extra as Map<String, dynamic>? ?? {};
+          return _animateRouteBuilder(
+            EditProfileScreen(
+              currentFirstName: args['firstName'] ?? '',
+              currentLastName: args['lastName'] ?? '',
+            ),
+            pageRouteAnimation:
+                args['pageAnimation'] ?? PageRouteAnimation.slide,
+          );
+        },
+      ),
+
+      GoRoute(
+        path: kChangePasswordScreen,
+        name: 'ChangePassword',
+        pageBuilder: (context, state) {
+          final Map<String, dynamic> args =
+              state.extra as Map<String, dynamic>? ?? {};
+          return _animateRouteBuilder(
+            const ChangePasswordScreen(),
+            pageRouteAnimation:
+                args['pageAnimation'] ?? PageRouteAnimation.slide,
+          );
+        },
+      ),
     ],
     errorBuilder: (context, state) => const Scaffold(
       body: Center(
@@ -182,35 +222,48 @@ class AppRouter {
     redirect: (context, state) async {
       try {
         final currentLocation = state.matchedLocation;
-        final loggedIn = await AppCacheHelper.isLoggedIn();
 
-        final accessToken = await AppCacheHelper.getSecureString(
-          key: AppCacheHelper.accessTokenKey,
+        // Check if user has seen onboarding
+        final hasSeenOnboarding = getBoolAsync(
+          'onBoardingShow',
+          defaultValue: false,
         );
-        // final uuid = await AppCacheHelper.getSecureString(
-        // key: AppCacheHelper.userUuid,
-        // );
-        final refreshToken = await AppCacheHelper.getSecureString(
-          key: AppCacheHelper.refreshTokenKey,
-        );
+
+        // Check if user has active Supabase session
+        final session = Supabase.instance.client.auth.currentSession;
+        final isAuthenticated = session != null;
+
+        // Debug logs
+        print('🔍 [Routing] Current: $currentLocation');
+        print('🔍 [Routing] Seen onboarding: $hasSeenOnboarding');
+        print('🔍 [Routing] Authenticated: $isAuthenticated');
 
         final authScreens = [kLoginScreen, kForgotPasswordScreen];
 
-        // Require BOTH tokens for accessing app routes
-        final hasAccess = accessToken.isNotEmpty && refreshToken.isNotEmpty;
-
-        // If authenticated, avoid auth screens
-        if (hasAccess && authScreens.contains(currentLocation)) {
-          return kMainScreen;
-        }
-
-        // If not authenticated, block access to non-auth screens
-        if (!hasAccess && !authScreens.contains(currentLocation)) {
+        // Priority 1: Show onboarding if not seen yet
+        if (!hasSeenOnboarding && currentLocation != kOnboardingScreen) {
+          print('✅ [Routing] → Onboarding');
           return kOnboardingScreen;
         }
 
+        // Priority 2: If authenticated, avoid auth screens
+        if (isAuthenticated && authScreens.contains(currentLocation)) {
+          print('✅ [Routing] → Main (authenticated)');
+          return kMainScreen;
+        }
+
+        // Priority 3: If not authenticated, block access to non-auth screens
+        if (!isAuthenticated &&
+            !authScreens.contains(currentLocation) &&
+            currentLocation != kOnboardingScreen) {
+          print('✅ [Routing] → Login (not authenticated)');
+          return kLoginScreen;
+        }
+
+        print('✅ [Routing] → No redirect');
         return null;
       } catch (e) {
+        print('❌ [Routing] Error: $e');
         return kOnboardingScreen;
       }
     },

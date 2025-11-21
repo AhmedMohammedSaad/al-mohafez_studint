@@ -10,6 +10,9 @@ import '../widgets/auth_header.dart';
 import '../widgets/auth_text_field.dart';
 import '../widgets/auth_button.dart';
 import '../widgets/social_login_button.dart';
+import '../../data/auth_service.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import '../../../../core/utils/supabase_error_handler.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -363,15 +366,35 @@ class _SignUpScreenState extends State<SignUpScreen> {
     });
 
     try {
-      // TODO: Implement actual sign up logic
-      await Future.delayed(const Duration(seconds: 2));
+      final authService = AuthService();
+      await authService.signUp(
+        email: _emailController.text.trim(),
+        password: _passwordController.text,
+        firstName: _firstNameController.text.trim(),
+        lastName: _lastNameController.text.trim(),
+      );
 
-      // Navigate to verification screen or main app
       if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'sign_up_success'.tr(),
+            ), // Make sure to add this key to translations or use a hardcoded string for now
+            backgroundColor: Colors.green,
+          ),
+        );
         NavigationService.goTo(AppRouter.kMainScreen);
       }
+    } on AuthException catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(SupabaseErrorHandler.getErrorMessage(e)),
+            backgroundColor: AppColors.primaryError,
+          ),
+        );
+      }
     } catch (e) {
-      // TODO: Handle sign up error
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

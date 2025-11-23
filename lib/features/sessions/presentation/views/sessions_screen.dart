@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../widgets/session_card.dart';
 import '../widgets/empty_sessions_widget.dart';
-import '../../data/models/sessions_response_model.dart';
-import '../../data/services/sessions_service.dart';
+import '../../logic/sessions_cubit.dart';
+import '../../logic/sessions_state.dart';
+import '../../data/repos/sessions_repo.dart';
+import '../../data/models/session_model.dart';
 import '../../../../core/services/navigation_service/global_navigation_service.dart';
 import '../../../../core/routing/app_route.dart';
 
 class SessionsScreen extends StatefulWidget {
-  const SessionsScreen({Key? key}) : super(key: key);
+  const SessionsScreen({super.key});
 
   @override
   State<SessionsScreen> createState() => _SessionsScreenState();
@@ -18,15 +21,11 @@ class SessionsScreen extends StatefulWidget {
 class _SessionsScreenState extends State<SessionsScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  SessionsResponseModel? _sessionsData;
-  bool _isLoading = true;
-  String? _errorMessage;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
-    _loadSessions();
   }
 
   @override
@@ -35,45 +34,38 @@ class _SessionsScreenState extends State<SessionsScreen>
     super.dispose();
   }
 
-  Future<void> _loadSessions() async {
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null;
-    });
-
-    try {
-      final sessions = await SessionsService.getAllSessions();
-      setState(() {
-        _sessionsData = sessions;
-        _isLoading = false;
-      });
-    } catch (e) {
-      setState(() {
-        _errorMessage = 'sessions_error_loading'.tr();
-        _isLoading = false;
-      });
-    }
-  }
-
   void _navigateToBooking() {
-    // TODO: Navigate to booking screen
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('sessions_booking_redirect'.tr())),
-    );
+    // Navigate to teachers list or home to start booking
+    NavigationService.push(AppRouter.kTeachersScreen);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : _errorMessage != null
-          ? _buildErrorWidget()
-          : _buildContent(),
+    return BlocProvider(
+      create: (context) => SessionsCubit(SessionsRepo())..loadSessions(),
+      child: Scaffold(
+        body: BlocBuilder<SessionsCubit, SessionsState>(
+          builder: (context, state) {
+            if (state is SessionsLoading) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
+            if (state is SessionsError) {
+              return _buildErrorWidget(context, state.message);
+            }
+
+            if (state is SessionsLoaded) {
+              return _buildContent(state);
+            }
+
+            return const Center(child: CircularProgressIndicator());
+          },
+        ),
+      ),
     );
   }
 
-  Widget _buildErrorWidget() {
+  Widget _buildErrorWidget(BuildContext context, String message) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -81,12 +73,13 @@ class _SessionsScreenState extends State<SessionsScreen>
           Icon(Icons.error_outline, size: 64, color: Colors.grey[400]),
           const SizedBox(height: 16),
           Text(
-            _errorMessage!,
+            message, // Or localize generic error
             style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+            textAlign: TextAlign.center,
           ),
           const SizedBox(height: 16),
           ElevatedButton(
-            onPressed: _loadSessions,
+            onPressed: () => context.read<SessionsCubit>().loadSessions(),
             child: Text('sessions_retry'.tr()),
           ),
         ],
@@ -94,11 +87,7 @@ class _SessionsScreenState extends State<SessionsScreen>
     );
   }
 
-  Widget _buildContent() {
-    if (_sessionsData == null) {
-      return const Center(child: CircularProgressIndicator());
-    }
-
+  Widget _buildContent(SessionsLoaded state) {
     return Column(
       children: [
         // Statistics widget
@@ -113,8 +102,7 @@ class _SessionsScreenState extends State<SessionsScreen>
               borderRadius: BorderRadius.circular(26),
             ),
             child: TabBar(
-              dividerColor:
-                  Colors.transparent, // Remove the divider line under tabs
+              dividerColor: Colors.transparent,
               controller: _tabController,
               indicator: BoxDecoration(
                 color: const Color(0xFF2E7D32),
@@ -145,7 +133,7 @@ class _SessionsScreenState extends State<SessionsScreen>
                     children: [
                       const SizedBox(width: 4),
                       Text(
-                        '${'sessions_upcoming'.tr()} (${_sessionsData!.upcomingSessions.length})',
+                        '${'sessions_upcoming'.tr()} (${state.upcomingSessions.length})',
                       ),
                     ],
                   ),
@@ -156,7 +144,7 @@ class _SessionsScreenState extends State<SessionsScreen>
                     children: [
                       const SizedBox(width: 4),
                       Text(
-                        '${'sessions_completed'.tr()} (${_sessionsData!.completedSessions.length})',
+                        '${'sessions_completed'.tr()} (${state.completedSessions.length})',
                       ),
                     ],
                   ),
@@ -170,8 +158,8 @@ class _SessionsScreenState extends State<SessionsScreen>
           child: TabBarView(
             controller: _tabController,
             children: [
-              _buildUpcomingSessionsTab(),
-              _buildCompletedSessionsTab(),
+              _buildUpcomingSessionsTab(state.upcomingSessions),
+              _buildCompletedSessionsTab(state.completedSessions),
             ],
           ),
         ),
@@ -179,10 +167,8 @@ class _SessionsScreenState extends State<SessionsScreen>
     );
   }
 
-  Widget _buildUpcomingSessionsTab() {
-    final upcomingSessions = _sessionsData!.upcomingSessions;
-
-    if (upcomingSessions.isEmpty) {
+  Widget _buildUpcomingSessionsTab(List<SessionModel> sessions) {
+    if (sessions.isEmpty) {
       return EmptySessionsWidget.noUpcomingSessions(
         onBookNew: _navigateToBooking,
       );
@@ -190,15 +176,15 @@ class _SessionsScreenState extends State<SessionsScreen>
 
     return ListView.builder(
       padding: const EdgeInsets.all(16),
-      itemCount: upcomingSessions.length,
+      itemCount: sessions.length,
       itemBuilder: (context, index) {
-        final session = upcomingSessions[index];
+        final session = sessions[index];
         return Padding(
           padding: const EdgeInsets.only(bottom: 12),
           child: SessionCard(
             session: session,
             onTap: () => _navigateToSessionDetails(session.id),
-            onJoinSession: () => _joinSession(session.id),
+            onJoinSession: () => _joinSession(context, session.id),
             onRateSession: () => _rateSession(session.id),
           ),
         );
@@ -206,24 +192,22 @@ class _SessionsScreenState extends State<SessionsScreen>
     );
   }
 
-  Widget _buildCompletedSessionsTab() {
-    final completedSessions = _sessionsData!.completedSessions;
-
-    if (completedSessions.isEmpty) {
+  Widget _buildCompletedSessionsTab(List<SessionModel> sessions) {
+    if (sessions.isEmpty) {
       return EmptySessionsWidget.noCompletedSessions();
     }
 
     return ListView.builder(
       padding: const EdgeInsets.all(16),
-      itemCount: completedSessions.length,
+      itemCount: sessions.length,
       itemBuilder: (context, index) {
-        final session = completedSessions[index];
+        final session = sessions[index];
         return Padding(
           padding: const EdgeInsets.only(bottom: 12),
           child: SessionCard(
             session: session,
             onTap: () => _navigateToSessionDetails(session.id),
-            onJoinSession: () => _joinSession(session.id),
+            onJoinSession: () => _joinSession(context, session.id),
             onRateSession: () => _rateSession(session.id),
           ),
         );
@@ -237,25 +221,38 @@ class _SessionsScreenState extends State<SessionsScreen>
     );
   }
 
-  void _joinSession(String sessionId) async {
-    try {
-      await SessionsService.joinSession(sessionId);
+  void _joinSession(BuildContext context, String sessionId) async {
+    // Find the session from the current state
+    final state = context.read<SessionsCubit>().state;
+    SessionModel? session;
 
-      // Navigate to meeting screen
-      NavigationService.push(
-        AppRouter.kMeetingScreen,
-        extra: {'sessionId': sessionId},
-      );
-
-      _loadSessions(); // Refresh data
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('${'sessions_join_error'.tr()}: $e'),
-          backgroundColor: Colors.red,
+    if (state is SessionsLoaded) {
+      // Try to find in upcoming sessions first
+      session = state.upcomingSessions.firstWhere(
+        (s) => s.id == sessionId,
+        orElse: () => state.completedSessions.firstWhere(
+          (s) => s.id == sessionId,
+          orElse: () => throw Exception('Session not found'),
         ),
       );
     }
+
+    if (session == null ||
+        session.meetingUrl == null ||
+        session.meetingUrl!.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('meeting_url_missing'.tr()),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    // Navigate to WebView with meeting URL
+    NavigationService.push(
+      '${AppRouter.kMeetingWebViewScreen}?meetingUrl=${Uri.encodeComponent(session.meetingUrl!)}',
+    );
   }
 
   void _rateSession(String sessionId) {

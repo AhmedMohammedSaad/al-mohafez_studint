@@ -1,0 +1,118 @@
+import 'package:supabase_flutter/supabase_flutter.dart';
+import '../models/session_model.dart';
+
+class SessionsRepo {
+  final _supabase = Supabase.instance.client;
+
+  Future<List<SessionModel>> getStudentSessions() async {
+    final userId = _supabase.auth.currentUser?.id;
+    if (userId == null) throw Exception('User not authenticated');
+
+    try {
+      // Fetch bookings for the student
+      final response = await _supabase
+          .from('bookings')
+          .select('*, teachers(*)') // Join with teachers table
+          .eq('student_id', userId)
+          .order('selected_date', ascending: true); // Order by date
+
+      final List<dynamic> data = response;
+      print('Sessions Data: $data'); // Debug log
+
+      return data.map((json) => _mapJsonToSession(json)).toList();
+    } catch (e) {
+      print('Error fetching sessions: $e');
+      throw Exception('Failed to load sessions');
+    }
+  }
+
+  Future<SessionModel?> getSessionById(String sessionId) async {
+    try {
+      final response = await _supabase
+          .from('bookings')
+          .select('*, teachers(*)')
+          .eq('id', sessionId)
+          .single();
+
+      return _mapJsonToSession(response);
+    } catch (e) {
+      print('Error fetching session by id: $e');
+      return null;
+    }
+  }
+
+  SessionModel _mapJsonToSession(Map<String, dynamic> json) {
+    final teacherData = json['teachers'];
+    String tutorName = 'Unknown Tutor';
+    String tutorImage = 'assets/images/tutor1.jpg';
+
+    if (teacherData != null) {
+      // Try full_name first, then combine first/last if available
+      if (teacherData['full_name'] != null) {
+        tutorName = teacherData['full_name'];
+      } else if (teacherData['first_name'] != null) {
+        tutorName =
+            '${teacherData['first_name']} ${teacherData['last_name'] ?? ''}'
+                .trim();
+      }
+
+      if (teacherData['image'] != null) {
+        tutorImage = teacherData['image'];
+      } else if (teacherData['profile_picture_url'] != null) {
+        tutorImage = teacherData['profile_picture_url'];
+      }
+    }
+
+    // Parse date and time
+    // selected_date is YYYY-MM-DD
+    // selected_time_slot is "HH:mm - HH:mm"
+    DateTime selectedDate = DateTime.parse(json['selected_date']);
+    final timeSlot = json['selected_time_slot'] as String;
+
+    try {
+      final startTimeStr = timeSlot.split('-')[0].trim(); // "16:00"
+      final parts = startTimeStr.split(':');
+      final hour = int.parse(parts[0]);
+      final minute = int.parse(parts[1]);
+
+      selectedDate = DateTime(
+        selectedDate.year,
+        selectedDate.month,
+        selectedDate.day,
+        hour,
+        minute,
+      );
+    } catch (e) {
+      print('Error parsing time slot: $timeSlot');
+    }
+
+    // Map booking status to SessionStatus
+    SessionStatus status;
+    final bookingStatus = json['status'] as String;
+    final now = DateTime.now();
+
+    if (bookingStatus == 'cancelled') {
+      status = SessionStatus.cancelled;
+    } else if (selectedDate.isBefore(now) && bookingStatus == 'confirmed') {
+      // Assuming past confirmed bookings are completed
+      status = SessionStatus.completed;
+    } else {
+      status = SessionStatus.upcoming;
+    }
+
+    return SessionModel(
+      id: json['id'],
+      tutorId: json['teacher_id'],
+      tutorName: tutorName,
+      tutorImageUrl: tutorImage,
+      studentId: json['student_id'],
+      type: SessionType.recitation, // Default
+      mode: SessionMode.online,
+      scheduledDateTime: selectedDate,
+      durationMinutes: 60, // Default to 60 mins
+      status: status,
+      meetingUrl: json['meeting_url'],
+      notes: json['notes'],
+    );
+  }
+}

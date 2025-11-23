@@ -1,78 +1,63 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';
-import '../../data/models/tutor_model.dart';
-import '../../data/models/tutors_response_model.dart';
-import '../../data/mock_data/tutors_mock_data.dart';
+import '../../data/repos/teachers_repo.dart';
+import '../../logic/teachers_cubit.dart';
+import '../../logic/teachers_state.dart';
 import '../widgets/tutor_card.dart';
 import 'tutor_profile_screen.dart';
 
-class TutorsListScreen extends StatefulWidget {
+class TutorsListScreen extends StatelessWidget {
   final String gender;
 
   const TutorsListScreen({super.key, required this.gender});
 
   @override
-  State<TutorsListScreen> createState() => _TutorsListScreenState();
-}
-
-class _TutorsListScreenState extends State<TutorsListScreen> {
-  late TutorsResponseModel tutorsResponse;
-  bool isLoading = true;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadTutors();
-  }
-
-  void _loadTutors() {
-    setState(() {
-      isLoading = true;
-    });
-
-    // محاكاة تحميل البيانات
-    Future.delayed(const Duration(milliseconds: 500), () {
-      setState(() {
-        tutorsResponse = TutorsMockData.getTutorsByGender(widget.gender);
-        isLoading = false;
-      });
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
+    return BlocProvider(
+      create: (context) =>
+          TeachersCubit(TeachersRepo())..fetchTeachers(gender: gender),
+      child: Scaffold(
         backgroundColor: Colors.white,
-        elevation: 0,
-        title: Text(
-          'teachers'.tr(),
-          style: TextStyle(
-            fontFamily: 'Cairo',
-            fontSize: 20.sp,
-            fontWeight: FontWeight.bold,
-            color: const Color(0xFF0A1D64),
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          elevation: 0,
+          title: Text(
+            'teachers'.tr(),
+            style: TextStyle(
+              fontFamily: 'Cairo',
+              fontSize: 20.sp,
+              fontWeight: FontWeight.bold,
+              color: const Color(0xFF0A1D64),
+            ),
+          ),
+          centerTitle: true,
+          leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back_ios,
+              color: const Color(0xFF0A1D64),
+              size: 20.sp,
+            ),
+            onPressed: () => Navigator.pop(context),
           ),
         ),
-        centerTitle: true,
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_ios,
-            color: const Color(0xFF0A1D64),
-            size: 20.sp,
-          ),
-          onPressed: () => Navigator.pop(context),
+        body: BlocBuilder<TeachersCubit, TeachersState>(
+          builder: (context, state) {
+            if (state is TeachersLoading) {
+              return _buildLoadingWidget();
+            } else if (state is TeachersError) {
+              return _buildErrorWidget(context, state.message);
+            } else if (state is TeachersLoaded) {
+              if (state.teachers.isEmpty) {
+                return _buildEmptyWidget();
+              }
+              return _buildTutorsList(context, state.teachers);
+            }
+            return const SizedBox.shrink();
+          },
         ),
       ),
-      body: isLoading
-          ? _buildLoadingWidget()
-          : tutorsResponse.hasError
-          ? _buildErrorWidget()
-          : tutorsResponse.isEmpty
-          ? _buildEmptyWidget()
-          : _buildTutorsList(),
     );
   }
 
@@ -99,7 +84,7 @@ class _TutorsListScreenState extends State<TutorsListScreen> {
     );
   }
 
-  Widget _buildErrorWidget() {
+  Widget _buildErrorWidget(BuildContext context, String message) {
     return Center(
       child: Padding(
         padding: EdgeInsets.all(20.w),
@@ -113,7 +98,7 @@ class _TutorsListScreenState extends State<TutorsListScreen> {
             ),
             SizedBox(height: 20.h),
             Text(
-              tutorsResponse.errorMessage ?? 'teachers_error_unexpected'.tr(),
+              message, // Display the actual error message
               style: TextStyle(
                 fontFamily: 'Cairo',
                 fontSize: 16.sp,
@@ -123,7 +108,9 @@ class _TutorsListScreenState extends State<TutorsListScreen> {
             ),
             SizedBox(height: 30.h),
             ElevatedButton(
-              onPressed: _loadTutors,
+              onPressed: () {
+                context.read<TeachersCubit>().fetchTeachers(gender: gender);
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF00E0FF),
                 padding: EdgeInsets.symmetric(horizontal: 30.w, vertical: 12.h),
@@ -181,7 +168,7 @@ class _TutorsListScreenState extends State<TutorsListScreen> {
     );
   }
 
-  Widget _buildTutorsList() {
+  Widget _buildTutorsList(BuildContext context, List<dynamic> tutors) {
     return Column(
       children: [
         // عداد المحفظين
@@ -195,7 +182,7 @@ class _TutorsListScreenState extends State<TutorsListScreen> {
           ),
           child: Text(
             'teachers_found_count'.tr(
-              namedArgs: {'count': tutorsResponse.tutors.length.toString()},
+              namedArgs: {'count': tutors.length.toString()},
             ),
             style: TextStyle(
               fontFamily: 'Cairo',
@@ -210,9 +197,9 @@ class _TutorsListScreenState extends State<TutorsListScreen> {
         Expanded(
           child: ListView.builder(
             padding: EdgeInsets.symmetric(horizontal: 16.w),
-            itemCount: tutorsResponse.tutors.length,
+            itemCount: tutors.length,
             itemBuilder: (context, index) {
-              final tutor = tutorsResponse.tutors[index];
+              final tutor = tutors[index];
               return Padding(
                 padding: EdgeInsets.only(bottom: 16.h),
                 child: TutorCard(

@@ -111,6 +111,7 @@ dependencies:
   stream_transform: ^2.1.1
   date_picker_timeline: ^1.2.7
   geocoding: ^4.0.0
+  webview_flutter: ^4.13.0
 
 
 dependency_overrides:

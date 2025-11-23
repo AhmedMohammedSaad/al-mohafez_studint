@@ -7,12 +7,13 @@ import 'package:almohafez/features/sessions/presentation/views/sessions_screen.d
 import 'package:almohafez/features/sessions/presentation/views/session_details_screen.dart';
 import 'package:almohafez/features/sessions/presentation/views/session_rating_screen.dart';
 import 'package:almohafez/features/sessions/presentation/views/meeting_screen.dart';
+import 'package:almohafez/features/sessions/presentation/views/meeting_webview_screen.dart';
 import 'package:almohafez/features/profile/presentation/views/edit_profile_screen.dart';
 import 'package:almohafez/features/profile/presentation/views/change_password_screen.dart';
+import '../../../features/teachers/presentation/views/teachers_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../services/navigation_service/global_navigation_service.dart';
-import '../data/local_data/caching_helper.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:nb_utils/nb_utils.dart';
 
@@ -41,10 +42,14 @@ class AppRouter {
   static const String kSessionDetailsScreen = '/session-details';
   static const String kSessionRatingScreen = '/session-rating';
   static const String kMeetingScreen = '/meeting';
+  static const String kMeetingWebViewScreen = '/meeting-webview';
 
   // Profile Routes
   static const String kEditProfileScreen = '/edit-profile';
   static const String kChangePasswordScreen = '/change-password';
+
+  // Teachers Routes
+  static const String kTeachersScreen = '/teachers';
 
   // Router configuration
   static final GoRouter router = GoRouter(
@@ -181,6 +186,21 @@ class AppRouter {
         },
       ),
 
+      GoRoute(
+        path: kMeetingWebViewScreen,
+        name: 'MeetingWebView',
+        pageBuilder: (context, state) {
+          final Map<String, dynamic> args =
+              state.extra as Map<String, dynamic>? ?? {};
+          final meetingUrl = state.uri.queryParameters['meetingUrl'] ?? '';
+          return _animateRouteBuilder(
+            MeetingWebViewScreen(meetingUrl: meetingUrl),
+            pageRouteAnimation:
+                args['pageAnimation'] ?? PageRouteAnimation.fade,
+          );
+        },
+      ),
+
       // Profile Routes
       GoRoute(
         path: kEditProfileScreen,
@@ -207,6 +227,21 @@ class AppRouter {
               state.extra as Map<String, dynamic>? ?? {};
           return _animateRouteBuilder(
             const ChangePasswordScreen(),
+            pageRouteAnimation:
+                args['pageAnimation'] ?? PageRouteAnimation.slide,
+          );
+        },
+      ),
+
+      // Teachers Route
+      GoRoute(
+        path: kTeachersScreen,
+        name: 'Teachers',
+        pageBuilder: (context, state) {
+          final Map<String, dynamic> args =
+              state.extra as Map<String, dynamic>? ?? {};
+          return _animateRouteBuilder(
+            const TeachersScreen(),
             pageRouteAnimation:
                 args['pageAnimation'] ?? PageRouteAnimation.slide,
           );

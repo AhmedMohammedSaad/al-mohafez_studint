@@ -1,19 +1,28 @@
 import 'package:almohafez/core/routing/app_route.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../data/models/booking_response_model.dart';
+import '../../data/models/booking_request_model.dart';
+import '../../logic/booking_cubit.dart';
+import '../../logic/booking_state.dart';
 
 class PaymentScreen extends StatefulWidget {
   final BookingResponseModel bookingResponse;
   final String tutorName;
+  final String tutorId;
   final String? selectedSchedule;
+  final DateTime? selectedDate;
 
   const PaymentScreen({
     Key? key,
     required this.bookingResponse,
     required this.tutorName,
+    required this.tutorId,
     this.selectedSchedule,
+    this.selectedDate,
   }) : super(key: key);
 
   @override
@@ -22,7 +31,6 @@ class PaymentScreen extends StatefulWidget {
 
 class _PaymentScreenState extends State<PaymentScreen> {
   String _selectedPaymentMethod = 'credit_card';
-  bool _isProcessing = false;
 
   @override
   Widget build(BuildContext context) {
@@ -45,21 +53,34 @@ class _PaymentScreenState extends State<PaymentScreen> {
         ),
         centerTitle: true,
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildBookingSummary(),
-            const SizedBox(height: 24),
-            _buildPaymentMethods(),
-            const SizedBox(height: 24),
-            _buildPaymentDetails(),
-            const SizedBox(height: 32),
-            _buildConfirmButton(),
-            const SizedBox(height: 55),
-          ],
-        ),
+      body: BlocConsumer<BookingCubit, BookingState>(
+        listener: (context, state) {
+          if (state is BookingCreated) {
+            _showPaymentSuccessDialog();
+          } else if (state is BookingError) {
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(state.message)));
+          }
+        },
+        builder: (context, state) {
+          return SingleChildScrollView(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildBookingSummary(),
+                const SizedBox(height: 24),
+                _buildPaymentMethods(),
+                const SizedBox(height: 24),
+                _buildPaymentDetails(),
+                const SizedBox(height: 32),
+                _buildConfirmButton(state is BookingLoading),
+                const SizedBox(height: 55),
+              ],
+            ),
+          );
+        },
       ),
     );
   }
@@ -97,7 +118,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
           _buildSummaryRow('payment_tutor'.tr(), widget.tutorName),
           _buildSummaryRow(
             'payment_plan_type'.tr(),
-            widget.bookingResponse.planType == 'private'
+            widget.bookingResponse.planType.name ==
+                    'private' // Fixed enum access
                 ? 'payment_private_plan'.tr()
                 : 'payment_group_plan'.tr(),
           ),
@@ -378,12 +400,12 @@ class _PaymentScreenState extends State<PaymentScreen> {
     );
   }
 
-  Widget _buildConfirmButton() {
+  Widget _buildConfirmButton(bool isProcessing) {
     return SizedBox(
       width: double.infinity,
       height: 56,
       child: ElevatedButton(
-        onPressed: _isProcessing ? null : _processPayment,
+        onPressed: isProcessing ? null : _processPayment,
         style: ElevatedButton.styleFrom(
           backgroundColor: const Color(0xFF00E0FF),
           foregroundColor: Colors.white,
@@ -392,7 +414,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
             borderRadius: BorderRadius.circular(16),
           ),
         ),
-        child: _isProcessing
+        child: isProcessing
             ? const SizedBox(
                 width: 24,
                 height: 24,
@@ -428,21 +450,30 @@ class _PaymentScreenState extends State<PaymentScreen> {
   }
 
   Future<void> _processPayment() async {
-    setState(() {
-      _isProcessing = true;
-    });
-
-    // Simulate payment processing
-    await Future.delayed(const Duration(seconds: 2));
-
-    if (mounted) {
-      setState(() {
-        _isProcessing = false;
-      });
-
-      // Show success dialog
-      _showPaymentSuccessDialog();
+    final userId = Supabase.instance.client.auth.currentUser?.id;
+    if (userId == null) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('error_login_required'.tr())));
+      return;
     }
+
+    // Get user profile to get name (or use a placeholder if not available in context)
+    // For now, using a placeholder or fetching from profile if possible.
+    // Assuming we can get it from a ProfileCubit or similar, but for simplicity:
+    final studentName = 'Student Name'; // Should be fetched
+
+    final request = BookingRequestModel(
+      teacherId: widget.tutorId,
+      studentId: userId,
+      selectedDate: widget.selectedDate ?? DateTime.now(),
+      selectedTimeSlot: widget.selectedSchedule ?? '',
+      studentName: studentName,
+      sessionPrice: widget.bookingResponse.planPriceEgp.toDouble(),
+      notes: widget.bookingResponse.notes,
+    );
+
+    context.read<BookingCubit>().createBooking(request);
   }
 
   void _showPaymentSuccessDialog() {
@@ -491,7 +522,11 @@ class _PaymentScreenState extends State<PaymentScreen> {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.of(context).pop(); // Close dialog
+                    Navigator.of(context).pop(); // Close payment screen
+                    // Optionally navigate to bookings list
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF00E0FF),
                     foregroundColor: Colors.white,

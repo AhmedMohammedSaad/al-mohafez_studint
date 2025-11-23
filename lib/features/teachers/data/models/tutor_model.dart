@@ -34,22 +34,21 @@ class TutorModel {
       id: json['id'] ?? '',
       fullName: json['full_name'] ?? '',
       gender: json['gender'] ?? '',
-      profilePictureUrl: json['profile_picture_url'] ?? '',
+      profilePictureUrl: json['image'] ?? json['profile_picture_url'] ?? '',
       overallRating: (json['overall_rating'] ?? 0.0).toDouble(),
       numSessions: json['num_sessions'] ?? 0,
       isAvailable: json['is_available'] ?? false,
       bio: json['bio'] ?? '',
       qualifications: List<String>.from(json['qualifications'] ?? []),
-      availabilitySlots: (json['availability_slots'] as List<dynamic>?)
+      availabilitySlots:
+          (json['availability_slots'] as List<dynamic>?)
               ?.map((slot) => AvailabilitySlot.fromJson(slot))
               .toList() ??
           [],
       contactMethods: List<String>.from(json['contact_methods'] ?? []),
-      reviews: (json['reviews'] as List<dynamic>?)
-              ?.map((review) => ReviewModel.fromJson(review))
-              .toList() ??
-          [],
-      sessionPrice: (json['session_price'] ?? 100.0).toDouble(),
+      // Reviews are not in the main table currently, returning empty list
+      reviews: [],
+      sessionPrice: (json['session_price'] ?? 0.0).toDouble(),
     );
   }
 
@@ -64,7 +63,9 @@ class TutorModel {
       'is_available': isAvailable,
       'bio': bio,
       'qualifications': qualifications,
-      'availability_slots': availabilitySlots.map((slot) => slot.toJson()).toList(),
+      'availability_slots': availabilitySlots
+          .map((slot) => slot.toJson())
+          .toList(),
       'contact_methods': contactMethods,
       'reviews': reviews.map((review) => review.toJson()).toList(),
       'session_price': sessionPrice,
@@ -109,11 +110,7 @@ class AvailabilitySlot {
   final String start;
   final String end;
 
-  AvailabilitySlot({
-    required this.day,
-    required this.start,
-    required this.end,
-  });
+  AvailabilitySlot({required this.day, required this.start, required this.end});
 
   factory AvailabilitySlot.fromJson(Map<String, dynamic> json) {
     return AvailabilitySlot(
@@ -124,11 +121,7 @@ class AvailabilitySlot {
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'day': day,
-      'start': start,
-      'end': end,
-    };
+    return {'day': day, 'start': start, 'end': end};
   }
 }
 

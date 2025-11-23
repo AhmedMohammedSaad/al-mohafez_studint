@@ -22,11 +22,18 @@ class _SessionDetailsScreenState extends State<SessionDetailsScreen> {
   bool _isLoading = true;
   String? _errorMessage;
   int? _countdownSeconds;
+  Timer? _timer;
 
   @override
   void initState() {
     super.initState();
     _loadSessionDetails();
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
   }
 
   Future<void> _loadSessionDetails() async {
@@ -37,36 +44,66 @@ class _SessionDetailsScreenState extends State<SessionDetailsScreen> {
 
     try {
       final session = await SessionsService.getSessionById(widget.sessionId);
-      setState(() {
-        _session = session;
-        _isLoading = false;
-      });
-
-      // Start countdown if needed
-      if (SessionsService.shouldShowCountdown(session!)) {
-        _startCountdownTimer();
+      if (mounted) {
+        setState(() {
+          _session = session;
+          _isLoading = false;
+        });
+        _startTimer();
       }
     } catch (e) {
-      setState(() {
-        _errorMessage = 'session_details_error'.tr();
-        _isLoading = false;
+      if (mounted) {
+        setState(() {
+          _errorMessage = 'session_details_error'.tr();
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
+  void _startTimer() {
+    _timer?.cancel();
+    _updateState();
+
+    if (_session == null) return;
+
+    final now = DateTime.now();
+    final sessionStart = _session!.scheduledDateTime;
+    final difference = sessionStart.difference(now);
+
+    // If session is more than 10 minutes away, check every minute
+    if (difference.inMinutes > 10) {
+      _timer = Timer.periodic(const Duration(minutes: 1), (timer) {
+        if (!mounted) {
+          timer.cancel();
+          return;
+        }
+
+        if (_session == null) return;
+
+        // If we get within 10 minutes, switch to second-based timer
+        final newDiff = _session!.scheduledDateTime.difference(DateTime.now());
+        if (newDiff.inMinutes <= 10) {
+          timer.cancel();
+          _startTimer(); // Restart with appropriate frequency
+        } else {
+          _updateState();
+        }
+      });
+    } else {
+      // If within 10 minutes or ongoing, update every second
+      _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+        if (!mounted) {
+          timer.cancel();
+          return;
+        }
+        _updateState();
       });
     }
   }
 
-  void _startCountdownTimer() {
-    _updateCountdown();
-    Future.delayed(const Duration(seconds: 1), () {
-      if (mounted &&
-          _session != null &&
-          SessionsService.shouldShowCountdown(_session!)) {
-        _startCountdownTimer();
-      }
-    });
-  }
-
-  void _updateCountdown() {
-    if (_session != null) {
+  void _updateState() {
+    if (mounted && _session != null) {
       setState(() {
         _countdownSeconds = SessionsService.getCountdownSeconds(_session!);
       });
@@ -79,7 +116,10 @@ class _SessionDetailsScreenState extends State<SessionDetailsScreen> {
       appBar: AppBar(
         title: Text(
           'session_details_title'.tr(),
-          style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
         ),
         backgroundColor: const Color(0xFF2E7D32),
         elevation: 0,
@@ -690,15 +730,22 @@ class _SessionDetailsScreenState extends State<SessionDetailsScreen> {
   }
 
   void _joinSession() async {
-    try {
-      await SessionsService.joinSession(_session!.id);
-      
-      // Navigate to meeting screen
-      NavigationService.push(
-        '${AppRouter.kMeetingScreen}?sessionId=${_session!.id}',
+    // Check if meeting URL exists
+    if (_session?.meetingUrl == null || _session!.meetingUrl!.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('meeting_url_missing'.tr()),
+          backgroundColor: Colors.red,
+        ),
       );
-      
-      _loadSessionDetails(); // Refresh data
+      return;
+    }
+
+    try {
+      // Navigate to WebView with meeting URL
+      NavigationService.push(
+        '${AppRouter.kMeetingWebViewScreen}?meetingUrl=${Uri.encodeComponent(_session!.meetingUrl!)}',
+      );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:easy_localization/easy_localization.dart';
+import '../../../../core/presentation/view/widgets/app_custom_image_view.dart';
 import '../../data/models/session_model.dart';
 import '../../data/services/sessions_service.dart';
 
@@ -23,50 +24,76 @@ class SessionCard extends StatefulWidget {
 }
 
 class _SessionCardState extends State<SessionCard> {
-  Timer? _countdownTimer;
+  Timer? _timer;
   int _countdownSeconds = 0;
 
   @override
   void initState() {
     super.initState();
-    _startCountdownTimer();
+    _startTimer();
   }
 
   @override
   void dispose() {
-    _countdownTimer?.cancel();
+    _timer?.cancel();
     super.dispose();
   }
 
-  void _startCountdownTimer() {
-    if (SessionsService.shouldShowCountdown(widget.session)) {
-      _countdownSeconds = SessionsService.getCountdownSeconds(widget.session);
-      
-      _countdownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
-        if (mounted) {
-          setState(() {
-            _countdownSeconds = SessionsService.getCountdownSeconds(widget.session);
-            
-            // Stop timer if countdown reaches 0 or session status changes
-            if (_countdownSeconds <= 0 || !SessionsService.shouldShowCountdown(widget.session)) {
-              timer.cancel();
-            }
-          });
-        } else {
+  void _startTimer() {
+    _timer?.cancel();
+    _updateState();
+
+    final now = DateTime.now();
+    final sessionStart = widget.session.scheduledDateTime;
+    final difference = sessionStart.difference(now);
+
+    // If session is more than 10 minutes away, check every minute
+    if (difference.inMinutes > 10) {
+      _timer = Timer.periodic(const Duration(minutes: 1), (timer) {
+        if (!mounted) {
           timer.cancel();
+          return;
         }
+
+        // If we get within 10 minutes, switch to second-based timer
+        final newDiff = widget.session.scheduledDateTime.difference(
+          DateTime.now(),
+        );
+        if (newDiff.inMinutes <= 10) {
+          timer.cancel();
+          _startTimer(); // Restart with appropriate frequency
+        } else {
+          _updateState();
+        }
+      });
+    } else {
+      // If within 10 minutes or ongoing, update every second
+      _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+        if (!mounted) {
+          timer.cancel();
+          return;
+        }
+        _updateState();
+
+        // Stop if session ended (logic can be refined, but keeping it simple for now)
+        // We continue updating to show "Ended" state if needed
       });
     }
   }
 
+  void _updateState() {
+    if (mounted) {
+      setState(() {
+        _countdownSeconds = SessionsService.getCountdownSeconds(widget.session);
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Card(
       elevation: 3,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: InkWell(
         onTap: widget.onTap,
         borderRadius: BorderRadius.circular(12),
@@ -79,18 +106,16 @@ class _SessionCardState extends State<SessionCard> {
               Row(
                 children: [
                   // Tutor image
-                  CircleAvatar(
-                    radius: 25,
-                    backgroundColor: Colors.grey[300],
-                    backgroundImage: widget.session.tutorImageUrl.isNotEmpty
-                        ? AssetImage(widget.session.tutorImageUrl)
-                        : null,
-                    child: widget.session.tutorImageUrl.isEmpty
-                        ? Icon(Icons.person, color: Colors.grey[600])
-                        : null,
+                  AppCustomImageView(
+                    imagePath: widget.session.tutorImageUrl,
+                    height: 50,
+                    width: 50,
+                    radius: BorderRadius.circular(25),
+                    fit: BoxFit.cover,
+                    placeHolder: 'assets/images/tutor1.jpg', // Fallback
                   ),
                   const SizedBox(width: 12),
-                  
+
                   // Tutor name and session type
                   Expanded(
                     child: Column(
@@ -115,14 +140,14 @@ class _SessionCardState extends State<SessionCard> {
                       ],
                     ),
                   ),
-                  
+
                   // Status indicator
                   _buildStatusIndicator(),
                 ],
               ),
-              
+
               const SizedBox(height: 16),
-              
+
               // Session details
               Row(
                 children: [
@@ -133,7 +158,7 @@ class _SessionCardState extends State<SessionCard> {
                       _formatDateTime(widget.session.scheduledDateTime),
                     ),
                   ),
-                  
+
                   // Duration
                   _buildDetailItem(
                     Icons.timer,
@@ -141,9 +166,9 @@ class _SessionCardState extends State<SessionCard> {
                   ),
                 ],
               ),
-              
+
               const SizedBox(height: 12),
-              
+
               // Mode and additional info
               Row(
                 children: [
@@ -156,15 +181,17 @@ class _SessionCardState extends State<SessionCard> {
                       widget.session.modeDisplayName,
                     ),
                   ),
-                  
+
                   // Rating (for completed sessions)
-                  if (widget.session.isCompleted && widget.session.rating != null)
+                  if (widget.session.isCompleted &&
+                      widget.session.rating != null)
                     _buildRatingDisplay(),
                 ],
               ),
-              
+
               // Notes (if available)
-              if (widget.session.notes != null && widget.session.notes!.isNotEmpty)
+              if (widget.session.notes != null &&
+                  widget.session.notes!.isNotEmpty)
                 Padding(
                   padding: const EdgeInsets.only(top: 12),
                   child: Container(
@@ -176,16 +203,13 @@ class _SessionCardState extends State<SessionCard> {
                     ),
                     child: Text(
                       widget.session.notes!,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey[700],
-                      ),
+                      style: TextStyle(fontSize: 14, color: Colors.grey[700]),
                     ),
                   ),
                 ),
-              
+
               const SizedBox(height: 16),
-              
+
               // Action button with countdown
               _buildActionButton(),
             ],
@@ -198,7 +222,7 @@ class _SessionCardState extends State<SessionCard> {
   Widget _buildStatusIndicator() {
     Color color;
     IconData icon;
-    
+
     switch (widget.session.status) {
       case SessionStatus.upcoming:
         if (SessionsService.canJoinSession(widget.session)) {
@@ -222,18 +246,14 @@ class _SessionCardState extends State<SessionCard> {
         icon = Icons.cancel;
         break;
     }
-    
+
     return Container(
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
         color: color.withOpacity(0.1),
         shape: BoxShape.circle,
       ),
-      child: Icon(
-        icon,
-        color: color,
-        size: 20,
-      ),
+      child: Icon(icon, color: color, size: 20),
     );
   }
 
@@ -241,19 +261,9 @@ class _SessionCardState extends State<SessionCard> {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(
-          icon,
-          size: 16,
-          color: Colors.grey[600],
-        ),
+        Icon(icon, size: 16, color: Colors.grey[600]),
         const SizedBox(width: 6),
-        Text(
-          text,
-          style: TextStyle(
-            fontSize: 14,
-            color: Colors.grey[700],
-          ),
-        ),
+        Text(text, style: TextStyle(fontSize: 14, color: Colors.grey[700])),
       ],
     );
   }
@@ -262,11 +272,7 @@ class _SessionCardState extends State<SessionCard> {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(
-          Icons.star,
-          size: 16,
-          color: Colors.amber,
-        ),
+        Icon(Icons.star, size: 16, color: Colors.amber),
         const SizedBox(width: 4),
         Text(
           widget.session.rating!.toStringAsFixed(1),
@@ -282,12 +288,12 @@ class _SessionCardState extends State<SessionCard> {
 
   Widget _buildActionButton() {
     final buttonState = SessionsService.getSessionButtonState(widget.session);
-    
+
     String buttonText = buttonState['text'];
     String colorName = buttonState['color'];
     bool isEnabled = buttonState['enabled'];
     String action = buttonState['action'];
-    
+
     Color buttonColor;
     switch (colorName) {
       case 'green':
@@ -301,7 +307,7 @@ class _SessionCardState extends State<SessionCard> {
         buttonColor = Colors.grey;
         break;
     }
-    
+
     VoidCallback? onPressed;
     if (isEnabled) {
       switch (action) {
@@ -321,7 +327,8 @@ class _SessionCardState extends State<SessionCard> {
     return Column(
       children: [
         // Countdown display (if applicable)
-        if (SessionsService.shouldShowCountdown(widget.session) && _countdownSeconds > 0)
+        if (SessionsService.shouldShowCountdown(widget.session) &&
+            _countdownSeconds > 0)
           Padding(
             padding: const EdgeInsets.only(bottom: 8),
             child: Container(
@@ -334,11 +341,7 @@ class _SessionCardState extends State<SessionCard> {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(
-                    Icons.timer,
-                    size: 16,
-                    color: Colors.orange[700],
-                  ),
+                  Icon(Icons.timer, size: 16, color: Colors.orange[700]),
                   const SizedBox(width: 6),
                   Text(
                     '${'sessions_starts_in'.tr()}: ${_formatCountdown(_countdownSeconds)}',
@@ -352,7 +355,7 @@ class _SessionCardState extends State<SessionCard> {
               ),
             ),
           ),
-        
+
         // Action button
         SizedBox(
           width: double.infinity,
@@ -370,10 +373,7 @@ class _SessionCardState extends State<SessionCard> {
             ),
             child: Text(
               buttonText,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
           ),
         ),
@@ -385,7 +385,7 @@ class _SessionCardState extends State<SessionCard> {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
     final sessionDate = DateTime(dateTime.year, dateTime.month, dateTime.day);
-    
+
     String dateStr;
     if (sessionDate == today) {
       dateStr = 'sessions_today'.tr();
@@ -398,19 +398,19 @@ class _SessionCardState extends State<SessionCard> {
       final year = dateTime.year.toString();
       dateStr = '$day/$month/$year';
     }
-    
+
     // Format time manually for Arabic
     final hour = dateTime.hour.toString().padLeft(2, '0');
     final minute = dateTime.minute.toString().padLeft(2, '0');
     final timeStr = '$hour:$minute';
-    
+
     return '$dateStr ${'sessions_at'.tr()} $timeStr';
   }
 
   String _formatCountdown(int seconds) {
     final minutes = seconds ~/ 60;
     final remainingSeconds = seconds % 60;
-    
+
     if (minutes > 0) {
       return '${minutes.toString().padLeft(2, '0')} ${'sessions_minutes_short'.tr()}';
     } else {

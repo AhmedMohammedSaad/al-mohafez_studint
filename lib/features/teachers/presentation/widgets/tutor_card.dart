@@ -7,11 +7,7 @@ class TutorCard extends StatelessWidget {
   final TutorModel tutor;
   final VoidCallback onTap;
 
-  const TutorCard({
-    super.key,
-    required this.tutor,
-    required this.onTap,
-  });
+  const TutorCard({super.key, required this.tutor, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -49,20 +45,25 @@ class TutorCard extends StatelessWidget {
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(10.r),
-                child: Image.asset(
-                  tutor.profilePictureUrl,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      color: const Color(0xFF00E0FF).withOpacity(0.1),
-                      child: Icon(
-                        tutor.gender == 'رجل' ? Icons.man : Icons.woman,
-                        color: const Color(0xFF00E0FF),
-                        size: 30.sp,
+                child: tutor.profilePictureUrl.isNotEmpty
+                    ? Image.network(
+                        tutor.profilePictureUrl,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Image.asset(
+                            tutor.gender == 'male'
+                                ? 'assets/images/shaegh.jpg'
+                                : 'assets/images/niqab-5.jpg',
+                            fit: BoxFit.cover,
+                          );
+                        },
+                      )
+                    : Image.asset(
+                        tutor.gender == 'male'
+                            ? 'assets/images/shaegh.jpg'
+                            : 'assets/images/niqab-5.jpg',
+                        fit: BoxFit.cover,
                       ),
-                    );
-                  },
-                ),
               ),
             ),
             SizedBox(width: 16.w),
@@ -118,7 +119,9 @@ class TutorCard extends StatelessWidget {
                       ),
                       SizedBox(width: 4.w),
                       Text(
-                        'teachers_sessions_count'.tr(namedArgs: {'count': tutor.numSessions.toString()}),
+                        'teachers_sessions_count'.tr(
+                          namedArgs: {'count': tutor.numSessions.toString()},
+                        ),
                         style: TextStyle(
                           fontFamily: 'Cairo',
                           fontSize: 14.sp,
@@ -166,7 +169,9 @@ class TutorCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(8.r),
       ),
       child: Text(
-        tutor.isAvailable ? 'teachers_available'.tr() : 'teachers_unavailable'.tr(),
+        tutor.isAvailable
+            ? 'teachers_available'.tr()
+            : 'teachers_unavailable'.tr(),
         style: TextStyle(
           fontFamily: 'Cairo',
           fontSize: 10.sp,

@@ -1,48 +1,48 @@
 class BookingModel {
   final String id;
-  final String tutorId;
+  final String teacherId;
   final String studentId;
   final String studentName;
-  final String studentPhone;
   final DateTime selectedDate;
   final String selectedTimeSlot;
-  final String sessionType; // 'online' or 'offline'
   final String notes;
+  final String? meetingUrl;
   final BookingStatus status;
   final DateTime createdAt;
+  final DateTime updatedAt;
   final double sessionPrice;
 
   const BookingModel({
     required this.id,
-    required this.tutorId,
+    required this.teacherId,
     required this.studentId,
     required this.studentName,
-    required this.studentPhone,
     required this.selectedDate,
     required this.selectedTimeSlot,
-    required this.sessionType,
     required this.notes,
+    this.meetingUrl,
     required this.status,
     required this.createdAt,
+    required this.updatedAt,
     required this.sessionPrice,
   });
 
   factory BookingModel.fromJson(Map<String, dynamic> json) {
     return BookingModel(
       id: json['id'] as String,
-      tutorId: json['tutor_id'] as String,
+      teacherId: json['teacher_id'] as String,
       studentId: json['student_id'] as String,
       studentName: json['student_name'] as String,
-      studentPhone: json['student_phone'] as String,
       selectedDate: DateTime.parse(json['selected_date'] as String),
       selectedTimeSlot: json['selected_time_slot'] as String,
-      sessionType: json['session_type'] as String,
-      notes: json['notes'] as String,
+      notes: json['notes'] as String? ?? '',
+      meetingUrl: json['meeting_url'] as String?,
       status: BookingStatus.values.firstWhere(
         (e) => e.name == json['status'],
         orElse: () => BookingStatus.pending,
       ),
       createdAt: DateTime.parse(json['created_at'] as String),
+      updatedAt: DateTime.parse(json['updated_at'] as String),
       sessionPrice: (json['session_price'] as num).toDouble(),
     );
   }
@@ -50,57 +50,57 @@ class BookingModel {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'tutor_id': tutorId,
+      'teacher_id': teacherId,
       'student_id': studentId,
       'student_name': studentName,
-      'student_phone': studentPhone,
-      'selected_date': selectedDate.toIso8601String(),
+      'selected_date': selectedDate.toIso8601String().split('T')[0],
       'selected_time_slot': selectedTimeSlot,
-      'session_type': sessionType,
       'notes': notes,
+      'meeting_url': meetingUrl,
       'status': status.name,
       'created_at': createdAt.toIso8601String(),
+      'updated_at': updatedAt.toIso8601String(),
       'session_price': sessionPrice,
     };
   }
 
   BookingModel copyWith({
     String? id,
-    String? tutorId,
+    String? teacherId,
     String? studentId,
     String? studentName,
-    String? studentPhone,
     DateTime? selectedDate,
     String? selectedTimeSlot,
-    String? sessionType,
     String? notes,
+    String? meetingUrl,
     BookingStatus? status,
     DateTime? createdAt,
+    DateTime? updatedAt,
     double? sessionPrice,
   }) {
     return BookingModel(
       id: id ?? this.id,
-      tutorId: tutorId ?? this.tutorId,
+      teacherId: teacherId ?? this.teacherId,
       studentId: studentId ?? this.studentId,
       studentName: studentName ?? this.studentName,
-      studentPhone: studentPhone ?? this.studentPhone,
       selectedDate: selectedDate ?? this.selectedDate,
       selectedTimeSlot: selectedTimeSlot ?? this.selectedTimeSlot,
-      sessionType: sessionType ?? this.sessionType,
       notes: notes ?? this.notes,
+      meetingUrl: meetingUrl ?? this.meetingUrl,
       status: status ?? this.status,
       createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
       sessionPrice: sessionPrice ?? this.sessionPrice,
     );
   }
 }
 
 enum BookingStatus {
-  pending,    // في انتظار الموافقة
-  confirmed,  // مؤكد
-  cancelled,  // ملغي
-  completed,  // مكتمل
-  rejected,   // مرفوض
+  pending, // في انتظار الموافقة
+  confirmed, // مؤكد
+  cancelled, // ملغي
+  completed, // مكتمل
+  rejected, // مرفوض
 }
 
 extension BookingStatusExtension on BookingStatus {

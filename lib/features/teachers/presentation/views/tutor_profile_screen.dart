@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nb_utils/nb_utils.dart';
 import '../../data/models/tutor_model.dart';
+import '../../logic/pricing_plans_cubit.dart';
+import '../../data/repos/pricing_plans_repo.dart';
 import '../widgets/review_card.dart';
 import '../widgets/booking_bottom_sheet.dart';
 
@@ -62,22 +65,25 @@ class TutorProfileScreen extends StatelessWidget {
                           ),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(16.r),
-                            child: Image.asset(
-                              tutor.profilePictureUrl,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
-                                return Container(
-                                  color: Colors.white,
-                                  child: Icon(
-                                    tutor.gender == 'teachers_male'.tr()
-                                        ? Icons.man
-                                        : Icons.woman,
-                                    color: const Color(0xFF0A1D64),
-                                    size: 60.sp,
+                            child: tutor.profilePictureUrl.isNotEmpty
+                                ? Image.network(
+                                    tutor.profilePictureUrl,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return Image.asset(
+                                        tutor.gender == 'male'
+                                            ? 'assets/images/shaegh.jpg'
+                                            : 'assets/images/niqab-5.jpg',
+                                        fit: BoxFit.cover,
+                                      );
+                                    },
+                                  )
+                                : Image.asset(
+                                    tutor.gender == 'male'
+                                        ? 'assets/images/shaegh.jpg'
+                                        : 'assets/images/niqab-5.jpg',
+                                    fit: BoxFit.cover,
                                   ),
-                                );
-                              },
-                            ),
                           ),
                         ),
                         SizedBox(height: 16.h),
@@ -236,7 +242,10 @@ class TutorProfileScreen extends StatelessWidget {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => BookingBottomSheet(tutor: tutor),
+      builder: (context) => BlocProvider(
+        create: (context) => PricingPlansCubit(PricingPlansRepo()),
+        child: BookingBottomSheet(tutor: tutor),
+      ),
     );
   }
 

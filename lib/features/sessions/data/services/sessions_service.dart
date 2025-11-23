@@ -2,34 +2,30 @@ import 'package:easy_localization/easy_localization.dart';
 import '../models/session_model.dart';
 import '../models/sessions_response_model.dart';
 import '../models/session_rating_model.dart';
-import '../mock_data/mock_sessions_data.dart';
+import '../repos/sessions_repo.dart';
 
 class SessionsService {
-  // Simulate API delay
-  static Future<void> _simulateDelay() async {
-    await Future.delayed(const Duration(milliseconds: 800));
-  }
+  static final _repo = SessionsRepo();
 
   // Get all sessions for the current student
   static Future<SessionsResponseModel> getAllSessions() async {
-    await _simulateDelay();
-
     try {
-      final sessions = MockSessionsData.getMockSessions();
-
-      // Update session statuses based on current time
-      final updatedSessions = sessions.map((session) {
-        return _updateSessionStatus(session);
-      }).toList();
+      final sessions = await _repo.getStudentSessions();
 
       return SessionsResponseModel(
         success: true,
         message: 'sessions_service_load_success'.tr(),
-        sessions: updatedSessions,
-        totalCount: updatedSessions.length,
-        upcomingCount: updatedSessions.where((s) => s.status == SessionStatus.upcoming).length,
-        completedCount: updatedSessions.where((s) => s.status == SessionStatus.completed).length,
-        cancelledCount: updatedSessions.where((s) => s.status == SessionStatus.cancelled).length,
+        sessions: sessions,
+        totalCount: sessions.length,
+        upcomingCount: sessions
+            .where((s) => s.status == SessionStatus.upcoming)
+            .length,
+        completedCount: sessions
+            .where((s) => s.status == SessionStatus.completed)
+            .length,
+        cancelledCount: sessions
+            .where((s) => s.status == SessionStatus.cancelled)
+            .length,
       );
     } catch (e) {
       return SessionsResponseModel(
@@ -44,59 +40,13 @@ class SessionsService {
     }
   }
 
-  // Update session status based on current time
-  static SessionModel _updateSessionStatus(SessionModel session) {
-    final now = DateTime.now();
-    final sessionStart = session.scheduledDateTime;
-    final sessionEnd = sessionStart.add(
-      Duration(minutes: session.durationMinutes),
-    );
-
-    // If session is already completed or cancelled, don't change status
-    if (session.status == SessionStatus.completed ||
-        session.status == SessionStatus.cancelled) {
-      return session;
-    }
-
-    SessionStatus newStatus;
-
-    if (now.isBefore(sessionStart)) {
-      // Session hasn't started yet
-      newStatus = SessionStatus.upcoming;
-    } else if (now.isAfter(sessionEnd)) {
-      // Session has ended
-      newStatus = SessionStatus.completed;
-    } else {
-      // Session is currently ongoing
-      newStatus = SessionStatus.ongoing;
-    }
-
-    return SessionModel(
-      id: session.id,
-      tutorId: session.tutorId,
-      tutorName: session.tutorName,
-      tutorImageUrl: session.tutorImageUrl,
-      studentId: session.studentId,
-      type: session.type,
-      mode: session.mode,
-      scheduledDateTime: session.scheduledDateTime,
-      durationMinutes: session.durationMinutes,
-      status: newStatus,
-      meetingUrl: session.meetingUrl,
-      notes: session.notes,
-      rating: session.rating,
-      feedback: session.feedback,
-    );
-  }
-
   // Get upcoming sessions
   static Future<List<SessionModel>> getUpcomingSessions(
     String studentId,
   ) async {
-    await _simulateDelay();
-
     try {
-      return MockSessionsData.getUpcomingSessions();
+      final sessions = await _repo.getStudentSessions();
+      return sessions.where((s) => s.status == SessionStatus.upcoming).toList();
     } catch (e) {
       return [];
     }
@@ -106,10 +56,11 @@ class SessionsService {
   static Future<List<SessionModel>> getCompletedSessions(
     String studentId,
   ) async {
-    await _simulateDelay();
-
     try {
-      return MockSessionsData.getCompletedSessions();
+      final sessions = await _repo.getStudentSessions();
+      return sessions
+          .where((s) => s.status == SessionStatus.completed)
+          .toList();
     } catch (e) {
       return [];
     }
@@ -117,62 +68,31 @@ class SessionsService {
 
   // Get session by ID
   static Future<SessionModel?> getSessionById(String sessionId) async {
-    await _simulateDelay();
-
-    try {
-      return MockSessionsData.getSessionById(sessionId);
-    } catch (e) {
-      return null;
-    }
+    return await _repo.getSessionById(sessionId);
   }
 
   // Join session (update status to ongoing)
   static Future<bool> joinSession(String sessionId) async {
-    await _simulateDelay();
-
-    try {
-      // In a real app, this would update the session status in the backend
-      // and possibly create/join a meeting room
-      return true;
-    } catch (e) {
-      return false;
-    }
+    // TODO: Implement join logic in Repo/Backend
+    return true;
   }
 
   // End session (update status to completed)
   static Future<bool> endSession(String sessionId) async {
-    await _simulateDelay();
-
-    try {
-      // In a real app, this would update the session status
-      return true;
-    } catch (e) {
-      return false;
-    }
+    // TODO: Implement end logic in Repo/Backend
+    return true;
   }
 
   // Submit session rating
   static Future<bool> submitSessionRating(SessionRatingModel rating) async {
-    await _simulateDelay();
-
-    try {
-      // In a real app, this would send the rating to the backend
-      return true;
-    } catch (e) {
-      return false;
-    }
+    // TODO: Implement rating logic in Repo/Backend
+    return true;
   }
 
   // Cancel session
   static Future<bool> cancelSession(String sessionId, String reason) async {
-    await _simulateDelay();
-
-    try {
-      // In a real app, this would update the session status and notify the tutor
-      return true;
-    } catch (e) {
-      return false;
-    }
+    // TODO: Implement cancel logic in Repo/Backend
+    return true;
   }
 
   // Check if session can be joined (within 10 minutes of start time)
@@ -231,7 +151,9 @@ class SessionsService {
 
     if (session.status == SessionStatus.completed) {
       return {
-        'text': session.rating != null ? 'session_service_rated'.tr() : 'session_details_rate'.tr(),
+        'text': session.rating != null
+            ? 'session_service_rated'.tr()
+            : 'session_details_rate'.tr(),
         'color': 'grey',
         'enabled': session.rating == null,
         'action': session.rating == null ? 'rate' : 'none',
@@ -284,17 +206,21 @@ class SessionsService {
 
   // Get notification message
   static String getNotificationMessage(SessionModel session) {
-    return 'session_service_notification'.tr(namedArgs: {
-      'tutorName': session.tutorName,
-      'time': _formatTime(session.scheduledDateTime)
-    });
+    return 'session_service_notification'.tr(
+      namedArgs: {
+        'tutorName': session.tutorName,
+        'time': _formatTime(session.scheduledDateTime),
+      },
+    );
   }
 
   // Format time for display
   static String _formatTime(DateTime dateTime) {
     final hour = dateTime.hour;
     final minute = dateTime.minute.toString().padLeft(2, '0');
-    final period = hour >= 12 ? 'session_service_pm'.tr() : 'session_service_am'.tr();
+    final period = hour >= 12
+        ? 'session_service_pm'.tr()
+        : 'session_service_am'.tr();
     final displayHour = hour > 12 ? hour - 12 : (hour == 0 ? 12 : hour);
 
     return '$displayHour:$minute$period';
@@ -328,22 +254,14 @@ class SessionsService {
 
   // Send notification reminder
   static Future<bool> sendSessionReminder(String sessionId) async {
-    await _simulateDelay();
-
-    try {
-      // In a real app, this would trigger a push notification
-      return true;
-    } catch (e) {
-      return false;
-    }
+    // TODO: Implement reminder logic
+    return true;
   }
 
   // Get session statistics
   static Future<Map<String, int>> getSessionStatistics(String studentId) async {
-    await _simulateDelay();
-
     try {
-      final sessions = MockSessionsData.getMockSessions();
+      final sessions = await _repo.getStudentSessions();
 
       return {
         'total': sessions.length,

@@ -13,13 +13,15 @@ class BookingService {
     try {
       // محاكاة تأخير الشبكة
       await Future.delayed(const Duration(seconds: 2));
-      
+
       // التحقق من عدم تضارب الأوقات
-      bool hasConflict = _bookings.any((existingBooking) =>
-          existingBooking.tutorId == booking.tutorId &&
-          existingBooking.selectedDate == booking.selectedDate &&
-          existingBooking.selectedTimeSlot == booking.selectedTimeSlot &&
-          existingBooking.status != BookingStatus.cancelled);
+      bool hasConflict = _bookings.any(
+        (existingBooking) =>
+            existingBooking.teacherId == booking.teacherId &&
+            existingBooking.selectedDate == booking.selectedDate &&
+            existingBooking.selectedTimeSlot == booking.selectedTimeSlot &&
+            existingBooking.status != BookingStatus.cancelled,
+      );
 
       if (hasConflict) {
         return false; // يوجد تضارب في الأوقات
@@ -46,20 +48,27 @@ class BookingService {
   }
 
   /// الحصول على حجوزات محفظ معين
-  List<BookingModel> getTutorBookings(String tutorId) {
+  List<BookingModel> getTutorBookings(String teacherId) {
     return _bookings
-        .where((booking) => booking.tutorId == tutorId)
+        .where((booking) => booking.teacherId == teacherId)
         .toList();
   }
 
   /// تحديث حالة الحجز
-  Future<bool> updateBookingStatus(String bookingId, BookingStatus newStatus) async {
+  Future<bool> updateBookingStatus(
+    String bookingId,
+    BookingStatus newStatus,
+  ) async {
     try {
       await Future.delayed(const Duration(seconds: 1));
-      
-      final bookingIndex = _bookings.indexWhere((booking) => booking.id == bookingId);
+
+      final bookingIndex = _bookings.indexWhere(
+        (booking) => booking.id == bookingId,
+      );
       if (bookingIndex != -1) {
-        _bookings[bookingIndex] = _bookings[bookingIndex].copyWith(status: newStatus);
+        _bookings[bookingIndex] = _bookings[bookingIndex].copyWith(
+          status: newStatus,
+        );
         return true;
       }
       return false;
@@ -74,26 +83,35 @@ class BookingService {
   }
 
   /// التحقق من توفر الوقت
-  bool isTimeSlotAvailable(String tutorId, String date, String timeSlot) {
-    return !_bookings.any((booking) =>
-        booking.tutorId == tutorId &&
-        booking.selectedDate == date &&
-        booking.selectedTimeSlot == timeSlot &&
-        booking.status != BookingStatus.cancelled);
+  bool isTimeSlotAvailable(String teacherId, String date, String timeSlot) {
+    return !_bookings.any(
+      (booking) =>
+          booking.teacherId == teacherId &&
+          booking.selectedDate == date &&
+          booking.selectedTimeSlot == timeSlot &&
+          booking.status != BookingStatus.cancelled,
+    );
   }
 
   /// الحصول على الأوقات المتاحة لمحفظ في تاريخ معين
-  List<String> getAvailableTimeSlots(String tutorId, String date, List<String> allTimeSlots) {
-    return allTimeSlots.where((timeSlot) => 
-        isTimeSlotAvailable(tutorId, date, timeSlot)).toList();
+  List<String> getAvailableTimeSlots(
+    String teacherId,
+    String date,
+    List<String> allTimeSlots,
+  ) {
+    return allTimeSlots
+        .where((timeSlot) => isTimeSlotAvailable(teacherId, date, timeSlot))
+        .toList();
   }
 
   /// حذف حجز
   Future<bool> deleteBooking(String bookingId) async {
     try {
       await Future.delayed(const Duration(seconds: 1));
-      
-      final bookingIndex = _bookings.indexWhere((booking) => booking.id == bookingId);
+
+      final bookingIndex = _bookings.indexWhere(
+        (booking) => booking.id == bookingId,
+      );
       if (bookingIndex != -1) {
         _bookings.removeAt(bookingIndex);
         return true;
@@ -108,10 +126,18 @@ class BookingService {
   Map<String, int> getBookingStatistics() {
     return {
       'total': _bookings.length,
-      'confirmed': _bookings.where((b) => b.status == BookingStatus.confirmed).length,
-      'pending': _bookings.where((b) => b.status == BookingStatus.pending).length,
-      'completed': _bookings.where((b) => b.status == BookingStatus.completed).length,
-      'cancelled': _bookings.where((b) => b.status == BookingStatus.cancelled).length,
+      'confirmed': _bookings
+          .where((b) => b.status == BookingStatus.confirmed)
+          .length,
+      'pending': _bookings
+          .where((b) => b.status == BookingStatus.pending)
+          .length,
+      'completed': _bookings
+          .where((b) => b.status == BookingStatus.completed)
+          .length,
+      'cancelled': _bookings
+          .where((b) => b.status == BookingStatus.cancelled)
+          .length,
     };
   }
 }

@@ -58,7 +58,7 @@ class GenderSelectionScreen extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                           builder: (context) =>
-                              const TutorsListScreen(gender: 'رجل'),
+                              const TutorsListScreen(gender: 'male'),
                         ),
                       );
                     },
@@ -78,7 +78,7 @@ class GenderSelectionScreen extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                           builder: (context) =>
-                              const TutorsListScreen(gender: 'امراة'),
+                              const TutorsListScreen(gender: 'female'),
                         ),
                       );
                     },

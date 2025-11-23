@@ -267,4 +267,6 @@ class DaySchedule {
 
   // Check if this day has any available time slots
   bool get hasAvailableSlots => isAvailable && timeSlots.isNotEmpty;
+
+  String? selectedSlot; // Added to track selection for this day
 }

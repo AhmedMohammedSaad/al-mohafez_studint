@@ -6,8 +6,7 @@ import 'package:almohafez/features/onboarding/presentation/views/welcome_onboard
 import 'package:almohafez/features/sessions/presentation/views/sessions_screen.dart';
 import 'package:almohafez/features/sessions/presentation/views/session_details_screen.dart';
 import 'package:almohafez/features/sessions/presentation/views/session_rating_screen.dart';
-import 'package:almohafez/features/sessions/presentation/views/meeting_screen.dart';
-import 'package:almohafez/features/sessions/presentation/views/meeting_webview_screen.dart';
+
 import 'package:almohafez/features/profile/presentation/views/edit_profile_screen.dart';
 import 'package:almohafez/features/profile/presentation/views/change_password_screen.dart';
 import '../../../features/teachers/presentation/views/teachers_screen.dart';
@@ -41,8 +40,6 @@ class AppRouter {
   static const String kSessionsScreen = '/sessions';
   static const String kSessionDetailsScreen = '/session-details';
   static const String kSessionRatingScreen = '/session-rating';
-  static const String kMeetingScreen = '/meeting';
-  static const String kMeetingWebViewScreen = '/meeting-webview';
 
   // Profile Routes
   static const String kEditProfileScreen = '/edit-profile';
@@ -167,36 +164,6 @@ class AppRouter {
             SessionRatingScreen(sessionId: sessionId),
             pageRouteAnimation:
                 args['pageAnimation'] ?? PageRouteAnimation.slideBottomTop,
-          );
-        },
-      ),
-
-      GoRoute(
-        path: kMeetingScreen,
-        name: 'Meeting',
-        pageBuilder: (context, state) {
-          final Map<String, dynamic> args =
-              state.extra as Map<String, dynamic>? ?? {};
-          final sessionId = state.uri.queryParameters['sessionId'] ?? '';
-          return _animateRouteBuilder(
-            MeetingScreen(sessionId: sessionId),
-            pageRouteAnimation:
-                args['pageAnimation'] ?? PageRouteAnimation.fade,
-          );
-        },
-      ),
-
-      GoRoute(
-        path: kMeetingWebViewScreen,
-        name: 'MeetingWebView',
-        pageBuilder: (context, state) {
-          final Map<String, dynamic> args =
-              state.extra as Map<String, dynamic>? ?? {};
-          final meetingUrl = state.uri.queryParameters['meetingUrl'] ?? '';
-          return _animateRouteBuilder(
-            MeetingWebViewScreen(meetingUrl: meetingUrl),
-            pageRouteAnimation:
-                args['pageAnimation'] ?? PageRouteAnimation.fade,
           );
         },
       ),

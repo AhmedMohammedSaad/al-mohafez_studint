@@ -5,6 +5,7 @@
 list(APPEND FLUTTER_PLUGIN_LIST
   file_selector_linux
   flutter_secure_storage_linux
+  flutter_sound
   gtk
   nb_utils
   open_file_linux

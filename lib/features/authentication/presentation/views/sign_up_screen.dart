@@ -330,9 +330,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     if (value.length < 8) {
       return 'password_min_length'.tr();
     }
-    if (!RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)').hasMatch(value)) {
-      return 'password_requirements'.tr();
-    }
+
     return null;
   }
 

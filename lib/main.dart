@@ -1,5 +1,7 @@
 import 'package:almohafez/core/routing/app_route.dart';
 import 'package:almohafez/core/theme/app_theme.dart';
+import 'package:almohafez/features/sessions/data/repos/sessions_repo.dart';
+import 'package:almohafez/features/sessions/logic/sessions_cubit.dart';
 import 'package:almohafez/gen/fonts.gen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -38,6 +40,7 @@ void main() async {
             create: (context) =>
                 ProfileBloc(ProfileRepo())..add(LoadProfileEvent()),
           ),
+          BlocProvider(create: (context) => SessionsCubit(SessionsRepo())),
         ],
         child: const MyApp(),
       ),

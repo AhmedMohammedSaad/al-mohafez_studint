@@ -81,4 +81,28 @@ class BookingsRepo {
       throw Exception('Failed to fetch teacher bookings: $e');
     }
   }
+
+  Future<void> rateSession({
+    required String sessionId,
+    required String tutorId,
+    required double rating,
+    String? comment,
+    List<String>? tags,
+  }) async {
+    try {
+      final userId = _supabase.auth.currentUser?.id;
+      if (userId == null) throw Exception('User not logged in');
+
+      await _supabase.from('session_ratings').insert({
+        'session_id': sessionId,
+        'student_id': userId,
+        'tutor_id': tutorId,
+        'rating': rating,
+        'feedback': comment,
+        'tags': tags,
+      });
+    } catch (e) {
+      throw Exception('Failed to submit rating: $e');
+    }
+  }
 }

@@ -627,6 +627,10 @@
   "session_rating_level_good": "Good",
   "session_rating_level_fair": "Fair",
   "session_rating_level_poor": "Poor",
+  "session_rating_tag_connection_issues": "Connection Issues",
+  "session_rating_tag_late": "Late",
+  "session_rating_tag_unclear": "Unclear",
+  "session_rating_tag_rushed": "Rushed",
   "meeting_recording_started": "Recording started",
   "meeting_recording_stopped": "Recording stopped",
   "meeting_end_title": "End Session",
@@ -742,5 +746,4 @@
   "confirm_password_required": "Please confirm your password",
   "passwords_do_not_match": "Passwords do not match",
   "change_password": "Change Password",
-  "password_changed_successfully": "Password changed successfully"
 }

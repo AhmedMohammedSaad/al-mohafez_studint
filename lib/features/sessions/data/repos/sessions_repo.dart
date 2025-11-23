@@ -115,4 +115,62 @@ class SessionsRepo {
       notes: json['notes'],
     );
   }
+
+  Future<void> rateSession({
+    required String sessionId,
+    required String tutorId,
+    required double rating,
+    String? comment,
+    List<String>? tags,
+  }) async {
+    try {
+      final userId = _supabase.auth.currentUser?.id;
+      if (userId == null) throw Exception('User not authenticated');
+
+      // Get current teacher data
+      final teacherData = await _supabase
+          .from('teachers')
+          .select('overall_rating, comments')
+          .eq('id', tutorId)
+          .single();
+
+      // Prepare updated comments list
+      List<dynamic> comments = teacherData['comments'] ?? [];
+      if (comment != null && comment.isNotEmpty) {
+        comments.add({
+          'student_id': userId,
+          'session_id': sessionId,
+          'comment': comment,
+          'rating': rating,
+          'tags': tags ?? [],
+          'created_at': DateTime.now().toIso8601String(),
+        });
+      }
+
+      // Calculate new overall rating (average of all ratings in comments)
+      double newOverallRating = rating;
+      if (comments.isNotEmpty) {
+        double totalRating = 0;
+        int count = 0;
+        for (var c in comments) {
+          if (c['rating'] != null) {
+            totalRating += (c['rating'] as num).toDouble();
+            count++;
+          }
+        }
+        if (count > 0) {
+          newOverallRating = totalRating / count;
+        }
+      }
+
+      // Update teacher with new rating and comments
+      await _supabase
+          .from('teachers')
+          .update({'overall_rating': newOverallRating, 'comments': comments})
+          .eq('id', tutorId);
+    } catch (e) {
+      print('Error submitting rating: $e');
+      throw Exception('Failed to submit rating: $e');
+    }
+  }
 }

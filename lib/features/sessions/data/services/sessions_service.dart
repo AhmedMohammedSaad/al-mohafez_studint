@@ -84,9 +84,21 @@ class SessionsService {
   }
 
   // Submit session rating
+  // Submit session rating
   static Future<bool> submitSessionRating(SessionRatingModel rating) async {
-    // TODO: Implement rating logic in Repo/Backend
-    return true;
+    try {
+      await _repo.rateSession(
+        sessionId: rating.sessionId,
+        tutorId: rating.tutorId,
+        rating: rating.rating,
+        comment: rating.feedback,
+        tags: rating.tags,
+      );
+      return true;
+    } catch (e) {
+      print('Error submitting rating in service: $e');
+      return false;
+    }
   }
 
   // Cancel session

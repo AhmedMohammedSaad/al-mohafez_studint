@@ -6,10 +6,10 @@ import '../widgets/session_card.dart';
 import '../widgets/empty_sessions_widget.dart';
 import '../../logic/sessions_cubit.dart';
 import '../../logic/sessions_state.dart';
-import '../../data/repos/sessions_repo.dart';
 import '../../data/models/session_model.dart';
 import '../../../../core/services/navigation_service/global_navigation_service.dart';
 import '../../../../core/routing/app_route.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SessionsScreen extends StatefulWidget {
   const SessionsScreen({super.key});
@@ -25,6 +25,8 @@ class _SessionsScreenState extends State<SessionsScreen>
   @override
   void initState() {
     super.initState();
+    context.read<SessionsCubit>().loadSessions();
+
     _tabController = TabController(length: 2, vsync: this);
   }
 
@@ -41,26 +43,23 @@ class _SessionsScreenState extends State<SessionsScreen>
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => SessionsCubit(SessionsRepo())..loadSessions(),
-      child: Scaffold(
-        body: BlocBuilder<SessionsCubit, SessionsState>(
-          builder: (context, state) {
-            if (state is SessionsLoading) {
-              return const Center(child: CircularProgressIndicator());
-            }
-
-            if (state is SessionsError) {
-              return _buildErrorWidget(context, state.message);
-            }
-
-            if (state is SessionsLoaded) {
-              return _buildContent(state);
-            }
-
+    return Scaffold(
+      body: BlocBuilder<SessionsCubit, SessionsState>(
+        builder: (context, state) {
+          if (state is SessionsLoading) {
             return const Center(child: CircularProgressIndicator());
-          },
-        ),
+          }
+
+          if (state is SessionsError) {
+            return _buildErrorWidget(context, state.message);
+          }
+
+          if (state is SessionsLoaded) {
+            return _buildContent(state);
+          }
+
+          return const Center(child: CircularProgressIndicator());
+        },
       ),
     );
   }
@@ -169,49 +168,73 @@ class _SessionsScreenState extends State<SessionsScreen>
 
   Widget _buildUpcomingSessionsTab(List<SessionModel> sessions) {
     if (sessions.isEmpty) {
-      return EmptySessionsWidget.noUpcomingSessions(
-        onBookNew: _navigateToBooking,
+      return RefreshIndicator(
+        onRefresh: () => context.read<SessionsCubit>().loadSessions(),
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: SizedBox(
+            height: MediaQuery.of(context).size.height - 200,
+            child: EmptySessionsWidget.noUpcomingSessions(
+              onBookNew: _navigateToBooking,
+            ),
+          ),
+        ),
       );
     }
 
-    return ListView.builder(
-      padding: const EdgeInsets.all(16),
-      itemCount: sessions.length,
-      itemBuilder: (context, index) {
-        final session = sessions[index];
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 12),
-          child: SessionCard(
-            session: session,
-            onTap: () => _navigateToSessionDetails(session.id),
-            onJoinSession: () => _joinSession(context, session.id),
-            onRateSession: () => _rateSession(session.id),
-          ),
-        );
-      },
+    return RefreshIndicator(
+      onRefresh: () => context.read<SessionsCubit>().loadSessions(),
+      child: ListView.builder(
+        padding: const EdgeInsets.all(16),
+        itemCount: sessions.length,
+        itemBuilder: (context, index) {
+          final session = sessions[index];
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: SessionCard(
+              session: session,
+              onTap: () => _navigateToSessionDetails(session.id),
+              onJoinSession: () => _joinSession(context, session.id),
+              onRateSession: () => _rateSession(session.id),
+            ),
+          );
+        },
+      ),
     );
   }
 
   Widget _buildCompletedSessionsTab(List<SessionModel> sessions) {
     if (sessions.isEmpty) {
-      return EmptySessionsWidget.noCompletedSessions();
+      return RefreshIndicator(
+        onRefresh: () => context.read<SessionsCubit>().loadSessions(),
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: SizedBox(
+            height: MediaQuery.of(context).size.height - 200,
+            child: EmptySessionsWidget.noCompletedSessions(),
+          ),
+        ),
+      );
     }
 
-    return ListView.builder(
-      padding: const EdgeInsets.all(16),
-      itemCount: sessions.length,
-      itemBuilder: (context, index) {
-        final session = sessions[index];
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 12),
-          child: SessionCard(
-            session: session,
-            onTap: () => _navigateToSessionDetails(session.id),
-            onJoinSession: () => _joinSession(context, session.id),
-            onRateSession: () => _rateSession(session.id),
-          ),
-        );
-      },
+    return RefreshIndicator(
+      onRefresh: () => context.read<SessionsCubit>().loadSessions(),
+      child: ListView.builder(
+        padding: const EdgeInsets.all(16),
+        itemCount: sessions.length,
+        itemBuilder: (context, index) {
+          final session = sessions[index];
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: SessionCard(
+              session: session,
+              onTap: () => _navigateToSessionDetails(session.id),
+              onJoinSession: () => _joinSession(context, session.id),
+              onRateSession: () => _rateSession(session.id),
+            ),
+          );
+        },
+      ),
     );
   }
 
@@ -227,14 +250,16 @@ class _SessionsScreenState extends State<SessionsScreen>
     SessionModel? session;
 
     if (state is SessionsLoaded) {
-      // Try to find in upcoming sessions first
-      session = state.upcomingSessions.firstWhere(
-        (s) => s.id == sessionId,
-        orElse: () => state.completedSessions.firstWhere(
+      try {
+        // Try to find in upcoming sessions first
+        session = state.upcomingSessions.firstWhere(
           (s) => s.id == sessionId,
-          orElse: () => throw Exception('Session not found'),
-        ),
-      );
+          orElse: () =>
+              state.completedSessions.firstWhere((s) => s.id == sessionId),
+        );
+      } catch (e) {
+        // Session not found
+      }
     }
 
     if (session == null ||
@@ -249,10 +274,21 @@ class _SessionsScreenState extends State<SessionsScreen>
       return;
     }
 
-    // Navigate to WebView with meeting URL
-    NavigationService.push(
-      '${AppRouter.kMeetingWebViewScreen}?meetingUrl=${Uri.encodeComponent(session.meetingUrl!)}',
-    );
+    try {
+      final uri = Uri.parse(session.meetingUrl!);
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri, mode: LaunchMode.externalApplication);
+      } else {
+        throw 'Could not launch ${session.meetingUrl}';
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('${'session_join_error'.tr()}: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   void _rateSession(String sessionId) {

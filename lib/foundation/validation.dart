@@ -1,6 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 
-import '../core/utils/app_strings.dart';
+import '../almohafez/core/utils/app_strings.dart';
 
 enum ValidationType {
   none,
@@ -19,12 +19,15 @@ enum ValidationType {
 
 class AppTextFieldValidation {
   static final RegExp emailRegex = RegExp(
-      r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$');
+    r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$',
+  );
   static final RegExp regexPhone = RegExp(r'^01[0125][0-9]{8}$');
 
   static bool isValidBirthdate(DateTime birthdate) {
     final DateTime currentDate = DateTime.now();
-    final DateTime minBirthdate = currentDate.subtract(const Duration(days: 365 * 100));
+    final DateTime minBirthdate = currentDate.subtract(
+      const Duration(days: 365 * 100),
+    );
     final DateTime maxBirthdate = currentDate;
     return birthdate.isAfter(minBirthdate) && birthdate.isBefore(maxBirthdate);
   }
@@ -32,7 +35,10 @@ class AppTextFieldValidation {
   static bool isContainSpecialCharacters(String input) {
     for (int i = 0; i < input.length; ++i) {
       final int ascii = input.codeUnitAt(i);
-      if ((ascii >= 65 && ascii <= 90) || (ascii >= 97 && ascii <= 122) || ascii == 32) continue;
+      if ((ascii >= 65 && ascii <= 90) ||
+          (ascii >= 97 && ascii <= 122) ||
+          ascii == 32)
+        continue;
       return true;
     }
     return false;

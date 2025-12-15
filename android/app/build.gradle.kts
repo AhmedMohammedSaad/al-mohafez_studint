@@ -37,6 +37,19 @@ android {
             signingConfig = signingConfigs.getByName("debug")
         }
     }
+    flavorDimensions += "almohafez"
+    productFlavors {
+        create("AlmohafezStudent") {
+            dimension = "almohafez"
+            resValue("string", "app_name", "Almohafez Student")
+            applicationIdSuffix = ".student"
+        }
+        create("AlmohafezTeacher") {
+            dimension = "almohafez"
+            resValue("string", "app_name", "Almohafez Teacher")
+            applicationIdSuffix = ".teacher"
+        }
+    }
 }
 
 flutter {

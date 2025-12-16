@@ -601,6 +601,8 @@
   "user_not_found": "المستخدم غير موجود",
   "user_not_activated": "المستخدم غير مفعل",
   "user_activated": "المستخدم مفعل",
+  "enter_phone_number": "أدخل رقم الهاتف",
+  "phone_number": "رقم الهاتف",
   "user_activated_message": "تم تفعيل حسابك بنجاح.",
   "user_activated_action": "ไป إلى تسجيل الدخول",
   "user_activated_error": "خطأ في تفعيل المستخدم",
@@ -609,5 +611,14 @@
   "user_activated_error_title": "خطأ في تفعيل المستخدم",
   "user_activated_error_subtitle": "يرجى المحاولة مرة أخرى لاحقا",
   "login_failed": "فشل تسجيل الدخول",
-  "login_failed_message": "البريد الإلكتروني أو كلمة المرور غير صحيحة"
+  "login_failed_message": "البريد الإلكتروني أو كلمة المرور غير صحيحة",
+  "contact_us_title": "تواصل معنا",
+  "contact_us_message": "نحن هنا لمساعدتك. تواصل معنا عبر:",
+  "support_email_label": "البريد الإلكتروني للدعم",
+  "support_email_value": "ahmedmohamedsaad9534@gmail.com",
+  "support_phone_label": "رقم الهاتف",
+  "support_phone_value": "+201080941234",
+  "whatsapp_label": "واتساب",
+  "contact_via_whatsapp": "تواصل عبر واتساب",
+  "whatsapp_value": "+201080941234"
 }

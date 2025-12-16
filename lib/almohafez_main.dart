@@ -1,7 +1,5 @@
-import 'package:almohafez/almohafez/core/helper/lifecycle_maneger/shardpref.dart';
 import 'package:almohafez/almohafez/core/presentation/view/main_screen.dart';
 import 'package:almohafez/almohafez/core/theme/app_theme.dart';
-import 'package:almohafez/almohafez/features/authentication/presentation/views/login_screen.dart';
 import 'package:almohafez/almohafez/features/onboarding/presentation/views/welcome_onboarding_screen.dart';
 import 'package:almohafez/almohafez/features/sessions/data/repos/sessions_repo.dart';
 import 'package:almohafez/almohafez/features/sessions/logic/sessions_cubit.dart';
@@ -21,9 +19,6 @@ import 'package:almohafez/almohafez/features/profile/logic/profile_event.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
-
-  final bool onBoardingShown =
-      await PrefsHelper.getBool('onBoardingShow') ?? false;
 
   await Supabase.initialize(
     url: 'https://tghyxcxvvnvkcaflsohk.supabase.co',
@@ -47,25 +42,24 @@ void main() async {
           ),
           BlocProvider(create: (context) => SessionsCubit(SessionsRepo())),
         ],
-        child: MyApp(onBoardingShown: onBoardingShown),
+        child: MyApp(),
       ),
     ),
   );
 }
 
 class MyApp extends StatelessWidget {
-  final bool onBoardingShown;
   checkAuthAndNavigate(BuildContext context) {
     final user = Supabase.instance.client.auth.currentUser;
 
     if (user != null && user.id.isNotEmpty) {
       return MainScreen();
     } else {
-      return LoginScreen();
+      return WelcomeOnboardingScreen();
     }
   }
 
-  const MyApp({super.key, required this.onBoardingShown});
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -73,9 +67,7 @@ class MyApp extends StatelessWidget {
       designSize: const Size(375, 812),
       minTextAdapt: true,
       builder: (_, __) => MaterialApp(
-        home: onBoardingShown
-            ? const WelcomeOnboardingScreen()
-            : checkAuthAndNavigate(context),
+        home: checkAuthAndNavigate(context),
         locale: context.locale,
         supportedLocales: context.supportedLocales,
         localizationsDelegates: context.localizationDelegates,

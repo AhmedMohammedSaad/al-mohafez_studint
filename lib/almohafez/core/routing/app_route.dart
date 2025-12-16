@@ -9,6 +9,7 @@ import 'package:almohafez/almohafez/features/sessions/presentation/views/session
 
 import 'package:almohafez/almohafez/features/profile/presentation/views/edit_profile_screen.dart';
 import 'package:almohafez/almohafez/features/profile/presentation/views/change_password_screen.dart';
+import 'package:almohafez/almohafez/features/profile/presentation/views/contact_us_screen.dart';
 import '../../features/teachers/presentation/views/teachers_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -44,6 +45,7 @@ class AppRouter {
   // Profile Routes
   static const String kEditProfileScreen = '/edit-profile';
   static const String kChangePasswordScreen = '/change-password';
+  static const String kContactUsScreen = '/contact-us';
 
   // Teachers Routes
   static const String kTeachersScreen = '/teachers';
@@ -179,6 +181,7 @@ class AppRouter {
             EditProfileScreen(
               currentFirstName: args['firstName'] ?? '',
               currentLastName: args['lastName'] ?? '',
+              currentPhoneNumber: args['phoneNumber'],
             ),
             pageRouteAnimation:
                 args['pageAnimation'] ?? PageRouteAnimation.slide,
@@ -194,6 +197,20 @@ class AppRouter {
               state.extra as Map<String, dynamic>? ?? {};
           return _animateRouteBuilder(
             const ChangePasswordScreen(),
+            pageRouteAnimation:
+                args['pageAnimation'] ?? PageRouteAnimation.slide,
+          );
+        },
+      ),
+
+      GoRoute(
+        path: kContactUsScreen,
+        name: 'ContactUs',
+        pageBuilder: (context, state) {
+          final Map<String, dynamic> args =
+              state.extra as Map<String, dynamic>? ?? {};
+          return _animateRouteBuilder(
+            const ContactUsScreen(),
             pageRouteAnimation:
                 args['pageAnimation'] ?? PageRouteAnimation.slide,
           );

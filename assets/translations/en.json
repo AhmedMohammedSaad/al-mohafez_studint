@@ -591,6 +591,8 @@
   "sessions_join_error": "Error joining session",
   "sessions_minutes": "minutes",
   "sessions_starts_in": "Starts in",
+  "enter_phone_number": "Enter Phone Number",
+  "phone_number": "Phone Number",
   "sessions_today": "Today",
   "sessions_tomorrow": "Tomorrow",
   "sessions_yesterday": "Yesterday",
@@ -612,7 +614,7 @@
   "session_rating_good": "Good",
   "session_rating_excellent": "Excellent",
   "session_rating_please_rate": "Please select a rating for the session",
-  "session_rating_thank_you": "Thank you for your rating! 🙏",
+  "session_rating_thank_you": "Thank you for your rating ❤",
   "session_rating_error": "Error submitting rating",
   "session_rating_tag_excellent": "Excellent",
   "session_rating_tag_helpful": "Helpful",
@@ -767,5 +769,14 @@
   "user_activated_error_subtitle": "Please try again later",
   "login_failed": "Login Failed",
   "login_failed_message": "Invalid email or password",
-  "login_failed_action": "Go to Login"
+  "login_failed_action": "Go to Login",
+  "contact_us_title": "Contact Us",
+  "contact_us_message": "We are here to help you. Contact us via:",
+  "support_email_label": "Support Email",
+  "support_email_value": "ahmedmohamedsaad9534@gmail.com",
+  "support_phone_label": "Phone Number",
+  "support_phone_value": "+201080941234",
+  "whatsapp_label": "WhatsApp",
+  "contact_via_whatsapp": "Contact via WhatsApp",
+  "whatsapp_value": "+201080941234"
 }

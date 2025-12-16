@@ -3,6 +3,7 @@ class ProfileModel {
   final String firstName;
   final String lastName;
   final String email;
+  final String? phoneNumber;
   final String? avatarUrl;
 
   ProfileModel({
@@ -10,6 +11,7 @@ class ProfileModel {
     required this.firstName,
     required this.lastName,
     required this.email,
+    this.phoneNumber,
     this.avatarUrl,
   });
 
@@ -21,6 +23,7 @@ class ProfileModel {
       email:
           json['email'] ??
           '', // Email might come from auth.users not profiles table usually
+      phoneNumber: json['phone_number'],
       avatarUrl: json['avatar_url'],
     );
   }
@@ -31,6 +34,7 @@ class ProfileModel {
       'first_name': firstName,
       'last_name': lastName,
       'email': email,
+      'phone_number': phoneNumber,
       'avatar_url': avatarUrl,
     };
   }

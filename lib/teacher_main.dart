@@ -14,9 +14,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
 
-  final bool onBoardingShown =
-      await PrefsHelper.getBool('onBoardingShow') ?? false;
-
   await initialize();
 
   runApp(
@@ -24,13 +21,12 @@ void main() async {
       supportedLocales: const [Locale('ar'), Locale('en')],
       path: 'assets/translations',
       fallbackLocale: const Locale('ar'),
-      child: MyApp(onBoardingShown: onBoardingShown),
+      child: MyApp(),
     ),
   );
 }
 
 class MyApp extends StatelessWidget {
-  final bool onBoardingShown;
   checkAuthAndNavigate(BuildContext context) {
     final user = Supabase.instance.client.auth.currentUser;
 
@@ -41,7 +37,7 @@ class MyApp extends StatelessWidget {
     }
   }
 
-  const MyApp({super.key, required this.onBoardingShown});
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -49,9 +45,7 @@ class MyApp extends StatelessWidget {
       designSize: const Size(375, 812),
       minTextAdapt: true,
       builder: (_, __) => MaterialApp(
-        home: onBoardingShown
-            ? const WelcomeOnboardingScreen()
-            : checkAuthAndNavigate(context),
+        home: checkAuthAndNavigate(context),
         locale: context.locale,
         supportedLocales: context.supportedLocales,
         localizationsDelegates: context.localizationDelegates,

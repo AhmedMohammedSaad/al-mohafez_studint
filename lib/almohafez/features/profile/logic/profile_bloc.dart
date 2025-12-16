@@ -23,6 +23,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       final profile = await _profileRepo.getProfile();
       emit(ProfileLoaded(profile));
     } catch (e) {
+      print(e);
       emit(ProfileError(e.toString()));
     }
   }
@@ -36,6 +37,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       await _profileRepo.updateProfile(
         firstName: event.firstName,
         lastName: event.lastName,
+        phoneNumber: event.phoneNumber,
         avatarUrl: event.avatarUrl,
       );
       // Reload profile to get updated data
@@ -43,6 +45,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       emit(ProfileLoaded(profile));
     } catch (e) {
       emit(ProfileError(e.toString()));
+      print(e.toString());
     }
   }
 

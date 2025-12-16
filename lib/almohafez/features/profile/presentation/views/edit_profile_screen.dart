@@ -11,11 +11,13 @@ import 'package:almohafez/almohafez/core/theme/app_text_style.dart';
 class EditProfileScreen extends StatefulWidget {
   final String currentFirstName;
   final String currentLastName;
+  final String? currentPhoneNumber;
 
   const EditProfileScreen({
     super.key,
     required this.currentFirstName,
     required this.currentLastName,
+    this.currentPhoneNumber,
   });
 
   @override
@@ -26,6 +28,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   final _formKey = GlobalKey<FormState>();
   late TextEditingController _firstNameController;
   late TextEditingController _lastNameController;
+  late TextEditingController _phoneController;
   bool _isLoading = false;
 
   @override
@@ -33,12 +36,16 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     super.initState();
     _firstNameController = TextEditingController(text: widget.currentFirstName);
     _lastNameController = TextEditingController(text: widget.currentLastName);
+    _phoneController = TextEditingController(
+      text: widget.currentPhoneNumber ?? '',
+    );
   }
 
   @override
   void dispose() {
     _firstNameController.dispose();
     _lastNameController.dispose();
+    _phoneController.dispose();
     super.dispose();
   }
 
@@ -93,86 +100,52 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               children: [
                 SizedBox(height: 24.h),
 
-                // First Name Field
-                Text(
-                  'first_name'.tr(),
-                  style: AppTextStyle.medium16.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: const Color(0xFF0A1D64),
-                  ),
-                ),
-                SizedBox(height: 8.h),
-                TextFormField(
-                  controller: _firstNameController,
-                  decoration: InputDecoration(
-                    hintText: 'enter_first_name'.tr(),
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12.r),
-                      borderSide: BorderSide(color: Colors.grey.shade300),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12.r),
-                      borderSide: BorderSide(color: Colors.grey.shade300),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12.r),
-                      borderSide: const BorderSide(
-                        color: Color(0xFF0A1D64),
-                        width: 2,
+                // First Name + Last Name Row
+                Row(
+                  children: [
+                    Expanded(
+                      child: _buildTextField(
+                        controller: _firstNameController,
+                        label: 'first_name'.tr(),
+                        hint: 'enter_first_name'.tr(),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'first_name_required'.tr();
+                          }
+                          return null;
+                        },
                       ),
                     ),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'first_name_required'.tr();
-                    }
-                    return null;
-                  },
-                ),
-
-                SizedBox(height: 24.h),
-
-                // Last Name Field
-                Text(
-                  'last_name'.tr(),
-                  style: AppTextStyle.medium16.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: const Color(0xFF0A1D64),
-                  ),
-                ),
-                SizedBox(height: 8.h),
-                TextFormField(
-                  controller: _lastNameController,
-                  decoration: InputDecoration(
-                    hintText: 'enter_last_name'.tr(),
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12.r),
-                      borderSide: BorderSide(color: Colors.grey.shade300),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12.r),
-                      borderSide: BorderSide(color: Colors.grey.shade300),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12.r),
-                      borderSide: const BorderSide(
-                        color: Color(0xFF0A1D64),
-                        width: 2,
+                    SizedBox(width: 16.w),
+                    Expanded(
+                      child: _buildTextField(
+                        controller: _lastNameController,
+                        label: 'last_name'.tr(),
+                        hint: 'enter_last_name'.tr(),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'last_name_required'.tr();
+                          }
+                          return null;
+                        },
                       ),
                     ),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'last_name_required'.tr();
-                    }
-                    return null;
-                  },
+                  ],
                 ),
 
+                // SizedBox(height: 24.h),
+
+                // // Phone Field
+                // _buildTextField(
+                //   controller: _phoneController,
+                //   label: 'phone_number'.tr(),
+                //   hint: 'enter_phone_number'.tr(),
+                //   keyboardType: TextInputType.phone,
+                //   validator: (value) {
+                //     // Optional validation
+                //     return null;
+                //   },
+                // ),
                 SizedBox(height: 40.h),
 
                 // Save Button
@@ -212,12 +185,61 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     );
   }
 
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String label,
+    required String hint,
+    TextInputType? keyboardType,
+    String? Function(String?)? validator,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: AppTextStyle.medium16.copyWith(
+            fontWeight: FontWeight.w600,
+            color: const Color(0xFF0A1D64),
+          ),
+        ),
+        SizedBox(height: 8.h),
+        TextFormField(
+          controller: controller,
+          keyboardType: keyboardType,
+          style: TextStyle(
+            color: Colors.black, // Ensure text is visible
+            fontFamily: 'Cairo',
+          ),
+          decoration: InputDecoration(
+            hintText: hint,
+            filled: true,
+            fillColor: Colors.white,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12.r),
+              borderSide: BorderSide(color: Colors.grey.shade300),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12.r),
+              borderSide: BorderSide(color: Colors.grey.shade300),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12.r),
+              borderSide: const BorderSide(color: Color(0xFF0A1D64), width: 2),
+            ),
+          ),
+          validator: validator,
+        ),
+      ],
+    );
+  }
+
   void _handleSave() {
     if (_formKey.currentState!.validate()) {
       context.read<ProfileBloc>().add(
         UpdateProfileEvent(
           firstName: _firstNameController.text.trim(),
           lastName: _lastNameController.text.trim(),
+          phoneNumber: _phoneController.text.trim(),
         ),
       );
     }

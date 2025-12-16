@@ -124,7 +124,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   isLoading: _isLoading,
                 ),
 
-                SizedBox(height: 24.h),
+                // SizedBox(height: 24.h),
 
                 // Divider
                 // Row(
@@ -217,13 +217,12 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _handleLogin() async {
-    if (!_formKey.currentState!.validate()) {
+    final formState = _formKey.currentState;
+    if (formState == null || !formState.validate()) {
       return;
     }
 
-    setState(() {
-      _isLoading = true;
-    });
+    setState(() => _isLoading = true);
 
     try {
       final authService = AuthService();
@@ -232,56 +231,40 @@ class _LoginScreenState extends State<LoginScreen> {
         password: _passwordController.text,
       );
 
-      if (response.session != null && mounted) {
-        // Supabase automatically persists the session
-        // Just navigate to main screen
-        NavigationService.goTo(AppRouter.kMainScreen);
+      final user = response.user;
+
+      if (!mounted) return;
+
+      if (response.session != null && user?.emailConfirmedAt != null) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const MainScreen()),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Please verify your email first')),
+        );
       }
     } on AuthException catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(SupabaseErrorHandler.getErrorMessage(e)),
-            backgroundColor: AppColors.primaryError,
-          ),
-        );
-      }
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(SupabaseErrorHandler.getErrorMessage(e)),
+          backgroundColor: AppColors.primaryError,
+        ),
+      );
     } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('login_failed'.tr()),
-            backgroundColor: AppColors.primaryError,
-          ),
-        );
-      }
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('login_failed'.tr()),
+          backgroundColor: AppColors.primaryError,
+        ),
+      );
+      debugPrint(e.toString());
     } finally {
       if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
-    }
-  }
-
-  void _handleGoogleLogin() async {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const MainScreen()),
-    );
-
-    try {
-      // Save login state for Google login
-      // await AppCacheHelper.saveSecureString('access_token', 'google_token_${DateTime.now().millisecondsSinceEpoch}');
-      // await AppCacheHelper.saveBool('is_logged_in', true);
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('login_failed'.tr()),
-            backgroundColor: AppColors.primaryError,
-          ),
-        );
+        setState(() => _isLoading = false);
       }
     }
   }

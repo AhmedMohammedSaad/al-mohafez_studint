@@ -382,7 +382,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
             backgroundColor: Colors.green,
           ),
         );
-        NavigationService.goTo(AppRouter.kMainScreen);
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const LoginScreen()),
+        );
       }
     } on AuthException catch (e) {
       if (mounted) {

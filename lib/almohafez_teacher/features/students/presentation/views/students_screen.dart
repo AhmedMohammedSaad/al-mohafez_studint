@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:nb_utils/nb_utils.dart';
 import '../../data/models/student_model.dart';
 import 'package:almohafez/almohafez/core/theme/app_colors.dart';
 import 'package:almohafez/almohafez/core/theme/app_text_style.dart';
 import '../widgets/student_card_widget.dart';
 import '../widgets/students_search_widget.dart';
-import '../widgets/students_filter_widget.dart';
 import 'student_details_screen.dart';
 
 class StudentsScreen extends StatefulWidget {
@@ -203,10 +201,10 @@ class _StudentsScreenState extends State<StudentsScreen> {
     _filterStudents();
   }
 
-  void _onLevelChanged(String level) {
-    selectedLevel = level;
-    _filterStudents();
-  }
+  // void _onLevelChanged(String level) {
+  //   selectedLevel = level;
+  //   _filterStudents();
+  // }
 
   void _navigateToStudentDetails(Student student) {
     Navigator.push(

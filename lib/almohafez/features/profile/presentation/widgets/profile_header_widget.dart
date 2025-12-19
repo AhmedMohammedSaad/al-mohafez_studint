@@ -55,17 +55,17 @@ class ProfileHeaderWidget extends StatelessWidget {
           //   ),
           // ),
           // SizedBox(height: 16.h),
-          // // الاسم: Bold، حجم 20px، لون #0A1D64
-          // Text(
-          //   fullName.isNotEmpty ? fullName : 'profile_user_name'.tr(),
-          //   style: TextStyle(
-          //     fontFamily: 'Cairo',
-          //     fontSize: 20.sp,
-          //     fontWeight: FontWeight.bold,
-          //     color: const Color(0xFF0A1D64),
-          //   ),
-          // ),
-          // SizedBox(height: 8.h),
+          // الاسم: Bold، حجم 20px، لون #0A1D64
+          Text(
+            fullName.isNotEmpty ? fullName : 'profile_user_name'.tr(),
+            style: TextStyle(
+              fontFamily: 'Cairo',
+              fontSize: 20.sp,
+              fontWeight: FontWeight.bold,
+              color: const Color(0xFF0A1D64),
+            ),
+          ),
+          SizedBox(height: 8.h),
           // البريد الإلكتروني: خط رمادي متوسط
           Text(
             email.isNotEmpty ? email : 'profile_user_email'.tr(),

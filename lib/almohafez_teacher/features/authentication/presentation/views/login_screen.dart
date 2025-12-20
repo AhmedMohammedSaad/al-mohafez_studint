@@ -1,18 +1,17 @@
-import 'package:almohafez/almohafez/core/presentation/view/main_screen.dart';
-import 'package:almohafez/almohafez/core/presentation/view/widgets/app_custom_image_view.dart';
-import 'package:almohafez/almohafez/core/routing/app_route.dart';
-import 'package:almohafez/almohafez/core/services/navigation_service/global_navigation_service.dart';
+import 'package:almohafez/almohafez/core/utils/supabase_error_handler.dart';
+import 'package:almohafez/almohafez/features/authentication/data/auth_service.dart';
+import 'package:almohafez/almohafez_teacher/core/presentation/view/main_screen.dart';
+import 'package:almohafez/almohafez_teacher/core/presentation/view/widgets/app_custom_image_view.dart';
+import 'package:almohafez/almohafez_teacher/features/authentication/presentation/views/sign_up_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:almohafez/almohafez/features/authentication/presentation/views/sign_up_screen.dart';
-import 'package:almohafez/almohafez/core/data/local_data/caching_helper.dart';
 import 'package:almohafez/almohafez/core/theme/app_colors.dart';
 import 'package:almohafez/almohafez/core/theme/app_text_style.dart';
 import '../widgets/auth_header.dart';
 import '../widgets/auth_text_field.dart';
 import '../widgets/auth_button.dart';
-import '../widgets/social_login_button.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -182,15 +181,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   ],
                 ),
 
-                SizedBox(height: 24.h),
+                // SizedBox(height: 24.h),
 
-                // Social Login Buttons
-                SocialLoginButton(
-                  type: SocialLoginType.google,
-                  onPressed: _handleGoogleLogin,
-                  customText: 'continue_with_google'.tr(),
-                ),
-
+                // // Social Login Buttons
+                // SocialLoginButton(
+                //   type: SocialLoginType.google,
+                //   onPressed: _handleGoogleLogin,
+                //   customText: 'continue_with_google'.tr(),
+                // ),
                 SizedBox(height: 32.h),
 
                 // Sign Up Link
@@ -246,52 +244,105 @@ class _LoginScreenState extends State<LoginScreen> {
     return null;
   }
 
+  // void _handleLogin() async {
+  //   if (!_formKey.currentState!.validate()) {}
+
+  //   setState(() {
+  //     _isLoading = true;
+  //   });
+
+  //   try {
+  //     await Future.delayed(const Duration(seconds: 2));
+
+  //     // Cache dummy tokens until API integration
+  //     await AppCacheHelper.cacheSecureString(
+  //       key: AppCacheHelper.accessTokenKey,
+  //       value: 'dummy_access_${DateTime.now().millisecondsSinceEpoch}',
+  //     );
+  //     await AppCacheHelper.cacheSecureString(
+  //       key: AppCacheHelper.refreshTokenKey,
+  //       value: 'dummy_refresh_${DateTime.now().millisecondsSinceEpoch}',
+  //     );
+
+  //     // // Save user email if remember me is checked
+  //     // if (_rememberMe) {
+  //     //   await AppCacheHelper.saveString('user_email', _emailController.text);
+  //     // }
+  //     Navigator.push(
+  //       context,
+  //       MaterialPageRoute(builder: (context) => const MainScreen()),
+  //     );
+  //     // Navigate to main app or dashboard
+  //     // if (mounted) {
+  //     // NavigationService.goTo(AppRouter.kMainScreen);
+  //     // }
+  //   } catch (e) {
+  //     // TODO: Handle login error
+  //     if (mounted) {
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(
+  //           content: Text('login_failed'.tr()),
+  //           backgroundColor: AppColors.primaryError,
+  //         ),
+  //       );
+  //     }
+  //   } finally {
+  //     if (mounted) {
+  //       setState(() {
+  //         _isLoading = false;
+  //       });
+  //     }
+  //   }
+  // }
   void _handleLogin() async {
-    if (!_formKey.currentState!.validate()) {
+    final formState = _formKey.currentState;
+    if (formState == null || !formState.validate()) {
       return;
     }
 
-    setState(() {
-      _isLoading = true;
-    });
+    setState(() => _isLoading = true);
 
     try {
-      await Future.delayed(const Duration(seconds: 2));
-
-      // Cache dummy tokens until API integration
-      await AppCacheHelper.cacheSecureString(
-        key: AppCacheHelper.accessTokenKey,
-        value: 'dummy_access_${DateTime.now().millisecondsSinceEpoch}',
-      );
-      await AppCacheHelper.cacheSecureString(
-        key: AppCacheHelper.refreshTokenKey,
-        value: 'dummy_refresh_${DateTime.now().millisecondsSinceEpoch}',
+      final authService = AuthService();
+      final response = await authService.signIn(
+        email: _emailController.text.trim(),
+        password: _passwordController.text,
       );
 
-      // // Save user email if remember me is checked
-      // if (_rememberMe) {
-      //   await AppCacheHelper.saveString('user_email', _emailController.text);
-      // }
-      NavigationService.goTo(AppRouter.kMainScreen);
-      // Navigate to main app or dashboard
-      // if (mounted) {
-      // NavigationService.goTo(AppRouter.kMainScreen);
-      // }
-    } catch (e) {
-      // TODO: Handle login error
-      if (mounted) {
+      final user = response.user;
+
+      if (!mounted) return;
+
+      if (response.session != null && user?.emailConfirmedAt != null) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const MainScreen()),
+        );
+      } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('login_failed'.tr()),
-            backgroundColor: AppColors.primaryError,
-          ),
+          const SnackBar(content: Text('Please verify your email first')),
         );
       }
+    } on AuthException catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(SupabaseErrorHandler.getErrorMessage(e)),
+          backgroundColor: AppColors.primaryError,
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('login_failed'.tr()),
+          backgroundColor: AppColors.primaryError,
+        ),
+      );
+      debugPrint(e.toString());
     } finally {
       if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
+        setState(() => _isLoading = false);
       }
     }
   }

@@ -1,6 +1,7 @@
 class Student {
   final String id;
-  final String name;
+  final String firstName;
+  final String lastName;
   final String email;
   final String phone;
   final String? profileImage;
@@ -15,7 +16,8 @@ class Student {
 
   const Student({
     required this.id,
-    required this.name,
+    required this.firstName,
+    required this.lastName,
     required this.email,
     required this.phone,
     this.profileImage,
@@ -32,11 +34,14 @@ class Student {
   factory Student.fromJson(Map<String, dynamic> json) {
     return Student(
       id: json['id'] ?? '',
-      name: json['name'] ?? '',
+      firstName: json['first_name'] ?? '',
+      lastName: json['last_name'] ?? '',
       email: json['email'] ?? '',
       phone: json['phone'] ?? '',
       profileImage: json['profile_image'],
-      joinDate: DateTime.parse(json['join_date'] ?? DateTime.now().toIso8601String()),
+      joinDate: DateTime.parse(
+        json['join_date'] ?? DateTime.now().toIso8601String(),
+      ),
       level: json['level'] ?? 'مبتدئ',
       totalSessions: json['total_sessions'] ?? 0,
       averageRating: (json['average_rating'] ?? 0.0).toDouble(),
@@ -50,7 +55,8 @@ class Student {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'name': name,
+      'first_name': firstName,
+      'last_name': lastName,
       'email': email,
       'phone': phone,
       'profile_image': profileImage,
@@ -67,7 +73,8 @@ class Student {
 
   Student copyWith({
     String? id,
-    String? name,
+    String? firstName,
+    String? lastName,
     String? email,
     String? phone,
     String? profileImage,
@@ -82,7 +89,8 @@ class Student {
   }) {
     return Student(
       id: id ?? this.id,
-      name: name ?? this.name,
+      firstName: firstName ?? this.firstName,
+      lastName: lastName ?? this.lastName,
       email: email ?? this.email,
       phone: phone ?? this.phone,
       profileImage: profileImage ?? this.profileImage,
@@ -99,7 +107,7 @@ class Student {
 
   @override
   String toString() {
-    return 'Student(id: $id, name: $name, level: $level, currentPart: $currentPart)';
+    return 'Student(id: $id, firstName: $firstName, lastName: $lastName, level: $level, currentPart: $currentPart)';
   }
 
   @override

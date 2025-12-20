@@ -1,10 +1,12 @@
+import '../../data/models/teacher_profile_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'statistic_card_widget.dart';
 
 class StatisticsCardsWidget extends StatelessWidget {
-  const StatisticsCardsWidget({super.key});
+  final TeacherProfileModel? profile;
+
+  const StatisticsCardsWidget({super.key, this.profile});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +21,8 @@ class StatisticsCardsWidget extends StatelessWidget {
           context,
           icon: Icons.school,
           title: 'students'.tr(),
-          value: '120',
+          value:
+              '0', // Placeholder as backend doesn't provide student count yet
           gradient: const LinearGradient(
             colors: [Color(0xFF3B82F6), Color(0xFF2563EB)],
             begin: Alignment.topLeft,
@@ -30,7 +33,7 @@ class StatisticsCardsWidget extends StatelessWidget {
           context,
           icon: Icons.class_,
           title: 'sessions'.tr(),
-          value: '45',
+          value: profile?.numSessions.toString() ?? '0',
           gradient: const LinearGradient(
             colors: [Color(0xFF10B981), Color(0xFF059669)],
             begin: Alignment.topLeft,
@@ -41,7 +44,7 @@ class StatisticsCardsWidget extends StatelessWidget {
           context,
           icon: Icons.star,
           title: 'evaluations'.tr(),
-          value: '4.8',
+          value: profile?.overallRating.toStringAsFixed(1) ?? '5.0',
           gradient: const LinearGradient(
             colors: [Color(0xFFF59E0B), Color(0xFFD97706)],
             begin: Alignment.topLeft,
@@ -50,9 +53,9 @@ class StatisticsCardsWidget extends StatelessWidget {
         ),
         _buildStatisticCard(
           context,
-          icon: Icons.wallet_giftcard,
-          title: 'points'.tr(),
-          value: '1,250',
+          icon: Icons.monetization_on,
+          title: 'session_price'.tr(), // Changed to session price
+          value: '${profile?.sessionPrice.toStringAsFixed(0) ?? '0'} \$',
           gradient: const LinearGradient(
             colors: [Color(0xFFEF4444), Color(0xFFDC2626)],
             begin: Alignment.topLeft,

@@ -184,7 +184,7 @@ class EvaluationsFilterWidget extends StatelessWidget {
                   ),
                   ...students.map((student) {
                     return DropdownMenuItem<String>(
-                      value: student.name,
+                      value: student.firstName,
                       child: Row(
                         children: [
                           CircleAvatar(
@@ -192,7 +192,7 @@ class EvaluationsFilterWidget extends StatelessWidget {
                             backgroundColor: AppColors.primaryBlueViolet
                                 .withOpacity(0.1),
                             child: Text(
-                              student.name[0],
+                              student.firstName[0],
                               style: AppTextStyle.textStyle12.copyWith(
                                 color: AppColors.primaryBlueViolet,
                                 fontWeight: FontWeight.bold,
@@ -202,7 +202,7 @@ class EvaluationsFilterWidget extends StatelessWidget {
                           SizedBox(width: 8.w),
                           Expanded(
                             child: Text(
-                              student.name,
+                              student.firstName,
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),

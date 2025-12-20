@@ -767,6 +767,7 @@
   "user_activated_error_action": "Go to Login",
   "user_activated_error_title": "Error activating user",
   "user_activated_error_subtitle": "Please try again later",
+  "sign_up_failed": "Sign Up Failed",
   "login_failed": "Login Failed",
   "login_failed_message": "Invalid email or password",
   "login_failed_action": "Go to Login",

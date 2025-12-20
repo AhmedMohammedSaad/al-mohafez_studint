@@ -161,7 +161,7 @@ class _LiveSessionScreenState extends State<LiveSessionScreen> {
                           backgroundColor: AppColors.primaryBlueViolet
                               .withOpacity(0.1),
                           child: Text(
-                            widget.student.name.substring(0, 1),
+                            widget.student.firstName.substring(0, 1),
                             style: AppTextStyle.textStyle18Bold.copyWith(
                               color: AppColors.primaryBlueViolet,
                             ),
@@ -173,7 +173,7 @@ class _LiveSessionScreenState extends State<LiveSessionScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                widget.student.name,
+                                widget.student.firstName,
                                 style: AppTextStyle.textStyle18Bold.copyWith(
                                   color: AppColors.textPrimary,
                                 ),

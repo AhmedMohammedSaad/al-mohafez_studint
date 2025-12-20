@@ -156,7 +156,7 @@ class _AddEvaluationScreenState extends State<AddEvaluationScreen> {
                       ),
                     ),
                     Text(
-                      widget.student.name,
+                      widget.student.firstName,
                       style: AppTextStyle.textStyle14Bold.copyWith(),
                     ),
                   ],
@@ -384,7 +384,7 @@ class _AddEvaluationScreenState extends State<AddEvaluationScreen> {
         id: DateTime.now().millisecondsSinceEpoch.toString(),
         sessionId: widget.session.id,
         studentId: widget.student.id,
-        studentName: widget.student.name,
+        studentName: widget.student.firstName,
         evaluationDate: DateTime.now(),
         memorizationScore: _memorizationScore,
         tajweedScore: _tajweedScore,

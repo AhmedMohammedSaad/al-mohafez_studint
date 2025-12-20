@@ -1,6 +1,7 @@
 import 'package:almohafez/almohafez/core/presentation/view/widgets/app_custom_image_view.dart';
 import 'package:almohafez/almohafez/core/routing/app_route.dart';
-import 'package:almohafez/almohafez_teacher/features/profile/data/models/local_user_model.dart';
+import 'package:almohafez/almohafez_teacher/features/authentication/presentation/views/login_screen.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -8,13 +9,10 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:almohafez/almohafez/core/theme/app_colors.dart';
 import 'package:almohafez/almohafez/core/theme/app_text_style.dart';
-import 'package:nb_utils/nb_utils.dart' as NavigationService;
 import '../widgets/auth_header.dart';
 import '../widgets/auth_text_field.dart';
 import '../widgets/auth_button.dart';
-import '../widgets/social_login_button.dart';
-import 'package:almohafez/almohafez/core/utils/app_consts.dart';
-import 'package:almohafez/almohafez/core/data/local_data/caching_helper.dart';
+import 'package:almohafez/almohafez_teacher/features/authentication/data/teacher_auth_service.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -36,9 +34,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
   bool _acceptTerms = false;
   File? _profileImage;
   final ImagePicker _picker = ImagePicker();
+  String _selectedGender = 'male';
 
   // Availability schedule
-  Map<String, Map<String, TimeOfDay?>> _availability = {
+  final Map<String, Map<String, TimeOfDay?>> _availability = {
     'saturday': {'start': null, 'end': null},
     'sunday': {'start': null, 'end': null},
     'monday': {'start': null, 'end': null},
@@ -157,6 +156,50 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                   validator: _validatePhone,
                   textInputAction: TextInputAction.next,
+                ),
+
+                SizedBox(height: 20.h),
+
+                // Gender Selection
+                DropdownButtonFormField<String>(
+                  value: _selectedGender,
+                  decoration: InputDecoration(
+                    labelText: 'gender'.tr(),
+                    prefixIcon: Icon(
+                      Icons.person_outline,
+                      color: AppColors.textSecondary,
+                      size: 20.sp,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.r),
+                      borderSide: BorderSide(color: AppColors.borderLight),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.r),
+                      borderSide: BorderSide(color: AppColors.borderLight),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.r),
+                      borderSide: BorderSide(
+                        color: AppColors.primaryBlueViolet,
+                      ),
+                    ),
+                  ),
+                  items: [
+                    DropdownMenuItem(
+                      value: 'male',
+                      child: Text('gender_male'.tr()),
+                    ),
+                    DropdownMenuItem(
+                      value: 'female',
+                      child: Text('gender_female'.tr()),
+                    ),
+                  ],
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedGender = value!;
+                    });
+                  },
                 ),
 
                 SizedBox(height: 20.h),
@@ -500,9 +543,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     if (value.length < 8) {
       return 'password_min_length'.tr();
     }
-    if (!RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)').hasMatch(value)) {
-      return 'password_requirements'.tr();
-    }
+
     return null;
   }
 
@@ -716,43 +757,37 @@ class _SignUpScreenState extends State<SignUpScreen> {
     });
 
     try {
-      // TODO: Implement actual sign up API logic
-      // Prepare local user data for caching
-      final localUser = LocalUserModel(
+      final authService = TeacherAuthService();
+
+      await authService.signUp(
+        email: _emailController.text.trim(),
+        password: _passwordController.text,
         firstName: _firstNameController.text.trim(),
         lastName: _lastNameController.text.trim(),
-        email: _emailController.text.trim(),
         phone: _phoneController.text.trim(),
-        profileImagePath: _profileImage?.path,
+        gender: _selectedGender,
+        qualifications: _qualificationsController.text.trim(),
+        availability: _availability,
+        profileImage: _profileImage,
       );
 
-      // Cache local user and dummy tokens (until API integration)
-      AppConst.userProfile = localUser;
-      await AppCacheHelper.cacheSecureString(
-        key: AppCacheHelper.accessTokenKey,
-        value: 'dummy_access_${DateTime.now().millisecondsSinceEpoch}',
-      );
-      await AppCacheHelper.cacheSecureString(
-        key: AppCacheHelper.refreshTokenKey,
-        value: 'dummy_refresh_${DateTime.now().millisecondsSinceEpoch}',
-      );
-      await AppCacheHelper.markProfileCompleted();
-
-      // For debugging
-      print('User registration data cached: ${localUser.toJson()}');
-
-      await Future.delayed(const Duration(seconds: 2));
-
-      // Navigate to verification screen or main app
-      if (mounted) {
-        NavigationService.push(AppRouter.kMainScreen as Widget);
-      }
-    } catch (e) {
-      // TODO: Handle sign up error
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('sign_up_failed'.tr()),
+            content: Text('تم إنشاء الحساب بنجاح'),
+            backgroundColor: Colors.green,
+          ),
+        );
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const LoginScreen()),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('sign_up_failed'.tr() + ': ${e.toString()}'),
             backgroundColor: AppColors.primaryError,
           ),
         );
@@ -767,6 +802,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   void _navigateToLogin() {
-    NavigationService.push(AppRouter.kLoginScreen as Widget);
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const LoginScreen()),
+    );
   }
 }

@@ -1,22 +1,19 @@
-import 'dart:io';
-
-import 'package:almohafez/almohafez_teacher/features/profile/data/models/local_user_model.dart';
+import 'package:almohafez/almohafez/core/presentation/view/widgets/app_custom_image_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:almohafez/almohafez/core/utils/app_consts.dart';
+import '../../data/models/teacher_profile_model.dart';
 
 class ProfileHeaderWidget extends StatelessWidget {
-  const ProfileHeaderWidget({super.key});
+  final TeacherProfileModel? profile;
+
+  const ProfileHeaderWidget({super.key, this.profile});
 
   @override
   Widget build(BuildContext context) {
-    final LocalUserModel? user = AppConst.userProfile;
-    final String displayName = user != null
-        ? '${user.firstName} ${user.lastName}'.trim()
-        : 'profile_user_name'.tr();
-    final String displayEmail = user?.email ?? 'profile_user_email'.tr();
-    final String? imagePath = user?.profileImagePath;
+    final String displayName = profile?.fullName ?? 'profile_user_name'.tr();
+    final String displayEmail = profile?.email ?? 'profile_user_email'.tr();
+    final String? imagePath = profile?.profilePictureUrl;
 
     return Container(
       padding: EdgeInsets.all(24.w),
@@ -48,9 +45,15 @@ class ProfileHeaderWidget extends StatelessWidget {
             child: CircleAvatar(
               radius: 45.r,
               backgroundColor: const Color(0xFF0A1D64).withOpacity(0.1),
-              backgroundImage: imagePath != null && imagePath.isNotEmpty
-                  ? FileImage(File(imagePath))
-                  : const AssetImage('assets/images/placeholder.webp'),
+              child: ClipOval(
+                child: AppCustomImageView(
+                  imagePath: imagePath,
+                  width: 90.w,
+                  height: 90.w,
+                  fit: BoxFit.cover,
+                  placeHolder: 'assets/images/placeholder.webp',
+                ),
+              ),
             ),
           ),
           SizedBox(height: 16.h),

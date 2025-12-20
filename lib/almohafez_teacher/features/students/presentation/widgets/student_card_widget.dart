@@ -26,9 +26,9 @@ class StudentCardWidget extends StatelessWidget {
           borderRadius: BorderRadius.circular(12.r),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.1),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
+              color: const Color.fromARGB(255, 54, 53, 53).withOpacity(0.1),
+              blurRadius: 5,
+              offset: const Offset(0, 5),
             ),
           ],
         ),
@@ -62,7 +62,7 @@ class StudentCardWidget extends StatelessWidget {
 
           // اسم الطالب
           Text(
-            student.name,
+            "${student.firstName} ${student.lastName}",
             style: AppTextStyle.font14DarkBlueMedium,
             textAlign: TextAlign.center,
             maxLines: 2,
@@ -176,7 +176,7 @@ class StudentCardWidget extends StatelessWidget {
                   children: [
                     Expanded(
                       child: Text(
-                        student.name,
+                        "${student.firstName} ${student.lastName}",
                         style: AppTextStyle.font16DarkBlueMedium,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,

@@ -1,6 +1,6 @@
-import 'package:almohafez/almohafez/core/helper/lifecycle_maneger/shardpref.dart';
-import 'package:almohafez/almohafez/core/routing/app_route.dart';
 import 'package:almohafez/almohafez/core/services/navigation_service/global_navigation_service.dart';
+import 'package:almohafez/almohafez_teacher/core/routing/app_route.dart';
+import 'package:almohafez/almohafez_teacher/features/authentication/presentation/views/login_screen.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -128,8 +128,12 @@ class _WelcomeOnboardingScreenState extends State<WelcomeOnboardingScreen> {
   }
 
   void _onStartJourney(BuildContext context) {
-    onBoardingShow = true;
-    NavigationService.goTo(AppRouter.kLoginScreen);
-    PrefsHelper.saveBool('onBoardingShow', onBoardingShow);
+    // onBoardingShow = true;
+    // NavigationService.goTo(AppRouter.kLoginScreen);
+    // PrefsHelper.saveBool('onBoardingShow', onBoardingShow);
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const LoginScreen()),
+    );
   }
 }

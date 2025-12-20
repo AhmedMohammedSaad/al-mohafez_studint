@@ -108,41 +108,40 @@ class StudentInfoCard extends StatelessWidget {
           SizedBox(height: 12.h),
 
           // الصف الثالث - معلومات الاتصال
-          Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('رقم الهاتف', style: AppTextStyle.font12GreyMedium),
-                    SizedBox(height: 4.h),
-                    Text(
-                      student.phone,
-                      style: AppTextStyle.font14DarkBlueMedium,
-                    ),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'البريد الإلكتروني',
-                      style: AppTextStyle.font12GreyMedium,
-                    ),
-                    SizedBox(height: 4.h),
-                    Text(
-                      student.email,
-                      style: AppTextStyle.font14DarkBlueMedium,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-
+          // Row(
+          //   children: [
+          //     Expanded(
+          //       child: Column(
+          //         crossAxisAlignment: CrossAxisAlignment.start,
+          //         children: [
+          //           Text('رقم الهاتف', style: AppTextStyle.font12GreyMedium),
+          //           SizedBox(height: 4.h),
+          //           Text(
+          //             student.phone,
+          //             style: AppTextStyle.font14DarkBlueMedium,
+          //           ),
+          //         ],
+          //       ),
+          //     ),
+          //     Expanded(
+          //       child: Column(
+          //         crossAxisAlignment: CrossAxisAlignment.start,
+          //         children: [
+          //           Text(
+          //             'البريد الإلكتروني',
+          //             style: AppTextStyle.font12GreyMedium,
+          //           ),
+          //           SizedBox(height: 4.h),
+          //           Text(
+          //             student.email,
+          //             style: AppTextStyle.font14DarkBlueMedium,
+          //             overflow: TextOverflow.ellipsis,
+          //           ),
+          //         ],
+          //       ),
+          //     ),
+          //   ],
+          // ),
           SizedBox(height: 16.h),
 
           // شريط التقدم

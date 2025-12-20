@@ -610,6 +610,7 @@
   "user_activated_error_action": "ไป إلى تسجيل الدخول",
   "user_activated_error_title": "خطأ في تفعيل المستخدم",
   "user_activated_error_subtitle": "يرجى المحاولة مرة أخرى لاحقا",
+  "sign_up_failed": "فشل إنشاء الحساب",
   "login_failed": "فشل تسجيل الدخول",
   "login_failed_message": "البريد الإلكتروني أو كلمة المرور غير صحيحة",
   "contact_us_title": "تواصل معنا",

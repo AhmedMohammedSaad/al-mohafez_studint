@@ -1,72 +1,101 @@
+import 'package:almohafez/almohafez_teacher/features/profile/presentation/cubit/teacher_profile_cubit.dart';
+import 'package:almohafez/almohafez_teacher/features/profile/presentation/cubit/teacher_profile_state.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'action_button_widget.dart';
+import '../../data/models/teacher_profile_model.dart';
+import '../views/edit_profile_screen.dart';
+import '../views/change_password_screen.dart';
+import '../views/contact_us_screen.dart';
+import '../../../authentication/presentation/views/login_screen.dart';
 
 class ActionButtonsWidget extends StatelessWidget {
-  const ActionButtonsWidget({super.key});
+  final TeacherProfileModel? profile;
+
+  const ActionButtonsWidget({super.key, this.profile});
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        ActionButtonWidget(
-          title: 'profile_edit_data'.tr(),
-          icon: Icons.edit,
-          color: const Color(0xFF3B82F6),
-          onPressed: () => _handleEditProfile(context),
-        ),
-        SizedBox(height: 12.h),
-        ActionButtonWidget(
-          title: 'profile_change_password'.tr(),
-          icon: Icons.lock,
-          color: const Color(0xFF10B981),
-          onPressed: () => _handleChangePassword(context),
-        ),
-        SizedBox(height: 12.h),
-        ActionButtonWidget(
-          title: 'profile_contact_us'.tr(),
-          icon: Icons.support_agent,
-          color: const Color(0xFFF59E0B),
-          onPressed: () => _handleContactUs(context),
-        ),
-        SizedBox(height: 12.h),
-        ActionButtonWidget(
-          title: 'profile_delete_account'.tr(),
-          icon: Icons.delete_forever,
-          color: const Color(0xFFEF4444),
-          onPressed: () => _handleDeleteAccount(context),
-        ),
-        SizedBox(height: 12.h),
-        ActionButtonWidget(
-          title: 'profile_logout'.tr(),
-          icon: Icons.logout,
-          color: const Color(0xFF6B7280),
-          onPressed: () => _handleLogout(context),
-        ),
-      ],
+    return BlocListener<TeacherProfileCubit, TeacherProfileState>(
+      listener: (context, state) {
+        if (state is TeacherProfileLoggedOut) {
+          // Navigate to Login Screen and remove all previous routes
+          Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (_) => const LoginScreen()),
+            (route) => false,
+          );
+        }
+      },
+      child: Column(
+        children: [
+          ActionButtonWidget(
+            title: 'profile_edit_data'.tr(),
+            icon: Icons.edit,
+            color: const Color(0xFF3B82F6),
+            onPressed: () => _handleEditProfile(context),
+          ),
+          SizedBox(height: 12.h),
+          ActionButtonWidget(
+            title: 'profile_change_password'.tr(),
+            icon: Icons.lock,
+            color: const Color(0xFF10B981),
+            onPressed: () => _handleChangePassword(context),
+          ),
+          SizedBox(height: 12.h),
+          ActionButtonWidget(
+            title: 'profile_contact_us'.tr(),
+            icon: Icons.support_agent,
+            color: const Color(0xFFF59E0B),
+            onPressed: () => _handleContactUs(context),
+          ),
+          SizedBox(height: 12.h),
+          ActionButtonWidget(
+            title: 'profile_delete_account'.tr(),
+            icon: Icons.delete_forever,
+            color: const Color(0xFFEF4444),
+            onPressed: () => _handleDeleteAccount(context),
+          ),
+          SizedBox(height: 12.h),
+          ActionButtonWidget(
+            title: 'profile_logout'.tr(),
+            icon: Icons.logout,
+            color: const Color(0xFF6B7280),
+            onPressed: () => _handleLogout(context),
+          ),
+        ],
+      ),
     );
   }
 
   void _handleEditProfile(BuildContext context) {
-    // TODO: Navigate to edit profile screen
-    ScaffoldMessenger.of(
+    if (profile == null) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Wait for profile to load')));
+      return;
+    }
+    Navigator.push(
       context,
-    ).showSnackBar(SnackBar(content: Text('profile_edit_data_message'.tr())));
+      MaterialPageRoute(
+        builder: (context) => EditProfileScreen(profile: profile!),
+      ),
+    );
   }
 
   void _handleChangePassword(BuildContext context) {
-    // TODO: Navigate to change password screen
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('profile_change_password_message'.tr())),
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const ChangePasswordScreen()),
     );
   }
 
   void _handleContactUs(BuildContext context) {
-    // TODO: Navigate to contact us screen
-    ScaffoldMessenger.of(
+    Navigator.push(
       context,
-    ).showSnackBar(SnackBar(content: Text('profile_contact_us_message'.tr())));
+      MaterialPageRoute(builder: (context) => const ContactUsScreen()),
+    );
   }
 
   void _handleDeleteAccount(BuildContext context) {
@@ -77,10 +106,13 @@ class ActionButtonsWidget extends StatelessWidget {
       'profile_delete_account_confirm'.tr(),
       const Color(0xFFEF4444),
       () {
-        // TODO: Implement account deletion
         Navigator.of(context).pop();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('profile_delete_account_success'.tr())),
+
+        context.read<TeacherProfileCubit>().deleteAccount();
+
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (_) => const LoginScreen()),
+          (route) => false,
         );
       },
     );
@@ -93,12 +125,15 @@ class ActionButtonsWidget extends StatelessWidget {
       'profile_logout_message'.tr(),
       'profile_logout_confirm'.tr(),
       const Color(0xFF6B7280),
-      () {
-        // TODO: Implement logout
+      () async {
         Navigator.of(context).pop();
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('profile_logout_success'.tr())));
+
+        context.read<TeacherProfileCubit>().logout();
+
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (_) => const LoginScreen()),
+          (route) => false,
+        );
       },
     );
   }

@@ -21,12 +21,13 @@ class Session {
   final Duration duration;
   final SessionType type;
   final SessionStatus status;
+  final String? meetingUrl;
   final String? notes;
   final DateTime? startTime;
   final DateTime? endTime;
-  final String? topic; // الموضوع أو الجزء المدروس
-  final bool isRecurring; // هل الجلسة متكررة
-  final String? recurringPattern; // نمط التكرار (يومي، أسبوعي، إلخ)
+  final String? topic;
+  final bool isRecurring;
+  final String? recurringPattern;
 
   const Session({
     required this.id,
@@ -42,6 +43,7 @@ class Session {
     this.topic,
     this.isRecurring = false,
     this.recurringPattern,
+    this.meetingUrl,
   });
 
   factory Session.fromJson(Map<String, dynamic> json) {
@@ -49,22 +51,23 @@ class Session {
       id: json['id'] ?? '',
       studentId: json['student_id'] ?? '',
       studentName: json['student_name'] ?? '',
-      scheduledDate: DateTime.parse(json['scheduled_date'] ?? DateTime.now().toIso8601String()),
-      duration: Duration(minutes: json['duration_minutes'] ?? 60),
-      type: SessionType.values.firstWhere(
-        (e) => e.toString().split('.').last == json['type'],
-        orElse: () => SessionType.memorization,
+      scheduledDate: DateTime.parse(
+        json['selected_date'] ?? DateTime.now().toIso8601String(),
       ),
+      duration: const Duration(minutes: 60), // Default or fetch if available
+      type: SessionType.memorization, // Default as not in bookings
       status: SessionStatus.values.firstWhere(
         (e) => e.toString().split('.').last == json['status'],
         orElse: () => SessionStatus.scheduled,
       ),
       notes: json['notes'],
-      startTime: json['start_time'] != null ? DateTime.parse(json['start_time']) : null,
-      endTime: json['end_time'] != null ? DateTime.parse(json['end_time']) : null,
-      topic: json['topic'],
-      isRecurring: json['is_recurring'] ?? false,
-      recurringPattern: json['recurring_pattern'],
+      // Logic for start time can be improved if selected_time_slot format is known
+      startTime: null,
+      endTime: null,
+      topic: null, // Not in bookings
+      isRecurring: false,
+      recurringPattern: null,
+      meetingUrl: json['meeting_url'],
     );
   }
 
@@ -73,16 +76,10 @@ class Session {
       'id': id,
       'student_id': studentId,
       'student_name': studentName,
-      'scheduled_date': scheduledDate.toIso8601String(),
-      'duration_minutes': duration.inMinutes,
-      'type': type.toString().split('.').last,
+      'selected_date': scheduledDate.toIso8601String(),
       'status': status.toString().split('.').last,
       'notes': notes,
-      'start_time': startTime?.toIso8601String(),
-      'end_time': endTime?.toIso8601String(),
-      'topic': topic,
-      'is_recurring': isRecurring,
-      'recurring_pattern': recurringPattern,
+      'meeting_url': meetingUrl,
     };
   }
 
@@ -100,6 +97,7 @@ class Session {
     String? topic,
     bool? isRecurring,
     String? recurringPattern,
+    String? meetingUrl,
   }) {
     return Session(
       id: id ?? this.id,
@@ -115,6 +113,7 @@ class Session {
       topic: topic ?? this.topic,
       isRecurring: isRecurring ?? this.isRecurring,
       recurringPattern: recurringPattern ?? this.recurringPattern,
+      meetingUrl: meetingUrl ?? this.meetingUrl,
     );
   }
 
@@ -127,7 +126,8 @@ class Session {
   }
 
   bool get isUpcoming {
-    return scheduledDate.isAfter(DateTime.now()) && status == SessionStatus.scheduled;
+    return scheduledDate.isAfter(DateTime.now()) &&
+        status == SessionStatus.scheduled;
   }
 
   bool get isPast {

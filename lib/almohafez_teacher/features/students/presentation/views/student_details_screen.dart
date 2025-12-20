@@ -117,7 +117,7 @@ class _StudentDetailsScreenState extends State<StudentDetailsScreen>
                           SizedBox(height: 12.h),
                           // اسم الطالب
                           Text(
-                            displayStudent.firstName,
+                            "${displayStudent.firstName} ${displayStudent.lastName}",
                             style: AppTextStyle.font20Blackw700,
                             textAlign: TextAlign.center,
                           ),

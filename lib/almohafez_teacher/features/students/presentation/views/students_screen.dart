@@ -93,63 +93,87 @@ class _StudentsScreenState extends State<StudentsScreen> {
 
           // قائمة الطلاب
           Expanded(
-            child: BlocBuilder<TeacherStudentsCubit, TeacherStudentsState>(
-              builder: (context, state) {
-                if (state is TeacherStudentsLoading) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (state is TeacherStudentsError) {
-                  print(state.message);
-                  if (state.message.contains('User not logged in')) {
-                    return const SizedBox.shrink();
-                  }
-                  return Center(child: Text(state.message));
-                } else if (state is TeacherStudentsLoaded) {
-                  if (state.students.isEmpty) {
-                    return Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
+            child: RefreshIndicator(
+              onRefresh: () async {
+                await context.read<TeacherStudentsCubit>().loadStudents();
+              },
+              child: BlocBuilder<TeacherStudentsCubit, TeacherStudentsState>(
+                builder: (context, state) {
+                  if (state is TeacherStudentsLoading) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (state is TeacherStudentsError) {
+                    print(state.message);
+                    if (state.message.contains('User not logged in')) {
+                      return const SizedBox.shrink();
+                    }
+                    return ListView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      children: [
+                        SizedBox(height: 200.h),
+                        Center(child: Text(state.message)),
+                      ],
+                    );
+                  } else if (state is TeacherStudentsLoaded) {
+                    if (state.students.isEmpty) {
+                      return ListView(
+                        physics: const AlwaysScrollableScrollPhysics(),
                         children: [
-                          Icon(
-                            Icons.people_outline,
-                            size: 64.sp,
-                            color: Colors.grey[400],
-                          ),
-                          SizedBox(height: 16.h),
-                          Text(
-                            'لا يوجد طلاب حالياً',
-                            style: AppTextStyle.font16DarkBlueBold,
-                          ),
-                          SizedBox(height: 8.h),
-                          Text(
-                            'سيبدأ الطلاب بالظهور هنا عند بدء الجلسات',
-                            style: AppTextStyle.font14GreyRegular,
+                          SizedBox(height: 100.h),
+                          Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.people_outline,
+                                  size: 64.sp,
+                                  color: Colors.grey[400],
+                                ),
+                                SizedBox(height: 16.h),
+                                Text(
+                                  'لا يوجد طلاب حالياً',
+                                  style: AppTextStyle.font16DarkBlueBold,
+                                ),
+                                SizedBox(height: 8.h),
+                                Text(
+                                  'سيبدأ الطلاب بالظهور هنا عند بدء الجلسات',
+                                  style: AppTextStyle.font14GreyRegular,
+                                ),
+                              ],
+                            ),
                           ),
                         ],
-                      ),
-                    );
+                      );
+                    }
+
+                    final displayStudents = state.students.where((student) {
+                      final name = '${student.firstName} ${student.lastName}';
+                      final matchesSearch =
+                          name.toLowerCase().contains(
+                            searchQuery.toLowerCase(),
+                          ) ||
+                          student.currentPart.toLowerCase().contains(
+                            searchQuery.toLowerCase(),
+                          );
+                      return matchesSearch;
+                    }).toList();
+
+                    if (displayStudents.isEmpty) {
+                      return ListView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        children: [
+                          SizedBox(height: 100.h),
+                          _buildEmptyState(),
+                        ],
+                      );
+                    }
+
+                    return isGridView
+                        ? _buildGridView(displayStudents)
+                        : _buildListView(displayStudents);
                   }
-
-                  final displayStudents = state.students.where((student) {
-                    final matchesSearch =
-                        student.firstName.toLowerCase().contains(
-                          searchQuery.toLowerCase(),
-                        ) ||
-                        student.currentPart.toLowerCase().contains(
-                          searchQuery.toLowerCase(),
-                        );
-                    return matchesSearch;
-                  }).toList();
-
-                  if (displayStudents.isEmpty) {
-                    return _buildEmptyState();
-                  }
-
-                  return isGridView
-                      ? _buildGridView(displayStudents)
-                      : _buildListView(displayStudents);
-                }
-                return const SizedBox.shrink();
-              },
+                  return const SizedBox.shrink();
+                },
+              ),
             ),
           ),
           65.height,

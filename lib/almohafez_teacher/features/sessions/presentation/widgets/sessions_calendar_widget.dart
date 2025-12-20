@@ -51,7 +51,7 @@ class SessionsCalendarWidget extends StatelessWidget {
           SizedBox(height: 16.h),
           CalendarDatePicker(
             initialDate: selectedDate,
-            firstDate: DateTime.now(),
+            firstDate: DateTime.now().subtract(const Duration(days: 365)),
             lastDate: DateTime.now().add(const Duration(days: 365)),
             onDateChanged: (DateTime value) {
               onDateSelected(value);

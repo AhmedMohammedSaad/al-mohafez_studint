@@ -15,6 +15,8 @@ import 'almohafez_teacher/features/students/presentation/cubit/teacher_students_
 import 'almohafez_teacher/features/students/data/repositories/teacher_students_repo.dart';
 import 'almohafez_teacher/features/students/presentation/cubit/student_details_cubit.dart';
 import 'almohafez_teacher/features/students/data/repositories/student_details_repo.dart';
+import 'almohafez_teacher/features/sessions/presentation/cubit/sessions_cubit.dart';
+import 'almohafez_teacher/features/sessions/data/repositories/sessions_repo.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -45,8 +47,12 @@ void main() async {
           ),
           BlocProvider(
             create: (_) => StudentDetailsCubit(StudentDetailsRepo()),
-          ), // Add this line
-          // BlocProvider(create: (context) => SessionsCubit(SessionsRepo())),
+          ),
+          BlocProvider(
+            create: (_) =>
+                SessionsCubit(SessionsRepo(Supabase.instance.client))
+                  ..loadSessions(),
+          ),
         ],
         child: MyApp(),
       ),

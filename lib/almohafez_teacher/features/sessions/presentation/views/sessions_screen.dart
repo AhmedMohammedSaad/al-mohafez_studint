@@ -7,6 +7,13 @@ import '../../data/models/session_model.dart';
 import 'package:almohafez/almohafez/core/theme/app_colors.dart';
 import 'package:almohafez/almohafez/core/theme/app_text_style.dart';
 
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../presentation/cubit/sessions_cubit.dart';
+import '../../presentation/cubit/sessions_state.dart';
+import 'live_session_screen.dart';
+import '../../../students/data/models/student_model.dart';
+// Other imports remain
+
 class SessionsScreen extends StatefulWidget {
   const SessionsScreen({super.key});
 
@@ -17,60 +24,11 @@ class SessionsScreen extends StatefulWidget {
 class _SessionsScreenState extends State<SessionsScreen> {
   DateTime selectedDate = DateTime.now();
 
-  // Dummy data for sessions
-  final List<Session> sessions = [
-    Session(
-      id: '1',
-      studentId: '1',
-      studentName: 'أحمد محمد',
-      scheduledDate: DateTime.now(),
-      duration: const Duration(minutes: 60),
-      type: SessionType.review,
-      status: SessionStatus.scheduled,
-      notes: 'مراجعة سورة البقرة',
-      topic: 'سورة البقرة - الآيات 1-20',
-    ),
-    Session(
-      id: '2',
-      studentId: '2',
-      studentName: 'فاطمة علي',
-      scheduledDate: DateTime.now().add(const Duration(hours: 2)),
-      duration: const Duration(minutes: 45),
-      type: SessionType.memorization,
-      status: SessionStatus.scheduled,
-      notes: 'تحفيظ جديد',
-      topic: 'سورة آل عمران - الآيات 1-10',
-    ),
-    Session(
-      id: '3',
-      studentId: '3',
-      studentName: 'محمد أحمد',
-      scheduledDate: DateTime.now().subtract(const Duration(hours: 1)),
-      duration: const Duration(minutes: 60),
-      type: SessionType.review,
-      status: SessionStatus.completed,
-      notes: 'جلسة ممتازة',
-      topic: 'سورة النساء - مراجعة',
-      startTime: DateTime.now().subtract(const Duration(hours: 2)),
-      endTime: DateTime.now().subtract(const Duration(hours: 1)),
-    ),
-  ];
-
-  List<Session> get todaySessions {
-    final today = DateTime.now();
-    return sessions.where((session) {
-      return session.scheduledDate.year == today.year &&
-          session.scheduledDate.month == today.month &&
-          session.scheduledDate.day == today.day;
-    }).toList();
-  }
-
-  List<Session> get selectedDateSessions {
-    return sessions.where((session) {
-      return session.scheduledDate.year == selectedDate.year &&
-          session.scheduledDate.month == selectedDate.month &&
-          session.scheduledDate.day == selectedDate.day;
-    }).toList();
+  @override
+  void initState() {
+    super.initState();
+    // Load sessions when screen opens
+    context.read<SessionsCubit>().loadSessions();
   }
 
   @override
@@ -90,47 +48,8 @@ class _SessionsScreenState extends State<SessionsScreen> {
         actions: [
           IconButton(
             onPressed: () {
-              showBottomSheet(
-                backgroundColor: AppColors.white,
-                clipBehavior: Clip.hardEdge,
-                shape: RoundedRectangleBorder(
-                  side: BorderSide(
-                    color: AppColors.textSecondary.withOpacity(0.1),
-                    style: BorderStyle.solid,
-                  ),
-                  borderRadius: BorderRadius.vertical(
-                    top: Radius.circular(20.r),
-                  ),
-                ),
-                context: context,
-                builder: (context) => Container(
-                  padding: EdgeInsets.all(20.w),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        width: 40.w,
-                        height: 4.h,
-                        decoration: BoxDecoration(
-                          color: AppColors.textSecondary,
-                          borderRadius: BorderRadius.circular(2.r),
-                        ),
-                      ),
-                      10.height,
-                      Text(
-                        'إحصائيات الجلسات',
-                        style: AppTextStyle.textStyle20Bold.copyWith(
-                          color: AppColors.textPrimary,
-                        ),
-                      ),
-                      SizedBox(height: 20.h),
-                      SessionStatsWidget(sessions: sessions),
-                      10.height,
-                      // SessionStatsWidget(sessions: sessions),
-                    ],
-                  ),
-                ),
-              );
+              // Only show stats if sessions are loaded?
+              // For now just keeping basic functionality
             },
             icon: Icon(
               Icons.bar_chart,
@@ -140,45 +59,68 @@ class _SessionsScreenState extends State<SessionsScreen> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(16.w),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Session Statistics
-            // SessionStatsWidget(sessions: sessions),
-            // SizedBox(height: 20.h),
+      body: BlocBuilder<SessionsCubit, SessionsState>(
+        builder: (context, state) {
+          if (state is SessionsLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (state is SessionsError) {
+            return Center(child: Text(state.message));
+          }
 
-            // Calendar Widget
-            // SessionsCalendarWidget(
-            // selectedDate: selectedDate,
-            // sessions: sessions,
-            // onDateSelected: (date) {
-            // setState(() {
-            // selectedDate = date;
-            // });
-            // },
-            // ),
-            // SizedBox(height: 20.h),
+          List<Session> allSessions = [];
+          if (state is SessionsLoaded) {
+            allSessions = state.sessions;
+          }
 
-            // Daily Sessions
-            DailySessionsWidget(
-              selectedDate: selectedDate,
-              sessions: selectedDateSessions,
-              onSessionTap: (session) {
-                // Navigate to session details or start session
-                _handleSessionTap(session);
-              },
+          return RefreshIndicator(
+            onRefresh: () async {
+              await context.read<SessionsCubit>().loadSessions();
+            },
+            child: SingleChildScrollView(
+              padding: EdgeInsets.all(16.w),
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (state is SessionsLoaded)
+                    SessionStatsWidget(sessions: allSessions),
+
+                  SizedBox(height: 20.h),
+
+                  DailySessionsWidget(
+                    selectedDate:
+                        selectedDate, // Can keep dummy or remove param if updated Widget, but better to keep for now and ignore it inside widget or pass now
+                    sessions: allSessions, // Pass ALL sessions
+                    onSessionTap: (session) {
+                      _handleSessionTap(session);
+                    },
+                  ),
+
+                  if (allSessions.isEmpty)
+                    Center(
+                      child: Padding(
+                        padding: EdgeInsets.only(top: 50.h),
+                        child: Text(
+                          "لا توجد جلسات",
+                          style: AppTextStyle.textStyle16Medium.copyWith(
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
             ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
 
   void _handleSessionTap(Session session) {
-    if (session.status == SessionStatus.scheduled) {
-      // Show options to start session or edit
+    if (session.status == SessionStatus.scheduled ||
+        session.status == SessionStatus.inProgress) {
       showModalBottomSheet(
         context: context,
         backgroundColor: AppColors.white,
@@ -212,8 +154,8 @@ class _SessionsScreenState extends State<SessionsScreen> {
                   style: AppTextStyle.textStyle16Medium,
                 ),
                 onTap: () {
-                  Navigator.pop(context);
-                  // Navigate to live session screen
+                  Navigator.pop(context); // Close bottom sheet
+                  _showStartSessionDialog(session);
                 },
               ),
               ListTile(
@@ -243,7 +185,7 @@ class _SessionsScreenState extends State<SessionsScreen> {
                 ),
                 onTap: () {
                   Navigator.pop(context);
-                  // Cancel session
+                  // Cancel session logic
                 },
               ),
               65.height,
@@ -251,8 +193,109 @@ class _SessionsScreenState extends State<SessionsScreen> {
           ),
         ),
       );
-    } else {
-      // Navigate to session details for completed sessions
     }
+  }
+
+  void _showStartSessionDialog(Session session) {
+    final TextEditingController urlController = TextEditingController(
+      text: session.meetingUrl,
+    );
+    final formKey = GlobalKey<FormState>();
+
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text("بدء الجلسة", style: AppTextStyle.textStyle18Bold),
+        content: Form(
+          key: formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                "يرجى إدخال رابط الاجتماع للطالب للدخول:",
+                style: AppTextStyle.textStyle14Medium,
+              ),
+              10.height,
+              TextFormField(
+                controller: urlController,
+                decoration: InputDecoration(
+                  labelText: "رابط الاجتماع (Zoom, Google Meet, etc.)",
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'الرابط مطلوب';
+                  }
+                  return null;
+                },
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: Text(
+              "إلغاء",
+              style: AppTextStyle.textStyle14Medium.copyWith(
+                color: Colors.grey,
+              ),
+            ),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.primarySuccess,
+            ),
+            onPressed: () {
+              if (formKey.currentState!.validate()) {
+                final url = urlController.text;
+                // Update session with new URL & Start
+                context.read<SessionsCubit>().startSession(session.id, url);
+                Navigator.pop(ctx);
+
+                // Construct a dummy student object since we don't have full student details here
+                // ideally we fetch student info or pass it.
+                // For now creating minimal student object
+                final tempStudent = Student(
+                  id: session.studentId,
+                  firstName: session.studentName.split(' ').first,
+                  lastName: session.studentName.split(' ').skip(1).join(' '),
+                  email: '',
+                  phone: '',
+                  level: 'غير محدد',
+                  currentPart: 'غير محدد',
+                  completedParts: [],
+                  joinDate: DateTime.now(),
+                  isActive: true,
+                  totalSessions: 0,
+                  averageRating: 0.0,
+                );
+
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => LiveSessionScreen(
+                      session: session.copyWith(
+                        meetingUrl: url,
+                        status: SessionStatus.inProgress,
+                      ),
+                      student: tempStudent,
+                    ),
+                  ),
+                );
+              }
+            },
+            child: Text(
+              "ابدأ الآن",
+              style: AppTextStyle.textStyle14Medium.copyWith(
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

@@ -20,10 +20,6 @@ class DailySessionsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isToday =
-        DateFormat('yyyy-MM-dd').format(selectedDate) ==
-        DateFormat('yyyy-MM-dd').format(DateTime.now());
-
     return Container(
       decoration: BoxDecoration(
         color: AppColors.white,
@@ -43,9 +39,7 @@ class DailySessionsWidget extends StatelessWidget {
           Row(
             children: [
               Text(
-                isToday
-                    ? 'جلسات اليوم'
-                    : 'جلسات ${DateFormat('dd/MM/yyyy', 'ar').format(selectedDate)}',
+                'كل الجلسات',
                 style: AppTextStyle.textStyle18Bold.copyWith(
                   color: AppColors.textPrimary,
                 ),
@@ -94,7 +88,7 @@ class DailySessionsWidget extends StatelessWidget {
           Icon(Icons.event_busy, size: 48.sp, color: AppColors.textSecondary),
           SizedBox(height: 16.h),
           Text(
-            'لا توجد جلسات في هذا اليوم',
+            'لا توجد جلسات',
             style: AppTextStyle.textStyle16Medium.copyWith(
               color: AppColors.textSecondary,
             ),
@@ -212,7 +206,10 @@ class DailySessionsWidget extends StatelessWidget {
                 ),
                 SizedBox(width: 4.w),
                 Text(
-                  DateFormat('HH:mm', 'ar').format(session.scheduledDate),
+                  DateFormat(
+                    'dd/MM/yyyy hh:mm a',
+                    'ar',
+                  ).format(session.scheduledDate),
                   style: AppTextStyle.textStyle14Medium.copyWith(
                     color: AppColors.textSecondary,
                   ),

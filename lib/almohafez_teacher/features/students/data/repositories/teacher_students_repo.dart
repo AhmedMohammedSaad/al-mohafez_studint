@@ -8,21 +8,13 @@ class TeacherStudentsRepo {
     final userId = _supabase.auth.currentUser!.id;
 
     try {
-      // 1️⃣ Get bookings for current teacher with student_name
+      // 1️⃣ Get bookings for current teacher
       final bookings = await _supabase
           .from('bookings')
-          .select('student_id, student_name')
+          .select('student_id')
           .eq('teacher_id', userId);
 
       if (bookings.isEmpty) return [];
-
-      // Create a map of student_id -> student_name from bookings
-      final Map<String, String> bookingNames = {};
-      for (var b in bookings) {
-        if (b['student_id'] != null && b['student_name'] != null) {
-          bookingNames[b['student_id']] = b['student_name'];
-        }
-      }
 
       // 2️⃣ Extract unique student IDs
       final studentIds = bookings
@@ -73,6 +65,7 @@ class TeacherStudentsRepo {
           json,
         );
 
+        // Set default name if first_name and last_name are empty
         final hasFirstName =
             studentJson['first_name'] != null &&
             studentJson['first_name'].toString().isNotEmpty;
@@ -81,8 +74,13 @@ class TeacherStudentsRepo {
             studentJson['last_name'].toString().isNotEmpty;
 
         if (!hasFirstName && !hasLastName) {
-          if (bookingNames.containsKey(studentJson['id'])) {
-            studentJson['first_name'] = bookingNames[studentJson['id']];
+          // Use email or a default name
+          final email = studentJson['email'] as String?;
+          if (email != null && email.isNotEmpty) {
+            studentJson['first_name'] = email.split('@').first;
+            studentJson['last_name'] = '';
+          } else {
+            studentJson['first_name'] = 'طالب';
             studentJson['last_name'] = '';
           }
         }

@@ -44,18 +44,34 @@ class TeacherAuthService {
           final String fileExt = path.extension(profileImage.path);
           final String fileName = '$userId/profile$fileExt';
 
+          print('📸 Attempting to upload image...');
+          print('📸 File path: ${profileImage.path}');
+          print('📸 File exists: ${await profileImage.exists()}');
+          print('📸 File size: ${await profileImage.length()} bytes');
+          print('📸 Target fileName: $fileName');
+          print('📸 Bucket: images');
+
+          final bytes = await profileImage.readAsBytes();
+          print('📸 Bytes read: ${bytes.length}');
+
           await _supabase.storage
               .from('images')
-              .upload(
+              .uploadBinary(
                 fileName,
-                profileImage,
-                fileOptions: const FileOptions(upsert: true),
+                bytes,
+                fileOptions: FileOptions(
+                  upsert: true,
+                  contentType: 'image/${fileExt.replaceAll('.', '')}',
+                ),
               );
 
           imageUrl = _supabase.storage.from('images').getPublicUrl(fileName);
-        } catch (e) {
-          // Log error but continue with sign up
-          print('Error uploading image: $e');
+          print('📸 Upload successful! URL: $imageUrl');
+        } catch (e, stackTrace) {
+          // Log detailed error for debugging
+          print('❌ Error uploading image: $e');
+          print('❌ Stack trace: $stackTrace');
+          // Continue with sign up even if image upload fails
         }
       }
 

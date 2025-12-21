@@ -21,7 +21,7 @@ class _BannerCarouselWidgetState extends State<BannerCarouselWidget> {
     'banner_message_2'.tr(),
     'banner_message_3'.tr(),
     'banner_message_4'.tr(),
-    'banner_message_5'.tr(),
+    // 'banner_message_5'.tr(),
   ];
 
   @override

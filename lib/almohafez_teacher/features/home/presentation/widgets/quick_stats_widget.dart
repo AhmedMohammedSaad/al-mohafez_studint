@@ -1,19 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:almohafez/almohafez/core/theme/app_colors.dart';
 import 'package:almohafez/almohafez/core/theme/app_text_style.dart';
+import 'package:almohafez/almohafez_teacher/features/sessions/presentation/cubit/sessions_cubit.dart';
+import 'package:almohafez/almohafez_teacher/features/sessions/presentation/cubit/sessions_state.dart';
+import 'package:almohafez/almohafez_teacher/features/students/presentation/cubit/teacher_students_cubit.dart';
+import 'package:almohafez/almohafez_teacher/features/students/presentation/cubit/teacher_students_state.dart';
 
-class QuickStatsWidget extends StatelessWidget {
+class QuickStatsWidget extends StatefulWidget {
   const QuickStatsWidget({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    // بيانات وهمية للإحصائيات
-    final int totalStudents = 25;
-    final int activeSessions = 3;
-    final int completedEvaluations = 18;
-    final double averageScore = 8.5;
+  State<QuickStatsWidget> createState() => _QuickStatsWidgetState();
+}
 
+class _QuickStatsWidgetState extends State<QuickStatsWidget> {
+  @override
+  void initState() {
+    super.initState();
+    // Load data when widget initializes
+    context.read<SessionsCubit>().loadSessions();
+    context.read<TeacherStudentsCubit>().loadStudents();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 8.h),
       padding: EdgeInsets.all(16.w),
@@ -22,7 +34,7 @@ class QuickStatsWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(12.r),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
+            color: Colors.grey.withValues(alpha: 0.1),
             spreadRadius: 1,
             blurRadius: 5,
             offset: const Offset(0, 2),
@@ -42,49 +54,56 @@ class QuickStatsWidget extends StatelessWidget {
 
           SizedBox(height: 16.h),
 
-          // الصف الأول من الإحصائيات
+          // إحصائيات الطلاب والجلسات
           Row(
             children: [
+              // إجمالي الطلاب
               Expanded(
-                child: _buildStatCard(
-                  title: 'إجمالي الطلاب',
-                  value: totalStudents.toString(),
-                  color: AppColors.primaryBlueViolet,
-                  icon: Icons.school_rounded,
-                ),
-              ),
-              SizedBox(width: 12.w),
-              Expanded(
-                child: _buildStatCard(
-                  title: 'الجلسات النشطة',
-                  value: activeSessions.toString(),
-                  color: AppColors.primarySuccess,
-                  icon: Icons.video_call_rounded,
-                ),
-              ),
-            ],
-          ),
+                child: BlocBuilder<TeacherStudentsCubit, TeacherStudentsState>(
+                  builder: (context, state) {
+                    int totalStudents = 0;
+                    bool isLoading = false;
 
-          SizedBox(height: 12.h),
+                    if (state is TeacherStudentsLoading) {
+                      isLoading = true;
+                    } else if (state is TeacherStudentsLoaded) {
+                      totalStudents = state.students.length;
+                    }
 
-          // الصف الثاني من الإحصائيات
-          Row(
-            children: [
-              Expanded(
-                child: _buildStatCard(
-                  title: 'التقييمات المكتملة',
-                  value: completedEvaluations.toString(),
-                  color: AppColors.primaryWarning,
-                  icon: Icons.assignment_turned_in_rounded,
+                    return _buildStatCard(
+                      title: 'إجمالي الطلاب',
+                      value: isLoading ? '...' : totalStudents.toString(),
+                      color: AppColors.primaryBlueViolet,
+                      icon: Icons.school_rounded,
+                      isLoading: isLoading,
+                    );
+                  },
                 ),
               ),
+
               SizedBox(width: 12.w),
+
+              // إجمالي الجلسات
               Expanded(
-                child: _buildStatCard(
-                  title: 'متوسط الدرجات',
-                  value: averageScore.toString(),
-                  color: AppColors.primaryError,
-                  icon: Icons.star_rounded,
+                child: BlocBuilder<SessionsCubit, SessionsState>(
+                  builder: (context, state) {
+                    int totalSessions = 0;
+                    bool isLoading = false;
+
+                    if (state is SessionsLoading) {
+                      isLoading = true;
+                    } else if (state is SessionsLoaded) {
+                      totalSessions = state.sessions.length;
+                    }
+
+                    return _buildStatCard(
+                      title: 'إجمالي الجلسات',
+                      value: isLoading ? '...' : totalSessions.toString(),
+                      color: AppColors.primarySuccess,
+                      icon: Icons.video_call_rounded,
+                      isLoading: isLoading,
+                    );
+                  },
                 ),
               ),
             ],
@@ -99,6 +118,7 @@ class QuickStatsWidget extends StatelessWidget {
     required String value,
     required IconData icon,
     required Color color,
+    bool isLoading = false,
   }) {
     return Container(
       padding: EdgeInsets.all(16.w),
@@ -108,7 +128,7 @@ class QuickStatsWidget extends StatelessWidget {
         border: Border.all(color: AppColors.borderColor, width: 1),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primaryDark.withOpacity(0.08),
+            color: AppColors.primaryDark.withValues(alpha: 0.08),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -122,18 +142,27 @@ class QuickStatsWidget extends StatelessWidget {
               Container(
                 padding: EdgeInsets.all(8.w),
                 decoration: BoxDecoration(
-                  color: color.withOpacity(0.1),
+                  color: color.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8.r),
                 ),
                 child: Icon(icon, color: color, size: 20.sp),
               ),
               const Spacer(),
-              Text(
-                value,
-                style: AppTextStyle.textStyle24Bold.copyWith(
-                  color: AppColors.textPrimary,
-                ),
-              ),
+              isLoading
+                  ? SizedBox(
+                      width: 20.w,
+                      height: 20.h,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: color,
+                      ),
+                    )
+                  : Text(
+                      value,
+                      style: AppTextStyle.textStyle24Bold.copyWith(
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
             ],
           ),
           SizedBox(height: 8.h),

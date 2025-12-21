@@ -10,6 +10,7 @@ import 'package:almohafez/almohafez_teacher/features/profile/presentation/views/
 import 'package:almohafez/almohafez_teacher/features/sessions/presentation/views/sessions_screen.dart';
 
 import '../../presentation/view/widgets/app_custom_image_view.dart';
+import '../widgets/booking_notification_listener.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
 
 Color navBackgroundColor = AppColors.secondary;
@@ -101,43 +102,43 @@ class MainScreen extends StatelessWidget {
       initialIndex: 0,
     );
 
-    return SafeArea(
-      bottom: true,
-      left: false,
-      right: false,
-      top: false,
-
-      child: Scaffold(
-        key: scaffoldKey,
-        body: PersistentTabView(
-          navBarHeight: 70.h,
-          //gestureNavigationEnabled: true,
-          tabs: _navBarsItems(),
-          controller: bottomNavController,
-          backgroundColor: Colors.white,
-          resizeToAvoidBottomInset: true,
-          popAllScreensOnTapAnyTabs: true,
-          screenTransitionAnimation: const ScreenTransitionAnimation(
-            curve: Curves.easeInOutCubic,
-            duration: Duration(milliseconds: 200),
-          ),
-          onTabChanged: (index) async {
-            previousIndexNotifier.value = currentIndexNotifier.value;
-            currentIndexNotifier.value = index;
-            bottomNavController.jumpToTab(index);
-          },
-          navBarBuilder: (navBarConfig) => Style7BottomNavBar(
-            navBarConfig: navBarConfig,
-            navBarDecoration: NavBarDecoration(
-              color: AppColors.white,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.3),
-                  spreadRadius: 1,
-                  blurRadius: 5,
-                  offset: const Offset(0, -2), // Shadow direction
-                ),
-              ],
+    return BookingNotificationListener(
+      child: SafeArea(
+        bottom: true,
+        left: false,
+        right: false,
+        top: false,
+        child: Scaffold(
+          key: scaffoldKey,
+          body: PersistentTabView(
+            navBarHeight: 70.h,
+            tabs: _navBarsItems(),
+            controller: bottomNavController,
+            backgroundColor: Colors.white,
+            resizeToAvoidBottomInset: true,
+            popAllScreensOnTapAnyTabs: true,
+            screenTransitionAnimation: const ScreenTransitionAnimation(
+              curve: Curves.easeInOutCubic,
+              duration: Duration(milliseconds: 200),
+            ),
+            onTabChanged: (index) async {
+              previousIndexNotifier.value = currentIndexNotifier.value;
+              currentIndexNotifier.value = index;
+              bottomNavController.jumpToTab(index);
+            },
+            navBarBuilder: (navBarConfig) => Style7BottomNavBar(
+              navBarConfig: navBarConfig,
+              navBarDecoration: NavBarDecoration(
+                color: AppColors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.3),
+                    spreadRadius: 1,
+                    blurRadius: 5,
+                    offset: const Offset(0, -2),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

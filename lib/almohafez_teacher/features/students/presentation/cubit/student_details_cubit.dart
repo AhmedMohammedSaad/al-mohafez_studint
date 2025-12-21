@@ -12,7 +12,10 @@ class StudentDetailsCubit extends Cubit<StudentDetailsState> {
     try {
       final bookings = await _repo.getStudentBookings(studentId);
       final stats = await _repo.getStudentStats(studentId);
-      emit(StudentDetailsLoaded(bookings, stats));
+      final evaluations = await _repo.getStudentEvaluations(studentId);
+      final averageRating = _repo.calculateAverageRating(evaluations);
+
+      emit(StudentDetailsLoaded(bookings, stats, evaluations, averageRating));
     } catch (e) {
       emit(StudentDetailsError(e.toString()));
     }

@@ -18,9 +18,9 @@ class SessionsCubit extends Cubit<SessionsState> {
     }
   }
 
-  Future<void> startSession(String sessionId, String meetingUrl) async {
+  Future<void> startSession(String meetingUrl, String sessionId) async {
     try {
-      await _repo.updateMeetingUrl(sessionId, meetingUrl);
+      await _repo.updateMeetingUrl(meetingUrl, sessionId);
       // Reload sessions to reflect changes
       await loadSessions();
     } catch (e) {

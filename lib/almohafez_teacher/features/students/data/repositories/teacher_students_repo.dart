@@ -40,17 +40,39 @@ class TeacherStudentsRepo {
           .select()
           .inFilter('id', studentIds);
 
+      // 4️⃣ Fetch evaluations for all students to calculate average ratings
+      final evaluations = await _supabase
+          .from('session_evaluations')
+          .select('student_id, overall_score')
+          .eq('teacher_id', userId)
+          .inFilter('student_id', studentIds);
+
+      // Calculate average rating per student
+      final Map<String, double> studentRatings = {};
+      final Map<String, int> studentRatingCounts = {};
+
+      for (var eval in evaluations) {
+        final studentId = eval['student_id'] as String?;
+        final score = eval['overall_score'] as int?;
+
+        if (studentId != null && score != null) {
+          studentRatings[studentId] = (studentRatings[studentId] ?? 0) + score;
+          studentRatingCounts[studentId] =
+              (studentRatingCounts[studentId] ?? 0) + 1;
+        }
+      }
+
+      // Convert totals to averages
+      for (var id in studentRatings.keys) {
+        final count = studentRatingCounts[id] ?? 1;
+        studentRatings[id] = studentRatings[id]! / count;
+      }
+
       return studentsData.map<Student>((json) {
-        // Inject booking name if profile name is empty (handled by StudentModel or manually here)
-        // We clone the json to avoid modifying the original map if strictly typed (though likely dynamic)
         final Map<String, dynamic> studentJson = Map<String, dynamic>.from(
           json,
         );
 
-        // If profile first/last names are missing/empty, we can inject 'first_name' using the booking name
-        // Or we can let StudentModel handle a 'name' field if we add it back?
-        // Actually StudentModel calculates name from first_name + last_name.
-        // Let's check what we have.
         final hasFirstName =
             studentJson['first_name'] != null &&
             studentJson['first_name'].toString().isNotEmpty;
@@ -59,13 +81,16 @@ class TeacherStudentsRepo {
             studentJson['last_name'].toString().isNotEmpty;
 
         if (!hasFirstName && !hasLastName) {
-          // Fallback to booking name
           if (bookingNames.containsKey(studentJson['id'])) {
-            // We can hack this by putting the full name in 'first_name'
-            // so StudentModel sees it.
             studentJson['first_name'] = bookingNames[studentJson['id']];
             studentJson['last_name'] = '';
           }
+        }
+
+        // Inject calculated average rating
+        final studentId = studentJson['id'] as String?;
+        if (studentId != null && studentRatings.containsKey(studentId)) {
+          studentJson['average_rating'] = studentRatings[studentId];
         }
 
         return Student.fromJson(studentJson);

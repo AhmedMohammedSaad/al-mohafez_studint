@@ -22,11 +22,11 @@ class StudentCardWidget extends StatelessWidget {
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: const Color.fromARGB(255, 255, 255, 255),
           borderRadius: BorderRadius.circular(12.r),
           boxShadow: [
             BoxShadow(
-              color: const Color.fromARGB(255, 54, 53, 53).withOpacity(0.1),
+              color: const Color.fromARGB(255, 0, 0, 0).withOpacity(0.1),
               blurRadius: 5,
               offset: const Offset(0, 5),
             ),
@@ -50,20 +50,24 @@ class StudentCardWidget extends StatelessWidget {
             backgroundImage: student.profileImage != null
                 ? NetworkImage(student.profileImage!)
                 : null,
-            child: student.profileImage == null
-                ? Icon(
+            child: student.profileImage != null
+                ? null
+                : Icon(
                     Icons.person,
                     size: 30.sp,
                     color: AppColors.primaryBlueViolet,
-                  )
-                : null,
+                  ),
           ),
           SizedBox(height: 8.h),
 
           // اسم الطالب
           Text(
             "${student.firstName} ${student.lastName}",
-            style: AppTextStyle.font14DarkBlueMedium,
+            style: AppTextStyle.font14DarkBlueMedium.copyWith(
+              color: AppColors.black,
+              fontWeight: FontWeight.w600,
+              fontSize: 16.sp,
+            ),
             textAlign: TextAlign.center,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
@@ -71,21 +75,21 @@ class StudentCardWidget extends StatelessWidget {
           SizedBox(height: 4.h),
 
           // المستوى الحالي
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
-            decoration: BoxDecoration(
-              color: _getLevelColor(student.level).withOpacity(0.1),
-              borderRadius: BorderRadius.circular(8.r),
-            ),
-            child: Text(
-              student.level,
-              style: TextStyle(
-                fontSize: 10.sp,
-                fontWeight: FontWeight.w500,
-                color: _getLevelColor(student.level),
-              ),
-            ),
-          ),
+          // Container(
+          //   padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
+          //   decoration: BoxDecoration(
+          //     color: _getLevelColor(student.level).withOpacity(0.1),
+          //     borderRadius: BorderRadius.circular(8.r),
+          //   ),
+          //   child: Text(
+          //     student.level,
+          //     style: TextStyle(
+          //       fontSize: 10.sp,
+          //       fontWeight: FontWeight.w500,
+          //       color: _getLevelColor(student.level),
+          //     ),
+          //   ),
+          // ),
           SizedBox(height: 6.h),
 
           // الجزء الحالي
@@ -104,11 +108,15 @@ class StudentCardWidget extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Icon(Icons.star, size: 12.sp, color: Colors.amber),
+                  Icon(
+                    Icons.star_rate_rounded,
+                    size: 17.sp,
+                    color: Colors.amber,
+                  ),
                   SizedBox(width: 2.w),
                   Text(
                     student.averageRating.toStringAsFixed(1),
-                    style: AppTextStyle.font10GreyRegular,
+                    style: AppTextStyle.font12GreyRegular,
                   ),
                 ],
               ),
@@ -153,10 +161,11 @@ class StudentCardWidget extends StatelessWidget {
           CircleAvatar(
             radius: 25.r,
             backgroundColor: AppColors.lightGrayConstant,
-            backgroundImage: student.profileImage != null
+            backgroundImage:
+                student.profileImage != null && student.profileImage!.isNotEmpty
                 ? NetworkImage(student.profileImage!)
                 : null,
-            child: student.profileImage == null
+            child: student.profileImage == null || student.profileImage!.isEmpty
                 ? Icon(
                     Icons.person,
                     size: 25.sp,
@@ -182,24 +191,24 @@ class StudentCardWidget extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 8.w,
-                        vertical: 2.h,
-                      ),
-                      decoration: BoxDecoration(
-                        color: _getLevelColor(student.level).withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(8.r),
-                      ),
-                      child: Text(
-                        student.level,
-                        style: TextStyle(
-                          fontSize: 10.sp,
-                          fontWeight: FontWeight.w500,
-                          color: _getLevelColor(student.level),
-                        ),
-                      ),
-                    ),
+                    // Container(
+                    //   padding: EdgeInsets.symmetric(
+                    //     horizontal: 8.w,
+                    //     vertical: 2.h,
+                    //   ),
+                    //   decoration: BoxDecoration(
+                    //     color: _getLevelColor(student.level).withOpacity(0.1),
+                    //     borderRadius: BorderRadius.circular(8.r),
+                    //   ),
+                    //   child: Text(
+                    //     student.level,
+                    //     style: TextStyle(
+                    //       fontSize: 10.sp,
+                    //       fontWeight: FontWeight.w500,
+                    //       color: _getLevelColor(student.level),
+                    //     ),
+                    //   ),
+                    // ),
                   ],
                 ),
                 SizedBox(height: 4.h),
@@ -225,10 +234,10 @@ class StudentCardWidget extends StatelessWidget {
                       ],
                     ),
                     SizedBox(width: 16.w),
-                    Text(
-                      '${student.totalSessions} جلسة',
-                      style: AppTextStyle.font12GreyRegular,
-                    ),
+                    // Text(
+                    //   '${student.totalSessions} جلسة',
+                    //   style: AppTextStyle.font12GreyRegular,
+                    // ),
                     // const Spacer(),
                     // Container(
                     // padding: EdgeInsets.symmetric(

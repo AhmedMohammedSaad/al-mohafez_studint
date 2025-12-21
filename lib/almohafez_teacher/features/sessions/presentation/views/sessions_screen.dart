@@ -6,13 +6,13 @@ import 'package:nb_utils/nb_utils.dart';
 import '../../data/models/session_model.dart';
 import 'package:almohafez/almohafez/core/theme/app_colors.dart';
 import 'package:almohafez/almohafez/core/theme/app_text_style.dart';
+import 'package:almohafez/almohafez/core/presentation/view/widgets/error_widget.dart';
+import 'session_evaluation_screen.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../presentation/cubit/sessions_cubit.dart';
 import '../../presentation/cubit/sessions_state.dart';
-import 'live_session_screen.dart';
 import '../../../students/data/models/student_model.dart';
-// Other imports remain
 
 class SessionsScreen extends StatefulWidget {
   const SessionsScreen({super.key});
@@ -65,7 +65,12 @@ class _SessionsScreenState extends State<SessionsScreen> {
             return const Center(child: CircularProgressIndicator());
           }
           if (state is SessionsError) {
-            return Center(child: Text(state.message));
+            return AppErrorWidget(
+              message: state.message,
+              onRefresh: () {
+                context.read<SessionsCubit>().loadSessions();
+              },
+            );
           }
 
           List<Session> allSessions = [];
@@ -84,18 +89,16 @@ class _SessionsScreenState extends State<SessionsScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   if (state is SessionsLoaded)
-                    SessionStatsWidget(sessions: allSessions),
-
-                  SizedBox(height: 20.h),
-
-                  DailySessionsWidget(
-                    selectedDate:
-                        selectedDate, // Can keep dummy or remove param if updated Widget, but better to keep for now and ignore it inside widget or pass now
-                    sessions: allSessions, // Pass ALL sessions
-                    onSessionTap: (session) {
-                      _handleSessionTap(session);
-                    },
-                  ),
+                    //   SessionStatsWidget(sessions: allSessions),
+                    // SizedBox(height: 20.h),
+                    DailySessionsWidget(
+                      selectedDate:
+                          selectedDate, // Can keep dummy or remove param if updated Widget, but better to keep for now and ignore it inside widget or pass now
+                      sessions: allSessions, // Pass ALL sessions
+                      onSessionTap: (session) {
+                        _handleSessionTap(session);
+                      },
+                    ),
 
                   if (allSessions.isEmpty)
                     Center(
@@ -119,6 +122,17 @@ class _SessionsScreenState extends State<SessionsScreen> {
   }
 
   void _handleSessionTap(Session session) {
+    // For completed sessions, navigate to evaluation screen
+    if (session.status == SessionStatus.completed) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => SessionEvaluationScreen(session: session),
+        ),
+      );
+      return;
+    }
+
     if (session.status == SessionStatus.scheduled ||
         session.status == SessionStatus.inProgress) {
       showModalBottomSheet(
@@ -160,34 +174,40 @@ class _SessionsScreenState extends State<SessionsScreen> {
               ),
               ListTile(
                 leading: Icon(
-                  Icons.edit,
+                  Icons.rate_review,
                   color: AppColors.primaryBlueViolet,
                   size: 24.sp,
                 ),
                 title: Text(
-                  'تعديل الجلسة',
+                  'تقييم الجلسة',
                   style: AppTextStyle.textStyle16Medium,
                 ),
                 onTap: () {
                   Navigator.pop(context);
-                  // Navigate to edit session screen
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          SessionEvaluationScreen(session: session),
+                    ),
+                  );
                 },
               ),
-              ListTile(
-                leading: Icon(
-                  Icons.cancel,
-                  color: AppColors.primaryError,
-                  size: 24.sp,
-                ),
-                title: Text(
-                  'إلغاء الجلسة',
-                  style: AppTextStyle.textStyle16Medium,
-                ),
-                onTap: () {
-                  Navigator.pop(context);
-                  // Cancel session logic
-                },
-              ),
+              // ListTile(
+              //   leading: Icon(
+              //     Icons.cancel,
+              //     color: AppColors.primaryError,
+              //     size: 24.sp,
+              //   ),
+              // title: Text(
+              //   'إلغاء الجلسة',
+              //   style: AppTextStyle.textStyle16Medium,
+              // ),
+              // onTap: () {
+              //   Navigator.pop(context);
+              //   // Cancel session logic
+              // },
+              // ),
               65.height,
             ],
           ),
@@ -254,37 +274,6 @@ class _SessionsScreenState extends State<SessionsScreen> {
                 // Update session with new URL & Start
                 context.read<SessionsCubit>().startSession(session.id, url);
                 Navigator.pop(ctx);
-
-                // Construct a dummy student object since we don't have full student details here
-                // ideally we fetch student info or pass it.
-                // For now creating minimal student object
-                final tempStudent = Student(
-                  id: session.studentId,
-                  firstName: session.studentName.split(' ').first,
-                  lastName: session.studentName.split(' ').skip(1).join(' '),
-                  email: '',
-                  phone: '',
-                  level: 'غير محدد',
-                  currentPart: 'غير محدد',
-                  completedParts: [],
-                  joinDate: DateTime.now(),
-                  isActive: true,
-                  totalSessions: 0,
-                  averageRating: 0.0,
-                );
-
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => LiveSessionScreen(
-                      session: session.copyWith(
-                        meetingUrl: url,
-                        status: SessionStatus.inProgress,
-                      ),
-                      student: tempStudent,
-                    ),
-                  ),
-                );
               }
             },
             child: Text(

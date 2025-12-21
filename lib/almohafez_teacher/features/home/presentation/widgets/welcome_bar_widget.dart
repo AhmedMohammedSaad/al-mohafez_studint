@@ -19,7 +19,7 @@ class WelcomeBarWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'welcome_greeting'.tr(namedArgs: {'username': username}),
+            'welcome_greeting'.tr(),
             style: TextStyle(
               fontFamily: 'Cairo',
               fontSize: 22.sp,
@@ -29,7 +29,7 @@ class WelcomeBarWidget extends StatelessWidget {
           ),
           SizedBox(height: 4.h),
           Text(
-            'welcome_message'.tr(),
+            'welcome_message_teacher'.tr(),
             style: TextStyle(
               fontFamily: 'Cairo',
               fontSize: 16.sp,

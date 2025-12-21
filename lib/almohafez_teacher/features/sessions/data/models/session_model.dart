@@ -28,6 +28,7 @@ class Session {
   final String? topic;
   final bool isRecurring;
   final String? recurringPattern;
+  final String? timeSlot; // e.g. "00:41 - 01:41"
 
   const Session({
     required this.id,
@@ -44,6 +45,7 @@ class Session {
     this.isRecurring = false,
     this.recurringPattern,
     this.meetingUrl,
+    this.timeSlot,
   });
 
   factory Session.fromJson(Map<String, dynamic> json) {
@@ -68,6 +70,7 @@ class Session {
       isRecurring: false,
       recurringPattern: null,
       meetingUrl: json['meeting_url'],
+      timeSlot: json['selected_time_slot'],
     );
   }
 
@@ -98,6 +101,7 @@ class Session {
     bool? isRecurring,
     String? recurringPattern,
     String? meetingUrl,
+    String? timeSlot,
   }) {
     return Session(
       id: id ?? this.id,
@@ -114,6 +118,7 @@ class Session {
       isRecurring: isRecurring ?? this.isRecurring,
       recurringPattern: recurringPattern ?? this.recurringPattern,
       meetingUrl: meetingUrl ?? this.meetingUrl,
+      timeSlot: timeSlot ?? this.timeSlot,
     );
   }
 

@@ -171,7 +171,7 @@ class DailySessionsWidget extends StatelessWidget {
                       ),
                       SizedBox(height: 4.h),
                       Text(
-                        session.topic ?? 'لا يوجد موضوع محدد',
+                        session.topic ?? "يوم تحفظ",
                         style: AppTextStyle.textStyle14Medium.copyWith(
                           color: AppColors.textSecondary,
                         ),
@@ -200,29 +200,33 @@ class DailySessionsWidget extends StatelessWidget {
             Row(
               children: [
                 Icon(
-                  Icons.access_time,
+                  Icons.calendar_today,
                   size: 14.sp,
                   color: AppColors.textSecondary,
                 ),
                 SizedBox(width: 4.w),
                 Text(
-                  DateFormat(
-                    'dd/MM/yyyy hh:mm a',
-                    'ar',
-                  ).format(session.scheduledDate),
+                  DateFormat('dd/MM/yyyy', 'ar').format(session.scheduledDate),
                   style: AppTextStyle.textStyle14Medium.copyWith(
                     color: AppColors.textSecondary,
                   ),
                 ),
-                SizedBox(width: 16.w),
-                Icon(Icons.timer, size: 16.sp, color: AppColors.textSecondary),
-                SizedBox(width: 4.w),
-                Text(
-                  '${session.duration} دقيقة',
-                  style: AppTextStyle.textStyle14Medium.copyWith(
+                if (session.timeSlot != null &&
+                    session.timeSlot!.isNotEmpty) ...[
+                  SizedBox(width: 12.w),
+                  Icon(
+                    Icons.access_time,
+                    size: 14.sp,
                     color: AppColors.textSecondary,
                   ),
-                ),
+                  SizedBox(width: 4.w),
+                  Text(
+                    session.timeSlot!,
+                    style: AppTextStyle.textStyle14Medium.copyWith(
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                ],
               ],
             ),
             10.height,

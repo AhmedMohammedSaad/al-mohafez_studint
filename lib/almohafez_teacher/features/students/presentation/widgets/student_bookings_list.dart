@@ -110,7 +110,7 @@ class StudentBookingsList extends StatelessWidget {
               width: double.infinity,
               padding: EdgeInsets.all(12.w),
               decoration: BoxDecoration(
-                color: AppColors.lightGrayConstant.withOpacity(0.3),
+                color: const Color.fromARGB(255, 99, 97, 97).withOpacity(0.3),
                 borderRadius: BorderRadius.circular(8.r),
               ),
               child: Text(

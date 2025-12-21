@@ -57,14 +57,14 @@ class StudentInfoCard extends StatelessWidget {
                 height: 40.h,
                 color: AppColors.lightGrayConstant,
               ),
-              Expanded(
-                child: _buildStatItem(
-                  'الأجزاء المكتملة',
-                  '${student.completedParts.length}',
-                  Icons.check_circle,
-                  Colors.green,
-                ),
-              ),
+              // Expanded(
+              //   child: _buildStatItem(
+              //     'الأجزاء المكتملة',
+              //     '${student.completedParts.length}',
+              //     Icons.check_circle,
+              //     Colors.green,
+              //   ),
+              // ),
             ],
           ),
 
@@ -184,11 +184,14 @@ class StudentInfoCard extends StatelessWidget {
     return Column(
       children: [
         Icon(icon, color: color, size: 24.sp),
-        SizedBox(height: 4.h),
+        SizedBox(height: 5.h),
         Text(value, style: AppTextStyle.font16DarkBlueBold),
+        SizedBox(height: 7.h),
         Text(
           title,
-          style: AppTextStyle.font10GreyRegular,
+          style: AppTextStyle.font10GreyRegular.copyWith(
+            color: AppColors.newGray,
+          ),
           textAlign: TextAlign.center,
         ),
       ],

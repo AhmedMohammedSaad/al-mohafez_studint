@@ -466,7 +466,7 @@ class AppTextStyle {
   );
 
   static TextStyle font12GreyMedium = TextStyle(
-    color: AppColors.grey,
+    color: AppColors.black,
     fontSize: 12.sp,
     fontWeight: FontWeight.w500,
     fontFamily: FontFamily.cairo,

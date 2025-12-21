@@ -7,6 +7,7 @@ import '../cubit/teacher_students_cubit.dart';
 import '../cubit/teacher_students_state.dart';
 import 'package:almohafez/almohafez/core/theme/app_colors.dart';
 import 'package:almohafez/almohafez/core/theme/app_text_style.dart';
+import 'package:almohafez/almohafez/core/presentation/view/widgets/error_widget.dart';
 import '../widgets/student_card_widget.dart';
 import '../widgets/students_search_widget.dart';
 import 'student_details_screen.dart';
@@ -102,16 +103,14 @@ class _StudentsScreenState extends State<StudentsScreen> {
                   if (state is TeacherStudentsLoading) {
                     return const Center(child: CircularProgressIndicator());
                   } else if (state is TeacherStudentsError) {
-                    print(state.message);
                     if (state.message.contains('User not logged in')) {
                       return const SizedBox.shrink();
                     }
-                    return ListView(
-                      physics: const AlwaysScrollableScrollPhysics(),
-                      children: [
-                        SizedBox(height: 200.h),
-                        Center(child: Text(state.message)),
-                      ],
+                    return AppErrorWidget(
+                      message: state.message,
+                      onRefresh: () {
+                        context.read<TeacherStudentsCubit>().loadStudents();
+                      },
                     );
                   } else if (state is TeacherStudentsLoaded) {
                     if (state.students.isEmpty) {

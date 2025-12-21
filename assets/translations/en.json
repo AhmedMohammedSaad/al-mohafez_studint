@@ -449,12 +449,13 @@
   "generalSubMessage": "No analytics data found. Please check your data source.",
   "recentOrdersMessage": "No Recent Orders",
   "recentOrdersSubMessage": "Orders will appear here",
-  "welcome_greeting": "Welcome, {username} 👋",
+  "welcome_greeting": "Welcome, 👋",
+  "welcome_message_teacher": "We wish you a fruitful day of memorization",
   "welcome_message": "We wish you a fruitful day of learning",
   "current_competitions": "Current Competitions 🏆",
   "competition_title": "Surah Al-Baqarah Memorization Competition",
   "view_details": "View Details",
-  "top_students_title": "Top 10 Students This Month 🌟",
+  "top_students_title": "Top Students This Month 🌟",
   "banner_message_1": "Start your Quran memorization journey easily with simple steps 🎯",
   "banner_message_2": "Learn with your teacher directly through interactive sessions designed for you 📖",
   "banner_message_3": "Track your progress and get evaluations and notes after each session 📊",
@@ -779,5 +780,8 @@
   "support_phone_value": "+201080941234",
   "whatsapp_label": "WhatsApp",
   "contact_via_whatsapp": "Contact via WhatsApp",
-  "whatsapp_value": "+201080941234"
+  "whatsapp_value": "+201080941234",
+  "no_top_students": "No top students available",
+  "retry": "Retry",
+  "no_competitions": "No competitions available"
 }

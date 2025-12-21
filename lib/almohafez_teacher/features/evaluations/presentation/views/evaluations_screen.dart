@@ -1,20 +1,33 @@
 import 'package:almohafez/almohafez_teacher/features/evaluations/presentation/widgets/evaluations_stats_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';
-import '../../data/models/evaluation_model.dart';
-import '../../../students/data/models/student_model.dart';
+import 'package:shimmer/shimmer.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import '../../data/repositories/teacher_ratings_repo.dart';
+import '../cubit/teacher_ratings_cubit.dart';
+import '../cubit/teacher_ratings_state.dart';
 import 'package:almohafez/almohafez/core/theme/app_colors.dart';
 import 'package:almohafez/almohafez/core/theme/app_text_style.dart';
 
-class EvaluationsScreen extends StatefulWidget {
+class EvaluationsScreen extends StatelessWidget {
   const EvaluationsScreen({super.key});
 
   @override
-  State<EvaluationsScreen> createState() => _EvaluationsScreenState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) =>
+          TeacherRatingsCubit(TeacherRatingsRepo(Supabase.instance.client))
+            ..loadRatings(),
+      child: const _EvaluationsContent(),
+    );
+  }
 }
 
-class _EvaluationsScreenState extends State<EvaluationsScreen> {
+class _EvaluationsContent extends StatelessWidget {
+  const _EvaluationsContent();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,75 +43,100 @@ class _EvaluationsScreenState extends State<EvaluationsScreen> {
           ),
         ),
         centerTitle: true,
-        // actions: [
-        // IconButton(
-        // onPressed: () {
-        // Handle search
-        // },
-        // icon: Icon(
-        // Icons.search,
-        // color: AppColors.primaryBlueViolet,
-        // size: 24.sp,
-        // ),
-        // ),
-        // ],
       ),
-      body: Column(
+      body: BlocBuilder<TeacherRatingsCubit, TeacherRatingsState>(
+        builder: (context, state) {
+          if (state is TeacherRatingsLoading) {
+            return _buildLoadingState();
+          }
+
+          if (state is TeacherRatingsError) {
+            return _buildErrorState(context, state.message);
+          }
+
+          if (state is TeacherRatingsLoaded) {
+            if (state.ratings.isEmpty) {
+              return _buildEmptyState();
+            }
+            // Convert TeacherRating to StudentEvaluation for the widget
+            final evaluations = state.ratings
+                .map(
+                  (r) => StudentEvaluation(
+                    studentName: r.studentName,
+                    rating: r.rating,
+                    comment: r.comment ?? '',
+                    evaluationDate: r.createdAt,
+                  ),
+                )
+                .toList();
+
+            return Column(
+              children: [
+                SizedBox(height: 16.h),
+                EvaluationsStatsWidget(studentEvaluations: evaluations),
+              ],
+            );
+          }
+
+          return const SizedBox.shrink();
+        },
+      ),
+    );
+  }
+
+  Widget _buildLoadingState() {
+    return Padding(
+      padding: EdgeInsets.all(16.w),
+      child: Column(
+        children: List.generate(
+          3,
+          (index) => Padding(
+            padding: EdgeInsets.only(bottom: 12.h),
+            child: Shimmer.fromColors(
+              baseColor: Colors.grey[300]!,
+              highlightColor: Colors.grey[100]!,
+              child: Container(
+                height: 120.h,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12.r),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildErrorState(BuildContext context, String message) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // Statistics - Student Evaluations for Sheikh
-          EvaluationsStatsWidget(
-            studentEvaluations: _getSampleStudentEvaluations(),
+          Icon(Icons.error_outline, size: 80.sp, color: AppColors.grey),
+          SizedBox(height: 16.h),
+          Text(
+            'حدث خطأ في تحميل التقييمات',
+            style: AppTextStyle.textStyle18.copyWith(
+              color: AppColors.grey,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           SizedBox(height: 16.h),
-          //
-          // Filters
-          // EvaluationsFilterWidget(
-          // selectedFilter: _selectedFilter,
-          // selectedStudent: _selectedStudent,
-          // filterOptions: _filterOptions,
-          // students: _students,
-          // onFilterChanged: (filter) {
-          // setState(() {
-          // _selectedFilter = filter;
-          // });
-          // },
-          // onStudentChanged: (student) {
-          // setState(() {
-          // _selectedStudent = student;
-          // });
-          // },
-          // ),
-          //
-          // SizedBox(height: 16.h),
-          //
-          // Evaluations List
-          // Expanded(
-          // child: _filteredEvaluations.isEmpty
-          // ? _buildEmptyState()
-          // : ListView.builder(
-          // padding: EdgeInsets.symmetric(horizontal: 16.w),
-          // itemCount: _filteredEvaluations.length,
-          // itemBuilder: (context, index) {
-          // final evaluation = _filteredEvaluations[index];
-          // return Padding(
-          // padding: EdgeInsets.only(bottom: 12.h),
-          // child: EvaluationCardWidget(
-          // evaluation: evaluation,
-          // onTap: () => _handleEvaluationTap(evaluation),
-          // ),
-          // );
-          // },
-          // ),
-          // ),
+          ElevatedButton.icon(
+            onPressed: () {
+              context.read<TeacherRatingsCubit>().loadRatings();
+            },
+            icon: const Icon(Icons.refresh),
+            label: Text('retry'.tr()),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.primaryBlueViolet,
+              foregroundColor: Colors.white,
+            ),
+          ),
         ],
       ),
-      // floatingActionButton: FloatingActionButton(
-      // onPressed: () {
-      // Navigate to add evaluation screen
-      // },
-      // backgroundColor: AppColors.primaryBlueViolet,
-      // child: Icon(Icons.add, color: AppColors.white, size: 24.sp),
-      // ),
     );
   }
 
@@ -107,10 +145,10 @@ class _EvaluationsScreenState extends State<EvaluationsScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.assessment_outlined, size: 80.sp, color: AppColors.grey),
+          Icon(Icons.rate_review_outlined, size: 80.sp, color: AppColors.grey),
           SizedBox(height: 16.h),
           Text(
-            'لا توجد تقييمات',
+            'لا توجد تقييمات بعد',
             style: AppTextStyle.textStyle18.copyWith(
               color: AppColors.grey,
               fontWeight: FontWeight.bold,
@@ -118,90 +156,12 @@ class _EvaluationsScreenState extends State<EvaluationsScreen> {
           ),
           SizedBox(height: 8.h),
           Text(
-            'لم يتم العثور على تقييمات تطابق المعايير المحددة',
+            'سيظهر هنا تقييمات الطلاب للشيخ',
             style: AppTextStyle.textStyle14.copyWith(color: AppColors.grey),
             textAlign: TextAlign.center,
           ),
         ],
       ),
     );
-  }
-
-  void _handleEvaluationTap(Evaluation evaluation) {
-    // Navigate to evaluation details screen
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(
-          'تفاصيل التقييم',
-          style: AppTextStyle.textStyle18.copyWith(
-            fontWeight: FontWeight.bold,
-            color: AppColors.primaryBlueViolet,
-          ),
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('الطالب: ${evaluation.studentName}'),
-            Text(
-              'التاريخ: ${DateFormat('dd/MM/yyyy', 'ar').format(evaluation.evaluationDate)}',
-            ),
-            Text(
-              'المتوسط العام: ${evaluation.averageScore.toStringAsFixed(1)}/10',
-            ),
-            if (evaluation.notes != null && evaluation.notes!.isNotEmpty) ...[
-              SizedBox(height: 8.h),
-              Text('الملاحظات: ${evaluation.notes!}'),
-            ],
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('إغلاق'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // دالة للحصول على بيانات تجريبية لتقييمات الطلاب للشيخ
-  List<StudentEvaluation> _getSampleStudentEvaluations() {
-    return [
-      StudentEvaluation(
-        studentName: 'أحمد محمد',
-        rating: 5,
-        comment:
-            'الشيخ ممتاز في التدريس ويشرح بطريقة واضحة ومفهومة. استفدت كثيراً من دروسه في الحفظ والتجويد.',
-        evaluationDate: DateTime.now().subtract(const Duration(days: 1)),
-      ),
-      StudentEvaluation(
-        studentName: 'فاطمة أحمد',
-        rating: 4,
-        comment:
-            'أسلوب الشيخ في التدريس جيد جداً، لكن أتمنى لو يعطي وقت أكثر للأسئلة.',
-        evaluationDate: DateTime.now().subtract(const Duration(days: 2)),
-      ),
-      StudentEvaluation(
-        studentName: 'عبدالله سالم',
-        rating: 5,
-        comment: 'مجتهد',
-        evaluationDate: DateTime.now().subtract(const Duration(days: 3)),
-      ),
-      StudentEvaluation(
-        studentName: 'مريم خالد',
-        rating: 4,
-        comment:
-            'الشيخ صبور ومتفهم، ويساعد الطلاب على تحسين مستواهم في التلاوة والحفظ.',
-        evaluationDate: DateTime.now().subtract(const Duration(days: 4)),
-      ),
-      StudentEvaluation(
-        studentName: 'يوسف عمر',
-        rating: 3,
-        comment: 'الدروس مفيدة ولكن أحياناً تكون سريعة قليلاً.',
-        evaluationDate: DateTime.now().subtract(const Duration(days: 5)),
-      ),
-    ];
   }
 }

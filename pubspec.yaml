@@ -113,6 +113,7 @@ dependencies:
   geocoding: ^4.0.0
   webview_flutter: ^4.13.0
   audioplayers: ^6.5.1
+  supabase_flutter: ^2.10.3
 
 
 dependency_overrides:
@@ -135,7 +136,6 @@ dev_dependencies:
   flutter_lints: ^5.0.0
   flutter_test:
     sdk: flutter
-  supabase_flutter: ^2.10.3
 
 # flutter_launcher_icons:
   # android: true

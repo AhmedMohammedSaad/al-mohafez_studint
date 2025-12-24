@@ -112,7 +112,7 @@ class _SessionCardState extends State<SessionCard> {
                     width: 50,
                     radius: BorderRadius.circular(25),
                     fit: BoxFit.cover,
-                    placeHolder: 'assets/images/tutor1.jpg', // Fallback
+                    placeHolder: 'assets/images/shaegh.jpg', // Fallback
                   ),
                   const SizedBox(width: 12),
 

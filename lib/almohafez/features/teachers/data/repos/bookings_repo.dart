@@ -15,6 +15,7 @@ class BookingsRepo {
 
       return response['id'] as String;
     } catch (e) {
+      print(e);
       throw Exception('Failed to create booking: $e');
     }
   }

@@ -761,6 +761,7 @@
   "user_not_found": "User not found",
   "user_not_activated": "User not activated",
   "user_activated": "User activated",
+  "teachers_available": "Teachers available",
   "user_activated_message": "Your account has been activated successfully.",
   "user_activated_action": "Go to Login",
   "user_activated_error": "Error activating user",
@@ -783,5 +784,7 @@
   "whatsapp_value": "+201080941234",
   "no_top_students": "No top students available",
   "retry": "Retry",
-  "no_competitions": "No competitions available"
+  "no_competitions": "No competitions available",
+  "payment_private_plan": "Private Plan",
+  "payment_group_plan": "Group Plan"
 }

@@ -625,5 +625,7 @@
   "whatsapp_value": "+201080941234",
   "no_top_students": "لا يوجد طلاب متفوقون حالياً",
   "retry": "إعادة المحاولة",
-  "no_competitions": "لا توجد مسابقات حالياً"
+  "no_competitions": "لا توجد مسابقات حالياً",
+  "payment_private_plan": "خطة خاصة",
+  "payment_group_plan": "خطة جماعية"
 }

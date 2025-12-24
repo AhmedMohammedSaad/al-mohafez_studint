@@ -73,7 +73,27 @@ class _BookingBottomSheetState extends State<BookingBottomSheet> {
               children: [
                 CircleAvatar(
                   radius: 25,
-                  backgroundImage: AssetImage(widget.tutor.profilePictureUrl),
+                  child: ClipOval(
+                    child: widget.tutor.profilePictureUrl.isNotEmpty
+                        ? Image.network(
+                            widget.tutor.profilePictureUrl,
+                            fit: BoxFit.cover,
+                            width: 50,
+                            height: 50,
+                            errorBuilder: (context, error, stackTrace) =>
+                                Image.asset(
+                                  'assets/images/placeholder.png', // Ensure this asset exists or use a generic icon fallback
+                                  fit: BoxFit.cover,
+                                  width: 50,
+                                  height: 50,
+                                  errorBuilder: (_, __, ___) => const Icon(
+                                    Icons.person,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                          )
+                        : const Icon(Icons.person, color: Colors.grey),
+                  ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -87,6 +107,15 @@ class _BookingBottomSheetState extends State<BookingBottomSheet> {
                         style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      // Explicit name display
+                      Text(
+                        widget.tutor.fullName,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: Color(0xFF00E0FF),
                         ),
                       ),
                       Text(
@@ -191,24 +220,6 @@ class _BookingBottomSheetState extends State<BookingBottomSheet> {
                   _buildWeeklySchedule(),
 
                   const SizedBox(height: 24),
-
-                  // Notes
-                  // Text(
-                  // 'booking_notes_title'.tr(),
-                  // style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                  // ),
-                  // const SizedBox(height: 8),
-                  // TextFormField(
-                  // controller: _notesController,
-                  // maxLines: 3,
-                  // decoration: InputDecoration(
-                  // hintText: 'booking_notes_hint'.tr(),
-                  // border: OutlineInputBorder(
-                  // borderRadius: BorderRadius.circular(12),
-                  // ),
-                  // prefixIcon: const Icon(Icons.note_add),
-                  // ),
-                  // ),
                   const SizedBox(height: 30),
                 ],
               ),
@@ -242,7 +253,7 @@ class _BookingBottomSheetState extends State<BookingBottomSheet> {
               ),
             ),
           ),
-          50.height,
+          70.height,
         ],
       ),
     );
@@ -265,9 +276,11 @@ class _BookingBottomSheetState extends State<BookingBottomSheet> {
           // Set default plan if none selected
           if (_selectedPlan == null && plans.isNotEmpty) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              setState(() {
-                _selectedPlan = plans.first;
-              });
+              if (mounted) {
+                setState(() {
+                  _selectedPlan = plans.first;
+                });
+              }
             });
           }
 
@@ -581,8 +594,9 @@ class _BookingBottomSheetState extends State<BookingBottomSheet> {
                         color: isSlotSelected
                             ? const Color(0xFF00E0FF)
                             : canSelectSlot
-                            ? Colors.grey[400]!
-                            : Colors.grey[300]!,
+                            ? Colors.grey[300]! // Lighter grey for available
+                            : Colors
+                                  .red[100]!, // Should actually disable interaction if not selectable, but here it's about day limit
                       ),
                     ),
                     child: Text(
@@ -615,9 +629,6 @@ class _BookingBottomSheetState extends State<BookingBottomSheet> {
     });
 
     try {
-      // Simulate backend call
-      // await Future.delayed(const Duration(milliseconds: 500)); // Removed for actual booking fetch
-
       // Fetch existing bookings for this teacher
       final bookingsRepo = BookingsRepo();
       final existingBookings = await bookingsRepo.getTeacherBookings(
@@ -667,66 +678,22 @@ class _BookingBottomSheetState extends State<BookingBottomSheet> {
         if (normalizedDay != null && daysMap.containsKey(normalizedDay)) {
           final hourlySlots = _generateHourlySlots(slot.start, slot.end);
 
-          // Filter out booked slots
+          // Get the actual date for this instance of the day (e.g., Today or Next Monday)
           final dateForDay = getNextDateForDay(normalizedDay);
-          print(
-            'Checking slots for day: $normalizedDay ($dateForDay)',
-          ); // DEBUG
 
           final availableSlots = hourlySlots.where((timeSlot) {
-            // timeSlot is "10:00 - 11:00"
-            // Parse start time of the slot
-            final parts = timeSlot.split(' - ');
-            final startPart = parts[0].trim();
-
-            int slotStartHour;
-            int slotStartMinute = 0;
-
-            if (startPart.contains(':')) {
-              final timeParts = startPart.split(':');
-              slotStartHour = int.parse(timeParts[0]);
-              slotStartMinute = int.parse(timeParts[1]);
-            } else {
-              slotStartHour = int.parse(startPart);
-            }
-
-            final slotDateTime = DateTime(
-              dateForDay.year,
-              dateForDay.month,
-              dateForDay.day,
-              slotStartHour,
-              slotStartMinute,
+            // timeSlot is format "HH:mm - HH:mm"
+            // Check if this specific slot is blocked by any existing booking
+            final isBlocked = _isSlotBlocked(
+              dateForDay,
+              timeSlot,
+              existingBookings,
             );
-
-            for (var booking in existingBookings) {
-              final bookingDate = booking.selectedDate;
-
-              final isSameDate =
-                  bookingDate.year == slotDateTime.year &&
-                  bookingDate.month == slotDateTime.month &&
-                  bookingDate.day == slotDateTime.day;
-
-              if (isSameDate) {
-                // Normalize strings for comparison
-                // Remove all spaces to ensure "10:00 - 11:00" matches "10:00-11:00"
-                final bookingSlot = booking.selectedTimeSlot.replaceAll(
-                  ' ',
-                  '',
-                );
-                final currentSlot = timeSlot.replaceAll(' ', '');
-
-                if (bookingSlot == currentSlot) {
-                  print('Slot match! Removing $timeSlot'); // DEBUG
-                  return false; // Booked!
-                }
-              }
-            }
-            return true; // Available
+            return !isBlocked;
           }).toList();
 
           daysMap[normalizedDay]!.addAll(availableSlots);
         } else {
-          // Fallback: try to find partial match or log error
           print('Warning: Could not map day "${slot.day}" to a valid day.');
         }
       }
@@ -741,7 +708,6 @@ class _BookingBottomSheetState extends State<BookingBottomSheet> {
           dayNameEn: dayEn,
           isAvailable: slots.isNotEmpty,
           timeSlots: slots,
-          // The rest of the code remains unchanged
         );
       });
 
@@ -760,6 +726,110 @@ class _BookingBottomSheetState extends State<BookingBottomSheet> {
         _isLoading = false;
       });
     }
+  }
+
+  // Robust check for slot blocking
+  bool _isSlotBlocked(
+    DateTime dateForDay,
+    String timeSlot,
+    List<dynamic> existingBookings,
+  ) {
+    // Helper to normalize date to YYYY-MM-DD string to avoid timezone issues
+    String formatDate(DateTime dt) {
+      return '${dt.year}-${dt.month.toString().padLeft(2, '0')}-${dt.day.toString().padLeft(2, '0')}';
+    }
+
+    final targetDateStr = formatDate(dateForDay);
+
+    // 1. Strict String Match Blocking (Fastest)
+    // Check if any booking on this date has the exact same slot string
+    final hasStrictMatch = existingBookings.any((booking) {
+      // Handle potential timezone offsets by converting to local or just string matching if source is trustworthy
+      // We'll use the formatDate helper to be safe.
+      // Note: booking.selectedDate is DateTime.
+      final bookingDateStr = formatDate(booking.selectedDate.toLocal());
+
+      if (bookingDateStr != targetDateStr) return false;
+
+      final bookingSlotNorm = booking.selectedTimeSlot
+          .toString()
+          .replaceAll(' ', '')
+          .toLowerCase();
+      final currentSlotNorm = timeSlot.replaceAll(' ', '').toLowerCase();
+
+      return bookingSlotNorm == currentSlotNorm;
+    });
+
+    if (hasStrictMatch) return true;
+
+    // 2. Time Overlap / Parsing Logic
+    // Only needed if strings don't match exactly (e.g. "10:00-11:00" vs "10:00 - 11:00")
+
+    // Helper to parse "HH:mm" or "h PM"
+    int getHour(String t) {
+      t = t.toLowerCase().trim();
+      bool isPm = t.contains('pm');
+      bool isAm = t.contains('am');
+
+      // Remove am/pm for parsing
+      String raw = t.replaceAll('am', '').replaceAll('pm', '').trim();
+
+      int hour = 0;
+      if (raw.contains(':')) {
+        hour = int.tryParse(raw.split(':')[0]) ?? -1;
+      } else {
+        hour = int.tryParse(raw) ?? -1;
+      }
+
+      if (hour == -1) return -1; // Parse failed
+
+      // Adjust for PM
+      if (isPm && hour < 12) hour += 12;
+      if (isAm && hour == 12) hour = 0;
+
+      return hour;
+    }
+
+    int getMinute(String t) {
+      String raw = t
+          .toLowerCase()
+          .replaceAll('am', '')
+          .replaceAll('pm', '')
+          .trim();
+      if (raw.contains(':')) {
+        return int.tryParse(raw.split(':')[1]) ?? 0;
+      }
+      return 0;
+    }
+
+    final parts = timeSlot.split(' - ');
+    if (parts.length != 2) return false;
+
+    final slotStartHour = getHour(parts[0]);
+    final slotStartMinute = getMinute(parts[0]);
+    if (slotStartHour == -1) return false;
+
+    for (var booking in existingBookings) {
+      final bookingDateStr = formatDate(booking.selectedDate.toLocal());
+      if (bookingDateStr != targetDateStr) continue;
+
+      final bookingSlotStr = booking.selectedTimeSlot.toString();
+      // Handle "HH:mm - HH:mm" or simple "HH:mm"
+      final bookingParts = bookingSlotStr.contains('-')
+          ? bookingSlotStr.split('-')
+          : [bookingSlotStr]; // explicit start time
+
+      final bookingStartHour = getHour(bookingParts[0]);
+      final bookingStartMinute = getMinute(bookingParts[0]);
+
+      if (bookingStartHour != -1 &&
+          bookingStartHour == slotStartHour &&
+          bookingStartMinute == slotStartMinute) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   Future<void> _confirmBooking() async {
@@ -805,11 +875,6 @@ class _BookingBottomSheetState extends State<BookingBottomSheet> {
 
       if (slots.isNotEmpty) {
         // Find the DaySchedule object to get the English name if needed
-        // But the map key is dayName (Arabic?).
-        // WeeklyScheduleModel uses dayName as key.
-        // In _loadWeeklySchedule, we created DaySchedule with dayName (Arabic) and dayNameEn (English).
-        // We need dayNameEn to calculate date.
-
         final daySchedule = _weeklySchedule!.days.firstWhere(
           (d) => d.dayName == dayName,
           orElse: () => _weeklySchedule!.days.first, // Fallback

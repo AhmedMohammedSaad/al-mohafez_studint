@@ -23,9 +23,9 @@ class BookingRequestModel {
       'student_id': studentId,
       'selected_date': selectedDate.toIso8601String().split('T')[0],
       'selected_time_slot': selectedTimeSlot,
-      'student_name': studentName,
+      // 'student_name': studentName, // Column missing in DB
       'session_price': sessionPrice,
-      'notes': notes ?? '',
+      // 'notes': notes ?? '', // Column missing in DB
       'status': 'pending',
     };
   }

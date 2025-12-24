@@ -29,21 +29,27 @@ class BookingModel {
 
   factory BookingModel.fromJson(Map<String, dynamic> json) {
     return BookingModel(
-      id: json['id'] as String,
-      teacherId: json['teacher_id'] as String,
-      studentId: json['student_id'] as String,
-      studentName: json['student_name'] as String,
-      selectedDate: DateTime.parse(json['selected_date'] as String),
-      selectedTimeSlot: json['selected_time_slot'] as String,
+      id: json['id'] as String? ?? '',
+      teacherId: json['teacher_id'] as String? ?? '',
+      studentId: json['student_id'] as String? ?? '',
+      studentName: json['student_name'] as String? ?? 'Unknown Student',
+      selectedDate:
+          DateTime.tryParse(json['selected_date'] as String? ?? '') ??
+          DateTime.now(),
+      selectedTimeSlot: json['selected_time_slot'] as String? ?? '',
       notes: json['notes'] as String? ?? '',
       meetingUrl: json['meeting_url'] as String?,
       status: BookingStatus.values.firstWhere(
         (e) => e.name == json['status'],
         orElse: () => BookingStatus.pending,
       ),
-      createdAt: DateTime.parse(json['created_at'] as String),
-      updatedAt: DateTime.parse(json['updated_at'] as String),
-      sessionPrice: (json['session_price'] as num).toDouble(),
+      createdAt:
+          DateTime.tryParse(json['created_at'] as String? ?? '') ??
+          DateTime.now(),
+      updatedAt:
+          DateTime.tryParse(json['updated_at'] as String? ?? '') ??
+          DateTime.now(),
+      sessionPrice: (json['session_price'] as num?)?.toDouble() ?? 0.0,
     );
   }
 

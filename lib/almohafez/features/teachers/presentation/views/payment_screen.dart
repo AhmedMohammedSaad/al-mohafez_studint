@@ -450,18 +450,21 @@ class _PaymentScreenState extends State<PaymentScreen> {
   }
 
   Future<void> _processPayment() async {
-    final userId = Supabase.instance.client.auth.currentUser?.id;
-    if (userId == null) {
+    final user = Supabase.instance.client.auth.currentUser;
+    if (user == null) {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text('error_login_required'.tr())));
       return;
     }
 
-    // Get user profile to get name (or use a placeholder if not available in context)
-    // For now, using a placeholder or fetching from profile if possible.
-    // Assuming we can get it from a ProfileCubit or similar, but for simplicity:
-    final studentName = 'Student Name'; // Should be fetched
+    final userId = user.id;
+
+    // Fetch user name from metadata or use fallback
+    final studentName =
+        user.userMetadata?['full_name'] as String? ??
+        user.userMetadata?['name'] as String? ??
+        'Unknown Student';
 
     final request = BookingRequestModel(
       teacherId: widget.tutorId,
@@ -523,9 +526,16 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
+                    // Navigate to root first
                     Navigator.of(context).pop(); // Close dialog
-                    Navigator.of(context).pop(); // Close payment screen
-                    // Optionally navigate to bookings list
+                    Navigator.of(
+                      context,
+                    ).pop(); // Close payment screen (to bottom sheet)
+                    Navigator.of(
+                      context,
+                    ).pop(); // Close bottom sheet (to teachers/tutor)
+                    // If you want to go all the way back to session list, maybe popUntil logic
+                    // For now, standard behavior is fine.
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF00E0FF),

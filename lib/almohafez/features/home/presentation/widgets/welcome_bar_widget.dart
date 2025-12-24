@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class WelcomeBarWidget extends StatelessWidget {
   const WelcomeBarWidget({super.key});
@@ -12,14 +13,21 @@ class WelcomeBarWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'welcome_greeting'.tr(namedArgs: {'username': 'أحمد'}),
-            style: TextStyle(
-              fontFamily: 'Cairo',
-              fontSize: 22.sp,
-              fontWeight: FontWeight.bold,
-              color: const Color(0xFF0A1D64),
-            ),
+          Builder(
+            builder: (context) {
+              final user = Supabase.instance.client.auth.currentUser;
+              final name =
+                  user?.userMetadata?['first_name'] ?? 'profile_user_name'.tr();
+              return Text(
+                'welcome_greeting'.tr(namedArgs: {'username': name}),
+                style: TextStyle(
+                  fontFamily: 'Cairo',
+                  fontSize: 22.sp,
+                  fontWeight: FontWeight.bold,
+                  color: const Color(0xFF0A1D64),
+                ),
+              );
+            },
           ),
           SizedBox(height: 4.h),
           Text(

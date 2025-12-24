@@ -26,6 +26,68 @@ class ProfileRepo {
         profileData['phone'] = user.phone;
       }
 
+      // --- FETCH STATISTICS ---
+      // 1. Fetch Evaluations to calculate Average Score
+      try {
+        final evalResponse = await _supabase
+            .from('session_evaluations')
+            .select('overall_score')
+            .eq('student_id', user.id);
+
+        final evaluations = evalResponse as List;
+        if (evaluations.isNotEmpty) {
+          final totalScore = evaluations.fold<double>(
+            0,
+            (sum, item) => sum + (item['overall_score'] as num),
+          );
+
+          // Calculate average out of 100? or out of 5?
+          // The score is usually out of 5. User wants a Percentage Rate probably.
+          // In ProgressRepo: (rating / 5.0) * 100
+          // Let's store the raw average percentage.
+          final avgRating = totalScore / evaluations.length;
+          final percentage = (avgRating / 5.0) * 100;
+          profileData['average_score'] = percentage;
+        } else {
+          profileData['average_score'] = 0.0;
+        }
+      } catch (e) {
+        print('Error fetching evaluations for profile: $e');
+        profileData['average_score'] = 0.0;
+      }
+
+      // 2. Fetch Sessions Count (Completed sessions)
+      // User said "Sessions wants integrated with sessions he has".
+      // We can count all bookings that are 'completed' OR have an evaluation.
+      try {
+        // We can just count total bookings for now or completed ones.
+        // Let's count COMPLETED bookings as that's usually deeper "sessions".
+        // Or just ALL bookings? User said "Sessions". Let's assume completed for now to match progress.
+        // Actually, let's just count all bookings to be safe? Or completed.
+        // Let's stick to "Completed" as it implies "Attended sessions".
+        // Note: count is returned directly if using count() modifier, but here with select?
+        // Let's use select with count.
+        // Supabase Flutter v2: count is usually returned if requested.
+        // Actually .count() returns int Future.
+
+        // Let's try simpler query list and .length if count not easy without looking up docs version.
+        // But count() is efficient.
+        // .count(CountOption.exact) returns Future<int> in recent versions.
+
+        // Wait, select().count() returns PostgrestResponse in some versions.
+        // Let's just fetch simplified list id to be safe on api version.
+        final bookingsList = await _supabase
+            .from('bookings')
+            .select('id')
+            .eq('student_id', user.id)
+            .eq('status', 'completed');
+
+        profileData['total_sessions'] = (bookingsList as List).length;
+      } catch (e) {
+        print('Error fetching bookings count for profile: $e');
+        profileData['total_sessions'] = 0;
+      }
+
       return ProfileModel.fromJson(profileData);
     } on PostgrestException catch (e) {
       throw Exception('Database Error: ${e.message}');

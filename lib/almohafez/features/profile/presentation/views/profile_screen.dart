@@ -128,7 +128,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         avatarUrl: profile.avatarUrl,
                       ),
                       SizedBox(height: 24.h),
-                      const StatisticsCardsWidget(),
+                      StatisticsCardsWidget(
+                        sessionsCount: profile.totalSessions,
+                        totalRate: profile.averageScore,
+                      ),
                       SizedBox(height: 24.h),
                       const ActionButtonsWidget(),
                       SizedBox(height: 65.h),

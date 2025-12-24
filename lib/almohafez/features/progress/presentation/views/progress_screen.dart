@@ -1,34 +1,43 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';
 import '../widgets/circular_progress_widget.dart';
-import '../widgets/weekly_chart_widget.dart'; // Contains DailyChartWidget
+import '../widgets/weekly_chart_widget.dart';
 import '../widgets/recent_sessions_widget.dart';
 import '../widgets/teacher_notes_widget.dart';
 import '../widgets/empty_state_widget.dart';
-import '../../data/models/progress_model.dart';
-import '../../data/mock_data/progress_mock_data.dart';
+import '../../data/repos/progress_repo.dart';
+import '../cubit/progress_cubit.dart';
 
-class ProgressScreen extends StatefulWidget {
+class ProgressScreen extends StatelessWidget {
   const ProgressScreen({super.key});
 
   @override
-  State<ProgressScreen> createState() => _ProgressScreenState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => ProgressCubit(ProgressRepo())..loadProgressData(),
+      child: const _ProgressView(),
+    );
+  }
 }
 
-class _ProgressScreenState extends State<ProgressScreen>
+class _ProgressView extends StatefulWidget {
+  const _ProgressView();
+
+  @override
+  State<_ProgressView> createState() => _ProgressViewState();
+}
+
+class _ProgressViewState extends State<_ProgressView>
     with TickerProviderStateMixin {
   late AnimationController _fadeController;
   late Animation<double> _fadeAnimation;
-
-  ProgressModel? _progressData;
-  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
     _initializeAnimations();
-    _loadProgressData();
   }
 
   void _initializeAnimations() {
@@ -40,19 +49,6 @@ class _ProgressScreenState extends State<ProgressScreen>
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(parent: _fadeController, curve: Curves.easeInOut),
     );
-  }
-
-  Future<void> _loadProgressData() async {
-    // Simulate API call delay
-    await Future.delayed(const Duration(milliseconds: 500));
-
-    setState(() {
-      // Use mock data for demonstration
-      _progressData = ProgressMockData.getSampleData();
-      _isLoading = false;
-    });
-
-    _fadeController.forward();
   }
 
   @override
@@ -108,69 +104,88 @@ class _ProgressScreenState extends State<ProgressScreen>
   }
 
   Widget _buildBody() {
-    if (_isLoading) {
-      return const Center(
-        child: CircularProgressIndicator(
-          valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF00E0FF)),
-        ),
-      );
-    }
+    return BlocBuilder<ProgressCubit, ProgressState>(
+      builder: (context, state) {
+        if (state is ProgressLoading) {
+          return const Center(
+            child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF00E0FF)),
+            ),
+          );
+        }
 
-    if (_progressData == null || _progressData!.hasError) {
-      return EmptyStateWidget(
-        message: _progressData?.errorMessage ?? 'progress_loading_error'.tr(),
-        subtitle: 'progress_loading_error_subtitle'.tr(),
-        icon: Icons.error_outline,
-      );
-    }
+        if (state is ProgressError) {
+          return EmptyStateWidget(
+            message: state.message,
+            subtitle: 'progress_loading_error_subtitle'.tr(),
+            icon: Icons.error_outline,
+            // onRetry: () => context.read<ProgressCubit>().loadProgressData(),
+          );
+        }
 
-    if (_progressData!.isEmpty) {
-      return EmptyStateWidget(
-        message: 'progress_empty_message'.tr(),
-        subtitle: 'progress_empty_subtitle'.tr(),
-        icon: Icons.analytics_outlined,
-      );
-    }
+        if (state is ProgressLoaded) {
+          final progressData = state.progressData;
 
-    return AnimatedBuilder(
-      animation: _fadeAnimation,
-      builder: (context, child) {
-        return Opacity(
-          opacity: _fadeAnimation.value,
-          child: Transform.translate(
-            offset: Offset(0, 20 * (1 - _fadeAnimation.value)),
-            child: _buildProgressContent(),
-          ),
-        );
+          // Trigger animation when loaded
+          _fadeController.forward();
+
+          if (progressData.isEmpty) {
+            return EmptyStateWidget(
+              message: 'progress_empty_message'.tr(),
+              subtitle: 'progress_empty_subtitle'.tr(),
+              icon: Icons.analytics_outlined,
+              //  () => context.read<ProgressCubit>().loadProgressData(),
+            );
+          }
+
+          return AnimatedBuilder(
+            animation: _fadeAnimation,
+            builder: (context, child) {
+              return Opacity(
+                opacity: _fadeAnimation.value,
+                child: Transform.translate(
+                  offset: Offset(0, 20 * (1 - _fadeAnimation.value)),
+                  child: _buildProgressContent(progressData),
+                ),
+              );
+            },
+          );
+        }
+
+        return const SizedBox.shrink();
       },
     );
   }
 
-  Widget _buildProgressContent() {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: EdgeInsets.all(16.w),
-        child: Column(
-          children: [
-            // Overall Progress Circle
-            CircularProgressWidget(percentage: _progressData!.overallProgress),
-            SizedBox(height: 24.h),
+  Widget _buildProgressContent(progressData) {
+    return RefreshIndicator(
+      onRefresh: () => context.read<ProgressCubit>().loadProgressData(),
+      child: SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        child: Padding(
+          padding: EdgeInsets.all(16.w),
+          child: Column(
+            children: [
+              // Overall Progress Circle
+              CircularProgressWidget(percentage: progressData.overallProgress),
+              SizedBox(height: 24.h),
 
-            // Daily Performance Chart
-            DailyChartWidget(
-              dailyData: _progressData!.dailyPerformance,
-              height: 250,
-            ),
-            SizedBox(height: 24.h),
+              // Daily Performance Chart
+              DailyChartWidget(
+                dailyData: progressData.dailyPerformance,
+                height: 250,
+              ),
+              SizedBox(height: 24.h),
 
-            // Recent Sessions
-            RecentSessionsWidget(sessions: _progressData!.recentSessions),
-            SizedBox(height: 24.h),
+              // Recent Sessions
+              RecentSessionsWidget(sessions: progressData.recentSessions),
+              SizedBox(height: 24.h),
 
-            // Teacher Notes
-            TeacherNotesWidget(notes: _progressData!.teacherNotes),
-            SizedBox(height: 20.h),
-          ],
+              // Teacher Notes
+              TeacherNotesWidget(notes: progressData.teacherNotes),
+              SizedBox(height: 20.h),
+            ],
+          ),
         ),
       ),
     );

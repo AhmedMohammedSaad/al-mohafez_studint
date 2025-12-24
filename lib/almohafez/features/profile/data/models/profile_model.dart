@@ -6,6 +6,9 @@ class ProfileModel {
   final String? phoneNumber;
   final String? avatarUrl;
 
+  final int totalSessions;
+  final double averageScore;
+
   ProfileModel({
     required this.id,
     required this.firstName,
@@ -13,6 +16,8 @@ class ProfileModel {
     required this.email,
     this.phoneNumber,
     this.avatarUrl,
+    this.totalSessions = 0,
+    this.averageScore = 0.0,
   });
 
   factory ProfileModel.fromJson(Map<String, dynamic> json) {
@@ -25,6 +30,8 @@ class ProfileModel {
           '', // Email might come from auth.users not profiles table usually
       phoneNumber: json['phone_number'],
       avatarUrl: json['avatar_url'],
+      totalSessions: json['total_sessions'] ?? 0,
+      averageScore: (json['average_score'] as num?)?.toDouble() ?? 0.0,
     );
   }
 
@@ -36,6 +43,8 @@ class ProfileModel {
       'email': email,
       'phone_number': phoneNumber,
       'avatar_url': avatarUrl,
+      'total_sessions': totalSessions,
+      'average_score': averageScore,
     };
   }
 

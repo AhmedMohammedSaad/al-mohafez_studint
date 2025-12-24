@@ -27,15 +27,24 @@ class DailyChartPainter extends CustomPainter {
     );
 
     // Calculate dimensions (increased top margin for percentage labels)
+    // Calculate dimensions (increased top margin for percentage labels)
     final chartHeight = size.height - 80;
     final chartWidth = size.width - 40;
-    final itemWidth = chartWidth / (dailyData.length - 1);
+
+    // Prevent division by zero if only one item
+    final itemWidth = dailyData.length > 1
+        ? chartWidth / (dailyData.length - 1)
+        : chartWidth;
 
     // Find max value for scaling
     final maxValue = dailyData
         .map((e) => e.percentage)
         .reduce((a, b) => a > b ? a : b);
-    final scaledMaxValue = (maxValue / 10).ceil() * 10.0;
+
+    // Check if maxValue is 0 to avoid division by zero later
+    final scaledMaxValue = maxValue <= 0
+        ? 100.0
+        : (maxValue / 10).ceil() * 10.0;
 
     // Draw Y-axis labels
     _drawYAxisLabels(canvas, textPainter, chartHeight, scaledMaxValue);
@@ -57,10 +66,23 @@ class DailyChartPainter extends CustomPainter {
 
     // Draw day labels and data points
     _drawDayLabels(canvas, textPainter, itemWidth, size);
-    _drawDataPoints(canvas, dotPaint, textPainter, itemWidth, chartHeight, scaledMaxValue, gradient);
+    _drawDataPoints(
+      canvas,
+      dotPaint,
+      textPainter,
+      itemWidth,
+      chartHeight,
+      scaledMaxValue,
+      gradient,
+    );
   }
 
-  void _drawYAxisLabels(Canvas canvas, TextPainter textPainter, double chartHeight, double scaledMaxValue) {
+  void _drawYAxisLabels(
+    Canvas canvas,
+    TextPainter textPainter,
+    double chartHeight,
+    double scaledMaxValue,
+  ) {
     for (int i = 0; i <= 5; i++) {
       final value = (scaledMaxValue / 5) * i;
       final y = chartHeight - (chartHeight / 5) * i + 40;
@@ -78,7 +100,11 @@ class DailyChartPainter extends CustomPainter {
     }
   }
 
-  Map<String, Path> _createChartPaths(double itemWidth, double chartHeight, double scaledMaxValue) {
+  Map<String, Path> _createChartPaths(
+    double itemWidth,
+    double chartHeight,
+    double scaledMaxValue,
+  ) {
     final linePath = Path();
     final fillPath = Path();
 
@@ -110,7 +136,13 @@ class DailyChartPainter extends CustomPainter {
     return {'linePath': linePath, 'fillPath': fillPath};
   }
 
-  void _drawChartArea(Canvas canvas, Paint fillPaint, Path fillPath, LinearGradient gradient, Rect rect) {
+  void _drawChartArea(
+    Canvas canvas,
+    Paint fillPaint,
+    Path fillPath,
+    LinearGradient gradient,
+    Rect rect,
+  ) {
     final fillGradient = LinearGradient(
       colors: [
         const Color(0xFF00E0FF).withOpacity(0.3),
@@ -123,7 +155,12 @@ class DailyChartPainter extends CustomPainter {
     canvas.drawPath(fillPath, fillPaint);
   }
 
-  void _drawDayLabels(Canvas canvas, TextPainter textPainter, double itemWidth, Size size) {
+  void _drawDayLabels(
+    Canvas canvas,
+    TextPainter textPainter,
+    double itemWidth,
+    Size size,
+  ) {
     for (int i = 0; i < dailyData.length; i++) {
       final animatedIndex = (i * animationValue).clamp(0, dailyData.length - 1);
       if (animatedIndex < i) continue;
@@ -149,8 +186,15 @@ class DailyChartPainter extends CustomPainter {
     }
   }
 
-  void _drawDataPoints(Canvas canvas, Paint dotPaint, TextPainter textPainter, 
-      double itemWidth, double chartHeight, double scaledMaxValue, LinearGradient gradient) {
+  void _drawDataPoints(
+    Canvas canvas,
+    Paint dotPaint,
+    TextPainter textPainter,
+    double itemWidth,
+    double chartHeight,
+    double scaledMaxValue,
+    LinearGradient gradient,
+  ) {
     for (int i = 0; i < dailyData.length; i++) {
       final animatedIndex = (i * animationValue).clamp(0, dailyData.length - 1);
       if (animatedIndex < i) continue;
@@ -163,11 +207,21 @@ class DailyChartPainter extends CustomPainter {
       _drawDataPointCircles(canvas, dotPaint, Offset(x, y), gradient);
 
       // Draw percentage labels
-      _drawPercentageLabel(canvas, textPainter, Offset(x, y), dailyData[i].percentage);
+      _drawPercentageLabel(
+        canvas,
+        textPainter,
+        Offset(x, y),
+        dailyData[i].percentage,
+      );
     }
   }
 
-  void _drawDataPointCircles(Canvas canvas, Paint dotPaint, Offset center, LinearGradient gradient) {
+  void _drawDataPointCircles(
+    Canvas canvas,
+    Paint dotPaint,
+    Offset center,
+    LinearGradient gradient,
+  ) {
     // Outer circle (white)
     dotPaint.color = Colors.white;
     canvas.drawCircle(center, 6, dotPaint);
@@ -179,7 +233,12 @@ class DailyChartPainter extends CustomPainter {
     canvas.drawCircle(center, 4, dotPaint);
   }
 
-  void _drawPercentageLabel(Canvas canvas, TextPainter textPainter, Offset point, double percentage) {
+  void _drawPercentageLabel(
+    Canvas canvas,
+    TextPainter textPainter,
+    Offset point,
+    double percentage,
+  ) {
     textPainter.text = TextSpan(
       text: '${percentage.toInt()}%',
       style: const TextStyle(

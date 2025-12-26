@@ -8,11 +8,11 @@ class ChartPainterWidget extends StatefulWidget {
   final Duration animationDuration;
 
   const ChartPainterWidget({
-    Key? key,
+    super.key,
     required this.dailyData,
     required this.height,
     this.animationDuration = const Duration(milliseconds: 2000),
-  }) : super(key: key);
+  });
 
   @override
   State<ChartPainterWidget> createState() => _ChartPainterWidgetState();
@@ -36,17 +36,6 @@ class _ChartPainterWidgetState extends State<ChartPainterWidget>
       CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
     );
     _animationController.forward();
-
-    // Auto scroll to the end to show latest data
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (_scrollController.hasClients) {
-        _scrollController.animateTo(
-          _scrollController.position.maxScrollExtent,
-          duration: const Duration(milliseconds: 1000),
-          curve: Curves.easeOut,
-        );
-      }
-    });
   }
 
   @override
@@ -62,17 +51,20 @@ class _ChartPainterWidgetState extends State<ChartPainterWidget>
       child: AnimatedBuilder(
         animation: _animation,
         builder: (context, child) {
-          return SingleChildScrollView(
-            controller: _scrollController,
-            scrollDirection: Axis.horizontal,
-            child: CustomPaint(
-              size: Size(
-                widget.dailyData.length * 60.0 + 40,
-                widget.height - 60,
-              ),
-              painter: DailyChartPainter(
-                dailyData: widget.dailyData,
-                animationValue: _animation.value,
+          return Directionality(
+            textDirection: TextDirection.ltr,
+            child: SingleChildScrollView(
+              controller: _scrollController,
+              scrollDirection: Axis.horizontal,
+              child: CustomPaint(
+                size: Size(
+                  widget.dailyData.length * 60.0 + 60,
+                  widget.height - 60,
+                ),
+                painter: DailyChartPainter(
+                  dailyData: widget.dailyData,
+                  animationValue: _animation.value,
+                ),
               ),
             ),
           );

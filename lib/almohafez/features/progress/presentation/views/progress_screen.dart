@@ -74,6 +74,7 @@ class _ProgressViewState extends State<_ProgressView>
 
   Widget _buildHeader() {
     return Container(
+      width: double.infinity,
       padding: EdgeInsets.all(16.w),
       color: Colors.white,
       child: Column(

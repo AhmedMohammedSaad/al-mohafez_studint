@@ -156,8 +156,8 @@ class TutorProfileScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // إحصائيات سريعة
-                      _buildStatsSection(),
-                      SizedBox(height: 24.h),
+                      // _buildStatsSection(),
+                      // SizedBox(height: 24.h),
                       // النبذة التعريفية
                       _buildBioSection(),
                       SizedBox(height: 24.h),
@@ -171,7 +171,7 @@ class TutorProfileScreen extends StatelessWidget {
                       // _buildContactMethodsSection(),
                       // SizedBox(height: 24.h),
                       // المراجعات
-                      _buildReviewsSection(),
+                      // _buildReviewsSection(),
                       SizedBox(height: 300.h), // مساحة إضافية لزر الحجز
                     ],
                   ),

@@ -44,6 +44,7 @@ class _SessionsScreenState extends State<SessionsScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(title: Text('nav_sessions'.tr())),
       body: BlocBuilder<SessionsCubit, SessionsState>(
         builder: (context, state) {
           if (state is SessionsLoading) {
@@ -87,83 +88,96 @@ class _SessionsScreenState extends State<SessionsScreen>
   }
 
   Widget _buildContent(SessionsLoaded state) {
-    return Column(
-      children: [
-        // Statistics widget
-        60.height,
-        // Tab bar
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-          child: Container(
-            height: 52,
-            decoration: BoxDecoration(
-              color: Colors.grey.shade200,
-              borderRadius: BorderRadius.circular(26),
-            ),
-            child: TabBar(
-              dividerColor: Colors.transparent,
-              controller: _tabController,
-              indicator: BoxDecoration(
-                color: const Color(0xFF2E7D32),
-                borderRadius: BorderRadius.circular(24),
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color(0xFF2E7D32).withOpacity(.25),
-                    blurRadius: 8,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
-              ),
-              labelColor: Colors.white,
-              unselectedLabelColor: Colors.grey.shade600,
-              labelStyle: const TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 14,
-              ),
-              unselectedLabelStyle: const TextStyle(
-                fontWeight: FontWeight.w500,
-                fontSize: 14,
-              ),
-              indicatorPadding: const EdgeInsets.all(4),
-              tabs: [
-                Tab(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const SizedBox(width: 4),
-                      Text(
-                        '${'sessions_upcoming'.tr()} (${state.upcomingSessions.length})',
-                      ),
-                    ],
-                  ),
-                ),
-                Tab(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const SizedBox(width: 4),
-                      Text(
-                        '${'sessions_completed'.tr()} (${state.completedSessions.length})',
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-        // Tab content
-        Expanded(
-          child: TabBarView(
-            controller: _tabController,
-            children: [
-              _buildUpcomingSessionsTab(state.upcomingSessions),
-              _buildCompletedSessionsTab(state.completedSessions),
-            ],
-          ),
-        ),
-      ],
-    );
+    return _buildUpcomingSessionsTab(state.upcomingSessions);
+    // Column(
+    // children: [
+    // Statistics widget
+    // 60.height,
+    // // Tab bar
+    // Padding(
+    //   padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+    //   child: Container(
+    //     height: 52,
+    //     decoration: BoxDecoration(
+    //       color: Colors.grey.shade200,
+    //       borderRadius: BorderRadius.circular(26),
+    //     ),
+    //     child:
+    //  TabBar(
+    //   dividerColor: Colors.transparent,
+    //   controller: _tabController,
+    //   indicator: BoxDecoration(
+    //     color: const Color(0xFF2E7D32),
+    //     borderRadius: BorderRadius.circular(24),
+    //     boxShadow: [
+    //       BoxShadow(
+    //         color: const Color(0xFF2E7D32).withValues(alpha: .25),
+    //         blurRadius: 8,
+    //         offset: const Offset(0, 4),
+    //       ),
+    //     ],
+    //   ),
+    //   labelColor: Colors.white,
+    //   unselectedLabelColor: Colors.grey.shade600,
+    //   labelStyle: const TextStyle(
+    //     fontWeight: FontWeight.w600,
+    //     fontSize: 14,
+    //   ),
+    //   unselectedLabelStyle: const TextStyle(
+    //     fontWeight: FontWeight.w500,
+    //     fontSize: 14,
+    //   ),
+    //   indicatorPadding: const EdgeInsets.all(4),
+    //   tabs: [
+    //     Tab(
+    //       child: Row(
+    //         mainAxisAlignment: MainAxisAlignment.center,
+    //         children: [
+    //           const SizedBox(width: 4),
+    //           Flexible(
+    //             child: Text(
+    //               '${'sessions_upcoming'.tr()} (${state.upcomingSessions.length})',
+    //               maxLines: 1,
+    //               overflow: TextOverflow.ellipsis,
+    //             ),
+    //           ),
+    //         ],
+    //       ),
+    //     ),
+    //     Tab(
+    //       child: Row(
+    //         mainAxisAlignment: MainAxisAlignment.center,
+    //         children: [
+    //           const SizedBox(width: 4),
+    //           Flexible(
+    //             child: Text(
+    //               '${'sessions_completed'.tr()} (${state.completedSessions.length})',
+    //               maxLines: 1,
+    //               overflow: TextOverflow.ellipsis,
+    //             ),
+    //           ),
+    //         ],
+    //       ),
+    //     ),
+    //   ],
+    // ),
+    // ),
+    // ),
+    // // Tab content
+    // Expanded(
+    //   child: TabBarView(
+    //     controller: _tabController,
+    //     children: [
+    //       _buildUpcomingSessionsTab(state.upcomingSessions),
+    //       _buildCompletedSessionsTab(state.completedSessions),
+    //
+    //   ],
+
+    // ),
+    // ),
+
+    // ],
+    // );;
   }
 
   Widget _buildUpcomingSessionsTab(List<SessionModel> sessions) {

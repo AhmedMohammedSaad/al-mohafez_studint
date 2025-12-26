@@ -145,8 +145,8 @@ class DailyChartPainter extends CustomPainter {
   ) {
     final fillGradient = LinearGradient(
       colors: [
-        const Color(0xFF00E0FF).withOpacity(0.3),
-        const Color(0xFF0077B6).withOpacity(0.1),
+        const Color(0xFF00E0FF).withValues(alpha: 0.3),
+        const Color(0xFF0077B6).withValues(alpha: 0.1),
       ],
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
@@ -266,14 +266,14 @@ class DailyChartPainter extends CustomPainter {
     );
 
     final backgroundPaint = Paint()
-      ..color = Colors.white.withOpacity(0.9)
+      ..color = Colors.white.withValues(alpha: 0.9)
       ..style = PaintingStyle.fill;
 
     canvas.drawRRect(backgroundRect, backgroundPaint);
 
     // Draw border around background
     final borderPaint = Paint()
-      ..color = const Color(0xFF0077B6).withOpacity(0.2)
+      ..color = const Color(0xFF0077B6).withValues(alpha: 0.2)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1;
 

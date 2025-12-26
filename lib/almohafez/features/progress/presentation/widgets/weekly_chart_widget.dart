@@ -32,7 +32,7 @@ class DailyChartWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -40,18 +40,21 @@ class DailyChartWidget extends StatelessWidget {
       ),
       child: Padding(
         padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const ChartHeaderWidget(
-              titleKey: 'progress_chart_title',
-              icon: Icons.trending_up,
-              iconColor: Color(0xFF0077B6),
-              backgroundColor: Color(0xFF0077B6),
-            ),
-            const SizedBox(height: 16),
-            ChartPainterWidget(dailyData: dailyData, height: height),
-          ],
+        child: Directionality(
+          textDirection: TextDirection.ltr,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const ChartHeaderWidget(
+                titleKey: 'progress_chart_title',
+                icon: Icons.trending_up,
+                iconColor: Color(0xFF0077B6),
+                backgroundColor: Color(0xFF0077B6),
+              ),
+              const SizedBox(height: 16),
+              ChartPainterWidget(dailyData: dailyData, height: height),
+            ],
+          ),
         ),
       ),
     );

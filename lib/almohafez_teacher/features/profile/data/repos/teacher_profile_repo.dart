@@ -29,7 +29,9 @@ class TeacherProfileRepo {
           'phone': profile.phone,
           'bio': profile.bio,
           'gender': profile.gender,
-          // Add other updateable fields here
+          'availability_slots': profile.availabilitySlots
+              .map((e) => e.toJson())
+              .toList(),
         })
         .eq('id', profile.id);
   }

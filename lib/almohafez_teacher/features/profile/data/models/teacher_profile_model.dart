@@ -11,7 +11,7 @@ class TeacherProfileModel {
   final int numSessions;
   final bool isAvailable;
   final List<String> qualifications;
-  final List<dynamic> availabilitySlots;
+  final List<AvailabilitySlot> availabilitySlots;
 
   TeacherProfileModel({
     required this.id,
@@ -47,7 +47,11 @@ class TeacherProfileModel {
               ?.map((e) => e.toString())
               .toList() ??
           [],
-      availabilitySlots: json['availability_slots'] as List<dynamic>? ?? [],
+      availabilitySlots:
+          (json['availability_slots'] as List<dynamic>?)
+              ?.map((e) => AvailabilitySlot.fromJson(e))
+              .toList() ??
+          [],
     );
   }
 
@@ -65,7 +69,7 @@ class TeacherProfileModel {
       'num_sessions': numSessions,
       'is_available': isAvailable,
       'qualifications': qualifications,
-      'availability_slots': availabilitySlots,
+      'availability_slots': availabilitySlots.map((e) => e.toJson()).toList(),
     };
   }
 
@@ -81,7 +85,7 @@ class TeacherProfileModel {
     int? numSessions,
     bool? isAvailable,
     List<String>? qualifications,
-    List<dynamic>? availabilitySlots,
+    List<AvailabilitySlot>? availabilitySlots,
   }) {
     return TeacherProfileModel(
       id: id,
@@ -98,5 +102,25 @@ class TeacherProfileModel {
       qualifications: qualifications ?? this.qualifications,
       availabilitySlots: availabilitySlots ?? this.availabilitySlots,
     );
+  }
+}
+
+class AvailabilitySlot {
+  final String day;
+  final String start;
+  final String end;
+
+  AvailabilitySlot({required this.day, required this.start, required this.end});
+
+  factory AvailabilitySlot.fromJson(Map<String, dynamic> json) {
+    return AvailabilitySlot(
+      day: json['day'] ?? '',
+      start: json['start'] ?? '',
+      end: json['end'] ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {'day': day, 'start': start, 'end': end};
   }
 }

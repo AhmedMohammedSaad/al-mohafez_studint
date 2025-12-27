@@ -6,7 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:almohafez/almohafez/core/theme/app_colors.dart';
-import 'package:almohafez/almohafez/core/utils/app_consts.dart';
+
 import '../../data/models/teacher_profile_model.dart';
 import '../cubit/teacher_profile_cubit.dart';
 import '../cubit/teacher_profile_state.dart';
@@ -27,6 +27,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   late TextEditingController _emailController;
   late TextEditingController _phoneController;
   late TextEditingController _bioController;
+  List<AvailabilitySlot> _availabilitySlots = [];
 
   File? _profileImageFile;
   final ImagePicker _picker = ImagePicker();
@@ -38,6 +39,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     _emailController = TextEditingController(text: widget.profile.email);
     _phoneController = TextEditingController(text: widget.profile.phone);
     _bioController = TextEditingController(text: widget.profile.bio ?? '');
+    _availabilitySlots = List.from(widget.profile.availabilitySlots);
   }
 
   @override
@@ -56,6 +58,111 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     }
   }
 
+  Future<void> _addAvailabilitySlot() async {
+    String? selectedDay;
+    TimeOfDay? startTime;
+    TimeOfDay? endTime;
+
+    final result = await showDialog<AvailabilitySlot>(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Text(
+                'add_availability'.tr(),
+              ), // Ensure this key exists or use string
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  DropdownButton<String>(
+                    value: selectedDay,
+                    isExpanded: true,
+                    hint: Text('select_day'.tr()),
+                    items:
+                        [
+                              'Monday',
+                              'Tuesday',
+                              'Wednesday',
+                              'Thursday',
+                              'Friday',
+                              'Saturday',
+                              'Sunday',
+                            ]
+                            .map(
+                              (day) => DropdownMenuItem(
+                                value: day,
+                                child: Text(day),
+                              ),
+                            )
+                            .toList(),
+                    onChanged: (v) => setState(() => selectedDay = v),
+                  ),
+                  SizedBox(height: 10.h),
+                  ListTile(
+                    title: Text(
+                      startTime?.format(context) ?? 'start_time'.tr(),
+                    ),
+                    trailing: const Icon(Icons.access_time),
+                    onTap: () async {
+                      final t = await showTimePicker(
+                        context: context,
+                        initialTime: TimeOfDay.now(),
+                      );
+                      if (t != null) setState(() => startTime = t);
+                    },
+                  ),
+                  ListTile(
+                    title: Text(endTime?.format(context) ?? 'end_time'.tr()),
+                    trailing: const Icon(Icons.access_time),
+                    onTap: () async {
+                      final t = await showTimePicker(
+                        context: context,
+                        initialTime: TimeOfDay.now(),
+                      );
+                      if (t != null) setState(() => endTime = t);
+                    },
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text('cancel'.tr()),
+                ),
+                TextButton(
+                  onPressed: () {
+                    if (selectedDay != null &&
+                        startTime != null &&
+                        endTime != null) {
+                      Navigator.pop(
+                        context,
+                        AvailabilitySlot(
+                          day: selectedDay!,
+                          start:
+                              '${startTime!.hour.toString().padLeft(2, '0')}:${startTime!.minute.toString().padLeft(2, '0')}',
+                          end:
+                              '${endTime!.hour.toString().padLeft(2, '0')}:${endTime!.minute.toString().padLeft(2, '0')}',
+                        ),
+                      );
+                    }
+                  },
+                  child: Text('add'.tr()),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+
+    if (result != null) {
+      setState(() {
+        _availabilitySlots.add(result);
+      });
+    }
+  }
+
   void _saveProfile() {
     if (!_formKey.currentState!.validate()) return;
 
@@ -71,6 +178,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       email: _emailController.text.trim(),
       phone: _phoneController.text.trim(),
       bio: _bioController.text.trim(),
+      availabilitySlots: _availabilitySlots,
     );
 
     context.read<TeacherProfileCubit>().updateProfile(updatedProfile);
@@ -159,6 +267,37 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   controller: _bioController,
                   decoration: InputDecoration(labelText: 'Bio'),
                   maxLines: 3,
+                ),
+                SizedBox(height: 16.h),
+                Text(
+                  'availability'.tr(),
+                  style: TextStyle(
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 8.h),
+                // Display existing slots
+                ..._availabilitySlots.map(
+                  (slot) => Card(
+                    child: ListTile(
+                      title: Text(slot.day),
+                      subtitle: Text('${slot.start} - ${slot.end}'),
+                      trailing: IconButton(
+                        icon: const Icon(Icons.delete, color: Colors.red),
+                        onPressed: () {
+                          setState(() {
+                            _availabilitySlots.remove(slot);
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+                TextButton.icon(
+                  onPressed: _addAvailabilitySlot,
+                  icon: const Icon(Icons.add),
+                  label: Text('add_slot'.tr()),
                 ),
                 SizedBox(height: 20.h),
                 SizedBox(

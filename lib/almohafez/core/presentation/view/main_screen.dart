@@ -8,6 +8,7 @@ import 'package:almohafez/generated/assets.dart';
 import '../../theme/app_colors.dart';
 import 'widgets/app_custom_image_view.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
+import 'package:almohafez/almohafez/core/presentation/view/widgets/modern_bottom_nav_bar.dart';
 import '../../../features/home/presentation/views/home_screen.dart';
 import '../../../features/teachers/presentation/views/teachers_screen.dart';
 import '../../../features/sessions/presentation/views/sessions_screen.dart';
@@ -51,15 +52,9 @@ class _MainScreenState extends State<MainScreen> {
     return PersistentTabConfig(
       screen: screen,
       item: ItemConfig(
-        icon: TweenAnimationBuilder(
-          duration: const Duration(milliseconds: 300),
-          tween: Tween<double>(begin: 0, end: 1),
-          builder: (context, double value, child) {
-            return AppCustomImageView(
-              imagePath: iconPath,
-              color: AppColors.primaryBlueViolet,
-            );
-          },
+        icon: AppCustomImageView(
+          imagePath: iconPath,
+          color: AppColors.primaryBlueViolet,
         ),
         inactiveIcon: AppCustomImageView(
           imagePath: iconPath,
@@ -119,11 +114,10 @@ class _MainScreenState extends State<MainScreen> {
       left: false,
       right: false,
       top: false,
-
       child: Scaffold(
         key: scaffoldKey,
         body: PersistentTabView(
-          navBarHeight: 70.h,
+          navBarHeight: 80.h,
           //gestureNavigationEnabled: true,
           tabs: _navBarsItems(),
           controller: _bottomNavController,
@@ -131,22 +125,22 @@ class _MainScreenState extends State<MainScreen> {
           resizeToAvoidBottomInset: true,
           popAllScreensOnTapAnyTabs: true,
           screenTransitionAnimation: const ScreenTransitionAnimation(
-            curve: Curves.easeInOutCubic,
-            duration: Duration(milliseconds: 200),
+            curve: Curves.easeInOutQuart,
+            duration: Duration(milliseconds: 500),
           ),
           onTabChanged: (index) async {
             _bottomNavController.jumpToTab(index);
           },
-          navBarBuilder: (navBarConfig) => Style7BottomNavBar(
+          navBarBuilder: (navBarConfig) => ModernBottomNavBar(
             navBarConfig: navBarConfig,
             navBarDecoration: NavBarDecoration(
               color: AppColors.white,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.withOpacity(0.3),
+                  color: const Color.fromARGB(170, 158, 158, 158),
                   spreadRadius: 1,
                   blurRadius: 5,
-                  offset: const Offset(0, -2), // Shadow direction
+                  offset: const Offset(0, 3), // Shadow direction
                 ),
               ],
             ),

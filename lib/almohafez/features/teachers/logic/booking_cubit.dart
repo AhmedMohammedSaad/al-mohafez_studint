@@ -18,6 +18,19 @@ class BookingCubit extends Cubit<BookingState> {
     }
   }
 
+  Future<void> createBatchBookings(List<BookingRequestModel> requests) async {
+    emit(BookingLoading());
+    try {
+      // Execute all bookings
+      final futures = requests.map((r) => _bookingsRepo.createBooking(r));
+      final ids = await Future.wait(futures);
+      // Emit success with the first ID (or any ID), strictly to trigger the success state
+      emit(BookingCreated(ids.isNotEmpty ? ids.first : 'batch_success'));
+    } catch (e) {
+      emit(BookingError(e.toString()));
+    }
+  }
+
   Future<void> getBookingById(String id) async {
     emit(BookingLoading());
     try {

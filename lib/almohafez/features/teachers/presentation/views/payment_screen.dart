@@ -128,6 +128,20 @@ class _PaymentScreenState extends State<PaymentScreen> {
               'payment_selected_times'.tr(),
               widget.selectedSchedule!,
             )
+          else if (widget.bookingResponse.selectedSchedules != null &&
+              widget.bookingResponse.selectedSchedules!.isNotEmpty)
+            Column(
+              children: widget.bookingResponse.selectedSchedules!.map((
+                schedule,
+              ) {
+                final date = DateTime.parse(schedule['date']);
+                final time = schedule['time'];
+                return _buildScheduleRow(
+                  'payment_selected_times'.tr(),
+                  '${DateFormat('yyyy-MM-dd').format(date)} ($time)',
+                );
+              }).toList(),
+            )
           else
             _buildSummaryRow(
               'payment_scheduled_time'.tr(),
@@ -466,17 +480,37 @@ class _PaymentScreenState extends State<PaymentScreen> {
         user.userMetadata?['name'] as String? ??
         'Unknown Student';
 
-    final request = BookingRequestModel(
-      teacherId: widget.tutorId,
-      studentId: userId,
-      selectedDate: widget.selectedDate ?? DateTime.now(),
-      selectedTimeSlot: widget.selectedSchedule ?? '',
-      studentName: studentName,
-      sessionPrice: widget.bookingResponse.planPriceEgp.toDouble(),
-      notes: widget.bookingResponse.notes,
-    );
+    if (widget.bookingResponse.selectedSchedules != null &&
+        widget.bookingResponse.selectedSchedules!.isNotEmpty) {
+      final requests = widget.bookingResponse.selectedSchedules!.map((
+        schedule,
+      ) {
+        return BookingRequestModel(
+          teacherId: widget.tutorId,
+          studentId: userId,
+          selectedDate: DateTime.parse(schedule['date']),
+          selectedTimeSlot: schedule['time'],
+          studentName: studentName,
+          sessionPrice: widget.bookingResponse.planPriceEgp.toDouble(),
+          notes: widget.bookingResponse.notes,
+        );
+      }).toList();
 
-    context.read<BookingCubit>().createBooking(request);
+      context.read<BookingCubit>().createBatchBookings(requests);
+    } else {
+      // Fallback for single selection
+      final request = BookingRequestModel(
+        teacherId: widget.tutorId,
+        studentId: userId,
+        selectedDate: widget.selectedDate ?? DateTime.now(),
+        selectedTimeSlot: widget.selectedSchedule ?? '',
+        studentName: studentName,
+        sessionPrice: widget.bookingResponse.planPriceEgp.toDouble(),
+        notes: widget.bookingResponse.notes,
+      );
+
+      context.read<BookingCubit>().createBooking(request);
+    }
   }
 
   void _showPaymentSuccessDialog() {

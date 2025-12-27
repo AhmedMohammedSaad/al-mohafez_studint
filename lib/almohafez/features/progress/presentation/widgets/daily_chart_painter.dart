@@ -108,32 +108,84 @@ class DailyChartPainter extends CustomPainter {
     final linePath = Path();
     final fillPath = Path();
 
+    // Prepare points
+    final points = <Offset>[];
     for (int i = 0; i < dailyData.length; i++) {
-      final animatedIndex = (i * animationValue).clamp(0, dailyData.length - 1);
-      if (animatedIndex < i) continue;
-
       final x = 40 + i * itemWidth;
       final normalizedValue = dailyData[i].percentage / scaledMaxValue;
       final y = chartHeight - (normalizedValue * chartHeight) + 40;
+      points.add(Offset(x, y));
+    }
 
-      if (i == 0) {
-        linePath.moveTo(x, y);
-        fillPath.moveTo(x, chartHeight + 40);
-        fillPath.lineTo(x, y);
-      } else {
-        linePath.lineTo(x, y);
-        fillPath.lineTo(x, y);
+    if (points.isEmpty) return {'linePath': linePath, 'fillPath': fillPath};
+
+    linePath.moveTo(points[0].dx, points[0].dy);
+    fillPath.moveTo(points[0].dx, chartHeight + 40);
+    fillPath.lineTo(points[0].dx, points[0].dy);
+
+    for (int i = 0; i < points.length - 1; i++) {
+      final p0 = points[i];
+      final p1 = points[i + 1];
+
+      // Calculate control points for a smooth curve
+      final controlPoint1 = Offset(p0.dx + (p1.dx - p0.dx) / 2, p0.dy);
+      final controlPoint2 = Offset(p0.dx + (p1.dx - p0.dx) / 2, p1.dy);
+
+      linePath.cubicTo(
+        controlPoint1.dx,
+        controlPoint1.dy,
+        controlPoint2.dx,
+        controlPoint2.dy,
+        p1.dx,
+        p1.dy,
+      );
+      fillPath.cubicTo(
+        controlPoint1.dx,
+        controlPoint1.dy,
+        controlPoint2.dx,
+        controlPoint2.dy,
+        p1.dx,
+        p1.dy,
+      );
+    }
+
+    // Animate the path drawing by clipping it based on animation value
+    // Note: Ideally, we would animate the path metrics, but for simplicity with the current setup,
+    // we let the caller handle the drawing loop or we can clip the path here if needed.
+    // However, the original code used `animatedIndex` inside the loop.
+    // For bezier curves, partial drawing is harder.
+    // Instead, we will draw the full path but use a PathMetric to extract a sub-path based on animationValue.
+
+    final pathMetrics = linePath.computeMetrics();
+    final animatedLinePath = Path();
+
+    for (var metric in pathMetrics) {
+      animatedLinePath.addPath(
+        metric.extractPath(0, metric.length * animationValue),
+        Offset.zero,
+      );
+    }
+
+    // For fill path, we need to close it down to the bottom
+    // We can just take the animated line path and close it.
+    final animatedFillPath = Path.from(animatedLinePath);
+    if (points.isNotEmpty && animationValue > 0) {
+      // Find the last point on the animated path
+      // Using `computeMetrics` again on the partial path is expensive but accurate.
+      // A simpler approach for the fill is to drop down from the last point.
+
+      final lastMetric = animatedLinePath.computeMetrics().lastOrNull;
+      if (lastMetric != null) {
+        final endPoint =
+            lastMetric.getTangentForOffset(lastMetric.length)?.position ??
+            points[0];
+        animatedFillPath.lineTo(endPoint.dx, chartHeight + 40);
+        animatedFillPath.lineTo(points[0].dx, chartHeight + 40);
+        animatedFillPath.close();
       }
     }
 
-    // Complete fill path
-    if (dailyData.isNotEmpty) {
-      final lastX = 40 + (dailyData.length - 1) * itemWidth;
-      fillPath.lineTo(lastX, chartHeight + 40);
-      fillPath.close();
-    }
-
-    return {'linePath': linePath, 'fillPath': fillPath};
+    return {'linePath': animatedLinePath, 'fillPath': animatedFillPath};
   }
 
   void _drawChartArea(
@@ -161,11 +213,15 @@ class DailyChartPainter extends CustomPainter {
     double itemWidth,
     Size size,
   ) {
-    for (int i = 0; i < dailyData.length; i++) {
-      final animatedIndex = (i * animationValue).clamp(0, dailyData.length - 1);
-      if (animatedIndex < i) continue;
+    final totalWidth = dailyData.length > 1
+        ? (dailyData.length - 1) * itemWidth
+        : 0;
 
+    for (int i = 0; i < dailyData.length; i++) {
       final x = 40 + i * itemWidth;
+      final currentMaxX = 40 + (totalWidth * animationValue);
+
+      if (x > currentMaxX && dailyData.length > 1) continue;
 
       // Draw day labels
       if (i % 2 == 0 || dailyData.length <= 7) {
@@ -195,11 +251,29 @@ class DailyChartPainter extends CustomPainter {
     double scaledMaxValue,
     LinearGradient gradient,
   ) {
-    for (int i = 0; i < dailyData.length; i++) {
-      final animatedIndex = (i * animationValue).clamp(0, dailyData.length - 1);
-      if (animatedIndex < i) continue;
+    // We need to know the total length of the full path to map animationValue to x-coordinates
+    // But since we built the path sequentially, we can roughly approximate progress by index
+    // OR we can check if the current point's x overlaps with the drawn path.
+    // simpler: usage of animationValue as a percentage of total width could work if the path is linear in x,
+    // which it is (chart moves left to right).
 
+    final totalWidth = dailyData.length > 1
+        ? (dailyData.length - 1) * itemWidth
+        : 0;
+
+    for (int i = 0; i < dailyData.length; i++) {
+      // Calculate x position for this point
       final x = 40 + i * itemWidth;
+
+      // If total width is 0 (single item), show immediately if animation started.
+      // Otherwise, check if this x is within the currently animated width.
+      // currentAnimatedWidth approx = totalWidth * animationValue
+      // We add a small buffer so points pop in slightly after the line passes them.
+
+      final currentMaxX = 40 + (totalWidth * animationValue);
+
+      if (x > currentMaxX && dailyData.length > 1) continue;
+
       final normalizedValue = dailyData[i].percentage / scaledMaxValue;
       final y = chartHeight - (normalizedValue * chartHeight) + 40;
 

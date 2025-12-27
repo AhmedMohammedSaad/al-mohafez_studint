@@ -866,26 +866,36 @@ class _BookingBottomSheetState extends State<BookingBottomSheet> {
     // Find the selected slot and date
     DateTime? selectedDate;
     String? selectedTimeSlot;
+    List<Map<String, dynamic>> selectedSchedules = [];
 
     // Iterate over the selectedSlots map from the model
     if (_weeklySchedule!.selectedSlots.isNotEmpty) {
-      final entry = _weeklySchedule!.selectedSlots.entries.first;
-      final dayName = entry.key;
-      final slots = entry.value;
+      _weeklySchedule!.selectedSlots.forEach((dayName, slots) {
+        if (slots.isNotEmpty) {
+          final daySchedule = _weeklySchedule!.days.firstWhere(
+            (d) => d.dayName == dayName,
+            orElse: () => _weeklySchedule!.days.first, // Fallback
+          );
 
-      if (slots.isNotEmpty) {
-        // Find the DaySchedule object to get the English name if needed
-        final daySchedule = _weeklySchedule!.days.firstWhere(
-          (d) => d.dayName == dayName,
-          orElse: () => _weeklySchedule!.days.first, // Fallback
-        );
+          final date = getNextDateForDay(daySchedule.dayNameEn);
 
-        selectedDate = getNextDateForDay(daySchedule.dayNameEn);
-        selectedTimeSlot = slots.first;
+          for (var slot in slots) {
+            selectedSchedules.add({
+              'date': date.toIso8601String(),
+              'time': slot,
+            });
+          }
+        }
+      });
+
+      // Set primary selection for backward compatibility / display if needed
+      if (selectedSchedules.isNotEmpty) {
+        selectedDate = DateTime.parse(selectedSchedules.first['date']);
+        selectedTimeSlot = selectedSchedules.first['time'];
       }
     }
 
-    if (selectedDate == null || selectedTimeSlot == null) {
+    if (selectedSchedules.isEmpty) {
       setState(() {
         _errorMessage = 'booking_error_select_schedule'.tr();
       });
@@ -900,7 +910,8 @@ class _BookingBottomSheetState extends State<BookingBottomSheet> {
     try {
       // Create booking response model
       final bookingResponse = BookingResponseModel(
-        selectedTime: selectedDate.toIso8601String(),
+        selectedSchedules: selectedSchedules,
+        selectedTime: selectedDate?.toIso8601String(),
         planPriceEgp: _selectedPlan!.priceEgp.toInt(),
         notes: _notesController.text.isEmpty ? null : _notesController.text,
         error: null,

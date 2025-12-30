@@ -52,7 +52,22 @@ class DailyChartWidget extends StatelessWidget {
                 backgroundColor: Color(0xFF0077B6),
               ),
               const SizedBox(height: 16),
-              ChartPainterWidget(dailyData: dailyData, height: height),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                reverse: true,
+                child: SizedBox(
+                  width:
+                      dailyData.length * 60.0 <
+                          MediaQuery.of(context).size.width
+                      ? MediaQuery.of(context).size.width -
+                            72 // Fill available width if few items
+                      : dailyData.length * 60.0,
+                  child: ChartPainterWidget(
+                    dailyData: dailyData,
+                    height: height,
+                  ),
+                ),
+              ),
             ],
           ),
         ),

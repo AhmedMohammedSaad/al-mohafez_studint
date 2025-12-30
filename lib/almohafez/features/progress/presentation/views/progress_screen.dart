@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';
 import '../widgets/circular_progress_widget.dart';
 import '../widgets/weekly_chart_widget.dart';
-import '../widgets/recent_sessions_widget.dart';
+import '../widgets/evaluations_list_widget.dart';
 import '../widgets/teacher_notes_widget.dart';
 import '../widgets/empty_state_widget.dart';
 import '../../data/repos/progress_repo.dart';
@@ -171,18 +171,18 @@ class _ProgressViewState extends State<_ProgressView>
               CircularProgressWidget(percentage: progressData.overallProgress),
               SizedBox(height: 24.h),
 
-              // Daily Performance Chart
+              // Daily Performance Chart (Restored)
               DailyChartWidget(
                 dailyData: progressData.dailyPerformance,
                 height: 250,
               ),
               SizedBox(height: 24.h),
 
-              // Recent Sessions
-              RecentSessionsWidget(sessions: progressData.recentSessions),
+              // Evaluations List (Full list of all evaluations)
+              EvaluationsListWidget(evaluations: progressData.allEvaluations),
               SizedBox(height: 24.h),
 
-              // Teacher Notes
+              // Teacher Notes (Recent 5 only)
               TeacherNotesWidget(notes: progressData.teacherNotes),
               SizedBox(height: 20.h),
             ],

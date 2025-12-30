@@ -47,24 +47,18 @@ class _ChartPainterWidgetState extends State<ChartPainterWidget>
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
+    return SizedBox(
+      height: widget.height,
       child: AnimatedBuilder(
         animation: _animation,
         builder: (context, child) {
           return Directionality(
             textDirection: TextDirection.ltr,
-            child: SingleChildScrollView(
-              controller: _scrollController,
-              scrollDirection: Axis.horizontal,
-              child: CustomPaint(
-                size: Size(
-                  widget.dailyData.length * 60.0 + 60,
-                  widget.height - 60,
-                ),
-                painter: DailyChartPainter(
-                  dailyData: widget.dailyData,
-                  animationValue: _animation.value,
-                ),
+            child: CustomPaint(
+              size: Size.infinite,
+              painter: DailyChartPainter(
+                dailyData: widget.dailyData,
+                animationValue: _animation.value,
               ),
             ),
           );

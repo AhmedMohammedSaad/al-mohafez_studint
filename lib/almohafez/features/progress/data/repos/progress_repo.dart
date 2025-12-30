@@ -13,6 +13,7 @@ class ProgressRepo {
         dailyPerformance: [],
         recentSessions: [],
         teacherNotes: [],
+        allEvaluations: [],
         hasError: true,
         errorMessage: 'User not authenticated',
       );
@@ -33,7 +34,9 @@ class ProgressRepo {
           overallProgress: 0,
           dailyPerformance: [],
           recentSessions: [],
+
           teacherNotes: [],
+          allEvaluations: [],
         );
       }
 
@@ -60,7 +63,8 @@ class ProgressRepo {
 
       List<RecentSession> recentSessions = [];
       List<TeacherNote> teacherNotes = [];
-      Map<String, List<double>> dailyRatings = {};
+      // Flattened list of scores for 1-to-1 chart mapping
+      List<DailyPerformance> dailyPerformance = [];
 
       // Track processed sessions to avoid double counting if we mix sources
       final Set<String> evaluatedBookingIds = {};
@@ -98,11 +102,15 @@ class ProgressRepo {
           ),
         );
 
-        if (!dailyRatings.containsKey(dateStr)) {
-          dailyRatings[dateStr] = [];
-        }
+        // Add directly to dailyPerformance (1 chart point = 1 evaluation)
         double sessionScore = (rating.toDouble() / 5.0) * 100.0;
-        dailyRatings[dateStr]!.add(sessionScore);
+        dailyPerformance.add(
+          DailyPerformance(
+            date: dateStr,
+            percentage: sessionScore,
+            dayName: dateStr, // Or format dayName if needed e.g., 'Day X'
+          ),
+        );
 
         if (evaluation.notes != null && evaluation.notes!.isNotEmpty) {
           teacherNotes.add(
@@ -155,11 +163,15 @@ class ProgressRepo {
             ),
           );
 
-          if (!dailyRatings.containsKey(dateStr)) {
-            dailyRatings[dateStr] = [];
-          }
+          // Add directly to chart data if not already processed via evaluations
           double sessionScore = (rating.toDouble() / 5.0) * 100.0;
-          dailyRatings[dateStr]!.add(sessionScore);
+          dailyPerformance.add(
+            DailyPerformance(
+              date: dateStr,
+              percentage: sessionScore,
+              dayName: dateStr,
+            ),
+          );
 
           final tutorNotes = booking['tutor_notes'] as String?;
           if (tutorNotes != null && tutorNotes.isNotEmpty) {
@@ -170,38 +182,25 @@ class ProgressRepo {
 
       // Calculate Overall Progress
       // User requested logical average.
-      // Instead of (Completed / Total Bookings), which can exceed 100% if multiple evaluations exist per booking,
-      // we should calculate the Average Score (Performance) across all recorded sessions/evaluations.
+      // Calculate Overall Progress
+      // Average Score across all recorded sessions
 
       double totalScoreSum = 0;
-      int scoreCount = 0;
-
-      // Aggregate from dailyRatings which holds all individual session scores (in %)
-      dailyRatings.forEach((_, scores) {
-        for (var score in scores) {
-          totalScoreSum += score;
-          scoreCount++;
-        }
-      });
-
-      double overallProgress = scoreCount > 0 ? totalScoreSum / scoreCount : 0;
-
-      // Process Daily Performance Map to List
-      List<DailyPerformance> dailyPerformance = [];
-      dailyRatings.forEach((date, scores) {
-        double avg = scores.reduce((a, b) => a + b) / scores.length;
-        dailyPerformance.add(
-          DailyPerformance(date: date, percentage: avg, dayName: date),
-        );
-      });
-
-      // Sort and Limit
-      dailyPerformance.sort((a, b) => a.date.compareTo(b.date));
-      if (dailyPerformance.length > 7) {
-        dailyPerformance = dailyPerformance.sublist(
-          dailyPerformance.length - 7,
-        );
+      for (var item in dailyPerformance) {
+        totalScoreSum += item.percentage;
       }
+      double overallProgress = dailyPerformance.isNotEmpty
+          ? totalScoreSum / dailyPerformance.length
+          : 0;
+
+      // Sort Chart Data Chronologically (Oldest first for left-to-right chart)
+      dailyPerformance.sort((a, b) => a.date.compareTo(b.date));
+      // NO LIMIT: User requested "increases with me" for every evaluation added.
+
+      // Clone full list for allEvaluations before slicing
+      final allEvaluations = List<RecentSession>.from(recentSessions);
+      // Sort allEvaluations by date descending
+      allEvaluations.sort((a, b) => b.date.compareTo(a.date));
 
       if (recentSessions.length > 5) {
         recentSessions = recentSessions.sublist(0, 5);
@@ -216,6 +215,7 @@ class ProgressRepo {
         dailyPerformance: dailyPerformance,
         recentSessions: recentSessions,
         teacherNotes: teacherNotes,
+        allEvaluations: allEvaluations,
       );
     } catch (e) {
       print('Error processing progress data: $e');
@@ -224,6 +224,7 @@ class ProgressRepo {
         dailyPerformance: [],
         recentSessions: [],
         teacherNotes: [],
+        allEvaluations: [],
         hasError: true,
         errorMessage: e.toString(),
       );

@@ -12,6 +12,7 @@ import '../widgets/auth_header.dart';
 import '../widgets/auth_text_field.dart';
 import '../widgets/auth_button.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -319,25 +320,37 @@ class _LoginScreenState extends State<LoginScreen> {
           MaterialPageRoute(builder: (_) => const MainScreen()),
         );
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Please verify your email first')),
+        Fluttertoast.showToast(
+          msg: 'Please verify your email first',
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.orange,
+          textColor: Colors.white,
+          fontSize: 16.0,
         );
       }
     } on AuthException catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(SupabaseErrorHandler.getErrorMessage(e)),
-          backgroundColor: AppColors.primaryError,
-        ),
+      Fluttertoast.showToast(
+        msg: SupabaseErrorHandler.getErrorMessage(e),
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: AppColors.primaryError,
+        textColor: Colors.white,
+        fontSize: 16.0,
       );
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('login_failed'.tr()),
-          backgroundColor: AppColors.primaryError,
-        ),
+      Fluttertoast.showToast(
+        msg: 'login_failed'.tr(),
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: AppColors.primaryError,
+        textColor: Colors.white,
+        fontSize: 16.0,
       );
       debugPrint(e.toString());
     } finally {
@@ -359,11 +372,14 @@ class _LoginScreenState extends State<LoginScreen> {
       // await AppCacheHelper.saveBool('is_logged_in', true);
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('login_failed'.tr()),
-            backgroundColor: AppColors.primaryError,
-          ),
+        Fluttertoast.showToast(
+          msg: 'login_failed'.tr(),
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: AppColors.primaryError,
+          textColor: Colors.white,
+          fontSize: 16.0,
         );
       }
     }

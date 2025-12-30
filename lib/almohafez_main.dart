@@ -15,14 +15,15 @@ import 'package:almohafez/almohafez/core/presentation/view_model/cubit/app_cubit
 import 'package:almohafez/almohafez/features/profile/logic/profile_bloc.dart';
 import 'package:almohafez/almohafez/features/profile/data/repos/profile_repo.dart';
 import 'package:almohafez/almohafez/features/profile/logic/profile_event.dart';
+import 'almohafez/core/utils/app_consts.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
 
   await Supabase.initialize(
-    url: 'https://tghyxcxvvnvkcaflsohk.supabase.co',
-    anonKey: 'sb_secret_3nsmTWIOuaNwrpGwA3HG1w_JlyPDnUj',
+    url: AppConst.supabaseUrl,
+    anonKey: AppConst.supabaseAnonKey,
   );
 
   // Initialize nb_utils for SharedPreferences

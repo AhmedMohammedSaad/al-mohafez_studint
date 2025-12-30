@@ -39,9 +39,9 @@ class SessionRatingModel {
       'id': id,
       'session_id': sessionId,
       'student_id': studentId,
-      'tutor_id': tutorId,
+      'teacher_id': tutorId,
       'rating': rating,
-      'feedback': feedback,
+      'comment': feedback,
       'created_at': createdAt.toIso8601String(),
       'tags': tags,
     };

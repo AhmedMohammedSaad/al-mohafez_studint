@@ -206,7 +206,7 @@ class DailySessionsWidget extends StatelessWidget {
                 ),
                 SizedBox(width: 4.w),
                 Text(
-                  DateFormat('dd/MM/yyyy', 'ar').format(session.scheduledDate),
+                  DateFormat('EEEE', 'ar').format(session.scheduledDate),
                   style: AppTextStyle.textStyle14Medium.copyWith(
                     color: AppColors.textSecondary,
                   ),

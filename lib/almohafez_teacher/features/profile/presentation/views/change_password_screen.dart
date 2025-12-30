@@ -4,6 +4,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';
 import '../cubit/teacher_profile_cubit.dart';
 import '../cubit/teacher_profile_state.dart';
+import 'package:almohafez/almohafez/core/theme/app_colors.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
   const ChangePasswordScreen({super.key});
@@ -40,14 +42,26 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
       body: BlocListener<TeacherProfileCubit, TeacherProfileState>(
         listener: (context, state) {
           if (state is TeacherProfileUpdateSuccess) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('password_changed_success'.tr())),
+            Fluttertoast.showToast(
+              msg: 'password_changed_success'.tr(),
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIosWeb: 1,
+              backgroundColor: Colors.green,
+              textColor: Colors.white,
+              fontSize: 16.0,
             );
             Navigator.pop(context);
           } else if (state is TeacherProfileError) {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text(state.message)));
+            Fluttertoast.showToast(
+              msg: state.message,
+              toastLength: Toast.LENGTH_LONG,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIosWeb: 1,
+              backgroundColor: AppColors.primaryError,
+              textColor: Colors.white,
+              fontSize: 16.0,
+            );
           }
         },
         child: SingleChildScrollView(

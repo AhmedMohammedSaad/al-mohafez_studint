@@ -8,6 +8,8 @@ import '../../data/models/booking_response_model.dart';
 import '../../data/models/booking_request_model.dart';
 import '../../logic/booking_cubit.dart';
 import '../../logic/booking_state.dart';
+import 'package:almohafez/almohafez/core/theme/app_colors.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class PaymentScreen extends StatefulWidget {
   final BookingResponseModel bookingResponse;
@@ -58,9 +60,15 @@ class _PaymentScreenState extends State<PaymentScreen> {
           if (state is BookingCreated) {
             _showPaymentSuccessDialog();
           } else if (state is BookingError) {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text(state.message)));
+            Fluttertoast.showToast(
+              msg: state.message,
+              toastLength: Toast.LENGTH_LONG,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIosWeb: 1,
+              backgroundColor: AppColors.primaryError,
+              textColor: Colors.white,
+              fontSize: 16.0,
+            );
           }
         },
         builder: (context, state) {
@@ -466,9 +474,15 @@ class _PaymentScreenState extends State<PaymentScreen> {
   Future<void> _processPayment() async {
     final user = Supabase.instance.client.auth.currentUser;
     if (user == null) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('error_login_required'.tr())));
+      Fluttertoast.showToast(
+        msg: 'error_login_required'.tr(),
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: AppColors.primaryError,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
       return;
     }
 

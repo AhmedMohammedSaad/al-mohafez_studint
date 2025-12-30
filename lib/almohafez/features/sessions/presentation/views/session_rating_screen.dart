@@ -4,6 +4,8 @@ import '../../data/models/session_model.dart';
 import '../../data/models/session_rating_model.dart';
 import '../../data/services/sessions_service.dart';
 
+import 'package:supabase_flutter/supabase_flutter.dart';
+
 class SessionRatingScreen extends StatefulWidget {
   final String sessionId;
 
@@ -73,7 +75,10 @@ class _SessionRatingScreenState extends State<SessionRatingScreen> {
       appBar: AppBar(
         title: Text(
           'session_rating_title'.tr(),
-          style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
         ),
         backgroundColor: const Color(0xFF2E7D32),
         elevation: 0,
@@ -134,7 +139,7 @@ class _SessionRatingScreenState extends State<SessionRatingScreen> {
           // Submit button
           _buildSubmitButton(),
 
-          const SizedBox(height: 32),
+          const SizedBox(height: 100),
         ],
       ),
     );
@@ -159,7 +164,7 @@ class _SessionRatingScreenState extends State<SessionRatingScreen> {
               radius: 40,
               backgroundColor: Colors.white.withOpacity(0.2),
               backgroundImage: _session!.tutorImageUrl.isNotEmpty
-                  ? AssetImage(_session!.tutorImageUrl)
+                  ? NetworkImage(_session!.tutorImageUrl)
                   : null,
               child: _session!.tutorImageUrl.isEmpty
                   ? Icon(
@@ -443,7 +448,10 @@ class _SessionRatingScreenState extends State<SessionRatingScreen> {
               )
             : Text(
                 'session_rating_submit'.tr(),
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
       ),
     );
@@ -485,7 +493,8 @@ class _SessionRatingScreenState extends State<SessionRatingScreen> {
       final ratingModel = SessionRatingModel(
         id: DateTime.now().millisecondsSinceEpoch.toString(),
         sessionId: widget.sessionId,
-        studentId: 'student_1', // TODO: Get from auth service
+        studentId:
+            Supabase.instance.client.auth.currentUser?.id ?? 'unknown_student',
         tutorId: _session!.tutorId,
         rating: _rating.toDouble(),
         feedback: _feedbackController.text.trim().isNotEmpty
@@ -495,7 +504,7 @@ class _SessionRatingScreenState extends State<SessionRatingScreen> {
         createdAt: DateTime.now(),
       );
 
-      // await SessionsService.rateSession(widget.sessionId, ratingModel);
+      await SessionsService.submitSessionRating(ratingModel);
 
       // Show success message
       ScaffoldMessenger.of(context).showSnackBar(

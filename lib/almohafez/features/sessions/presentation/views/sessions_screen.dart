@@ -1,3 +1,5 @@
+import 'package:almohafez/almohafez/features/sessions/presentation/views/session_details_screen.dart';
+import 'package:almohafez/almohafez/features/sessions/presentation/views/session_rating_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -10,6 +12,7 @@ import '../../data/models/session_model.dart';
 import '../../../../core/services/navigation_service/global_navigation_service.dart';
 import '../../../../core/routing/app_route.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class SessionsScreen extends StatefulWidget {
   const SessionsScreen({super.key});
@@ -199,7 +202,7 @@ class _SessionsScreenState extends State<SessionsScreen>
     return RefreshIndicator(
       onRefresh: () => context.read<SessionsCubit>().loadSessions(),
       child: ListView.builder(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.only(top: 16, bottom: 70, left: 8, right: 8),
         itemCount: sessions.length,
         itemBuilder: (context, index) {
           final session = sessions[index];
@@ -253,8 +256,11 @@ class _SessionsScreenState extends State<SessionsScreen>
   }
 
   void _navigateToSessionDetails(String sessionId) {
-    NavigationService.push(
-      '${AppRouter.kSessionDetailsScreen}?sessionId=$sessionId',
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => SessionDetailsScreen(sessionId: sessionId),
+      ),
     );
   }
 
@@ -279,12 +285,15 @@ class _SessionsScreenState extends State<SessionsScreen>
     if (session == null ||
         session.meetingUrl == null ||
         session.meetingUrl!.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('meeting_url_missing'.tr()),
-          backgroundColor: Colors.red,
-        ),
+      Fluttertoast.showToast(
+        msg: 'session_refresh_hint'.tr(),
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        backgroundColor: Colors.blue,
+        textColor: Colors.white,
+        fontSize: 16.0,
       );
+
       return;
     }
 
@@ -296,18 +305,24 @@ class _SessionsScreenState extends State<SessionsScreen>
         throw 'Could not launch ${session.meetingUrl}';
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('${'session_join_error'.tr()}: $e'),
-          backgroundColor: Colors.red,
-        ),
+      Fluttertoast.showToast(
+        msg: '${'session_join_error'.tr()}: $e',
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0,
       );
     }
   }
 
   void _rateSession(String sessionId) {
-    NavigationService.push(
-      '${AppRouter.kSessionRatingScreen}?sessionId=$sessionId',
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => SessionRatingScreen(sessionId: sessionId),
+      ),
     );
   }
 }

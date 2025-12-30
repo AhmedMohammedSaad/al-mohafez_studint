@@ -1,6 +1,4 @@
-import 'package:almohafez/almohafez/core/helper/lifecycle_maneger/shardpref.dart';
-import 'package:almohafez/almohafez/core/routing/app_route.dart';
-import 'package:almohafez/almohafez/features/authentication/presentation/views/login_screen.dart';
+import 'package:almohafez/almohafez_teacher/features/authentication/presentation/views/login_screen.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

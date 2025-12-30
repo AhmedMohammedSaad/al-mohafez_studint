@@ -13,6 +13,8 @@ class AppConst {
   static String resetToken = '';
   static bool onBoarding = false;
   static int currentProfileInfoStep = 0;
+  static String supabaseUrl = 'https://tghyxcxvvnvkcaflsohk.supabase.co';
+  static String supabaseAnonKey = 'sb_secret_3nsmTWIOuaNwrpGwA3HG1w_JlyPDnUj';
 
   static List<String> get recentSearches {
     final jsonString = AppCacheHelper.getCacheString(

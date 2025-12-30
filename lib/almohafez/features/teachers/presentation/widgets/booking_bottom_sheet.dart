@@ -600,7 +600,7 @@ class _BookingBottomSheetState extends State<BookingBottomSheet> {
                       ),
                     ),
                     child: Text(
-                      timeSlot,
+                      _formatSlotForDisplay(timeSlot),
                       style: TextStyle(
                         color: isSlotSelected
                             ? Colors.white
@@ -676,23 +676,24 @@ class _BookingBottomSheetState extends State<BookingBottomSheet> {
             dayNameMap[slot.day] ?? dayNameMap[slot.day.trim()];
 
         if (normalizedDay != null && daysMap.containsKey(normalizedDay)) {
-          final hourlySlots = _generateHourlySlots(slot.start, slot.end);
+          // DIRECT SLOT USAGE: No generation loop.
+          // We assume slot.start and slot.end are already 35-min restricted (or whatever the teacher set).
+          // We use the 24h format "HH:mm - HH:mm" for internal consistency and storage.
+          final slotString = '${slot.start} - ${slot.end}';
 
-          // Get the actual date for this instance of the day (e.g., Today or Next Monday)
+          // Get the actual date for this instance of the day
           final dateForDay = getNextDateForDay(normalizedDay);
 
-          final availableSlots = hourlySlots.where((timeSlot) {
-            // timeSlot is format "HH:mm - HH:mm"
-            // Check if this specific slot is blocked by any existing booking
-            final isBlocked = _isSlotBlocked(
-              dateForDay,
-              timeSlot,
-              existingBookings,
-            );
-            return !isBlocked;
-          }).toList();
+          // Check if this specific slot is blocked
+          final isBlocked = _isSlotBlocked(
+            dateForDay,
+            slotString,
+            existingBookings,
+          );
 
-          daysMap[normalizedDay]!.addAll(availableSlots);
+          if (!isBlocked) {
+            daysMap[normalizedDay]!.add(slotString);
+          }
         } else {
           print('Warning: Could not map day "${slot.day}" to a valid day.');
         }
@@ -741,73 +742,12 @@ class _BookingBottomSheetState extends State<BookingBottomSheet> {
 
     final targetDateStr = formatDate(dateForDay);
 
-    // 1. Strict String Match Blocking (Fastest)
-    // Check if any booking on this date has the exact same slot string
-    final hasStrictMatch = existingBookings.any((booking) {
-      // Handle potential timezone offsets by converting to local or just string matching if source is trustworthy
-      // We'll use the formatDate helper to be safe.
-      // Note: booking.selectedDate is DateTime.
-      final bookingDateStr = formatDate(booking.selectedDate.toLocal());
-
-      if (bookingDateStr != targetDateStr) return false;
-
-      final bookingSlotNorm = booking.selectedTimeSlot
-          .toString()
-          .replaceAll(' ', '')
-          .toLowerCase();
-      final currentSlotNorm = timeSlot.replaceAll(' ', '').toLowerCase();
-
-      return bookingSlotNorm == currentSlotNorm;
-    });
-
-    if (hasStrictMatch) return true;
-
-    // 2. Time Overlap / Parsing Logic
-    // Only needed if strings don't match exactly (e.g. "10:00-11:00" vs "10:00 - 11:00")
-
-    // Helper to parse "HH:mm" or "h PM"
-    int getHour(String t) {
-      t = t.toLowerCase().trim();
-      bool isPm = t.contains('pm');
-      bool isAm = t.contains('am');
-
-      // Remove am/pm for parsing
-      String raw = t.replaceAll('am', '').replaceAll('pm', '').trim();
-
-      int hour = 0;
-      if (raw.contains(':')) {
-        hour = int.tryParse(raw.split(':')[0]) ?? -1;
-      } else {
-        hour = int.tryParse(raw) ?? -1;
-      }
-
-      if (hour == -1) return -1; // Parse failed
-
-      // Adjust for PM
-      if (isPm && hour < 12) hour += 12;
-      if (isAm && hour == 12) hour = 0;
-
-      return hour;
-    }
-
-    int getMinute(String t) {
-      String raw = t
-          .toLowerCase()
-          .replaceAll('am', '')
-          .replaceAll('pm', '')
-          .trim();
-      if (raw.contains(':')) {
-        return int.tryParse(raw.split(':')[1]) ?? 0;
-      }
-      return 0;
-    }
-
+    // Parse the candidate slot start time
     final parts = timeSlot.split(' - ');
-    if (parts.length != 2) return false;
+    if (parts.isEmpty) return false;
 
-    final slotStartHour = getHour(parts[0]);
-    final slotStartMinute = getMinute(parts[0]);
-    if (slotStartHour == -1) return false;
+    final slotStartTime = _parseTime(parts[0]);
+    if (slotStartTime == null) return false;
 
     for (var booking in existingBookings) {
       final bookingDateStr = formatDate(booking.selectedDate.toLocal());
@@ -819,17 +759,59 @@ class _BookingBottomSheetState extends State<BookingBottomSheet> {
           ? bookingSlotStr.split('-')
           : [bookingSlotStr]; // explicit start time
 
-      final bookingStartHour = getHour(bookingParts[0]);
-      final bookingStartMinute = getMinute(bookingParts[0]);
+      final bookingStartTime = _parseTime(bookingParts[0]);
 
-      if (bookingStartHour != -1 &&
-          bookingStartHour == slotStartHour &&
-          bookingStartMinute == slotStartMinute) {
+      if (bookingStartTime != null &&
+          bookingStartTime.hour == slotStartTime.hour &&
+          bookingStartTime.minute == slotStartTime.minute) {
         return true;
       }
     }
 
     return false;
+  }
+
+  // Robust time parser helper
+  TimeOfDay? _parseTime(String input) {
+    input = input.trim().toLowerCase();
+    // Normalize Arabic digits to English digits
+    const arabicDigits = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
+    const englishDigits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+
+    for (int i = 0; i < arabicDigits.length; i++) {
+      input = input.replaceAll(arabicDigits[i], englishDigits[i]);
+    }
+
+    // Normalize input: remove spaces around colon
+    input = input.replaceAll(RegExp(r'\s+(?=[:])|(?<=[:])\s+'), '');
+
+    bool isPm = input.contains('pm') || input.contains('م');
+    bool isAm = input.contains('am') || input.contains('ص');
+
+    // Remove non-time characters
+    String raw = input.replaceAll(RegExp(r'[^0-9:]'), '');
+
+    List<String> parts = raw.split(':');
+    int hour = 0;
+    int minute = 0;
+
+    try {
+      if (parts.isNotEmpty && parts[0].isNotEmpty) {
+        hour = int.parse(parts[0]);
+      }
+      if (parts.length > 1 && parts[1].isNotEmpty) {
+        minute = int.parse(parts[1]);
+      }
+    } catch (e) {
+      return null;
+    }
+
+    if (isPm && hour < 12) hour += 12;
+    if (isAm && hour == 12) hour = 0;
+
+    if (hour > 23 || minute > 59) return null;
+
+    return TimeOfDay(hour: hour, minute: minute);
   }
 
   Future<void> _confirmBooking() async {
@@ -950,56 +932,6 @@ class _BookingBottomSheetState extends State<BookingBottomSheet> {
     }
   }
 
-  List<String> _generateHourlySlots(String start, String end) {
-    final slots = <String>[];
-    try {
-      // Parse times (assuming HH:mm format, e.g., "14:00")
-      // If format is different (e.g. "2 PM"), we need more robust parsing.
-      // Based on typical inputs, let's try standard formats.
-
-      DateTime parseTime(String timeStr) {
-        final now = DateTime.now();
-        final parts = timeStr.split(':');
-        if (parts.length == 2) {
-          return DateTime(
-            now.year,
-            now.month,
-            now.day,
-            int.parse(parts[0]),
-            int.parse(parts[1]),
-          );
-        }
-        // Handle "10" as "10:00"
-        if (!timeStr.contains(':')) {
-          return DateTime(now.year, now.month, now.day, int.parse(timeStr), 0);
-        }
-        throw FormatException('Invalid time format: $timeStr');
-      }
-
-      var startTime = parseTime(start);
-      final endTime = parseTime(end);
-
-      while (startTime.isBefore(endTime)) {
-        final nextHour = startTime.add(const Duration(hours: 1));
-        if (nextHour.isAfter(endTime)) break;
-
-        final startStr =
-            '${startTime.hour.toString().padLeft(2, '0')}:${startTime.minute.toString().padLeft(2, '0')}';
-        final endStr =
-            '${nextHour.hour.toString().padLeft(2, '0')}:${nextHour.minute.toString().padLeft(2, '0')}';
-
-        slots.add('$startStr - $endStr');
-        startTime = nextHour;
-      }
-    } catch (e) {
-      print('Error generating slots: $e');
-      // Fallback to original range if parsing fails
-      slots.add('$start - $end');
-    }
-    return slots;
-  }
-
-  // Helper to get date for a specific day name in the upcoming week
   DateTime getNextDateForDay(String dayNameEn) {
     final now = DateTime.now();
     // Normalize 'now' to start of day to avoid issues with time comparison
@@ -1034,5 +966,30 @@ class _BookingBottomSheetState extends State<BookingBottomSheet> {
 
     int daysToAdd = (targetWeekday - today.weekday + 7) % 7;
     return today.add(Duration(days: daysToAdd));
+  }
+
+  // Helper to format "13:00 - 13:35" (24h) to "01:00 PM - 01:35 PM" (12h)
+  String _formatSlotForDisplay(String slot24h) {
+    if (!slot24h.contains('-')) return slot24h;
+    final parts = slot24h.split('-');
+    if (parts.length != 2) return slot24h;
+
+    String to12h(String time) {
+      time = time.trim();
+      final p = time.split(':');
+      if (p.length < 2) return time;
+      try {
+        int h = int.parse(p[0]);
+        String m = p[1];
+        String period = h >= 12 ? 'PM' : 'AM';
+        if (h > 12) h -= 12;
+        if (h == 0) h = 12;
+        return '$h:$m $period';
+      } catch (e) {
+        return time;
+      }
+    }
+
+    return '${to12h(parts[0])} - ${to12h(parts[1])}';
   }
 }

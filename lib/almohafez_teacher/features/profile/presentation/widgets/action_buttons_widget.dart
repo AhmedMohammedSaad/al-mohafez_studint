@@ -109,11 +109,6 @@ class ActionButtonsWidget extends StatelessWidget {
         Navigator.of(context).pop();
 
         context.read<TeacherProfileCubit>().deleteAccount();
-
-        Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (_) => const LoginScreen()),
-          (route) => false,
-        );
       },
     );
   }
@@ -129,11 +124,6 @@ class ActionButtonsWidget extends StatelessWidget {
         Navigator.of(context).pop();
 
         context.read<TeacherProfileCubit>().logout();
-
-        Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (_) => const LoginScreen()),
-          (route) => false,
-        );
       },
     );
   }

@@ -13,7 +13,7 @@ class TeacherAuthService {
     required String phone,
     required String qualifications,
     required String gender,
-    required Map<String, dynamic> availability,
+    required List<Map<String, String>> availabilitySlots,
     File? profileImage,
   }) async {
     try {
@@ -44,15 +44,7 @@ class TeacherAuthService {
           final String fileExt = path.extension(profileImage.path);
           final String fileName = '$userId/profile$fileExt';
 
-          print('📸 Attempting to upload image...');
-          print('📸 File path: ${profileImage.path}');
-          print('📸 File exists: ${await profileImage.exists()}');
-          print('📸 File size: ${await profileImage.length()} bytes');
-          print('📸 Target fileName: $fileName');
-          print('📸 Bucket: images');
-
           final bytes = await profileImage.readAsBytes();
-          print('📸 Bytes read: ${bytes.length}');
 
           await _supabase.storage
               .from('images')
@@ -83,7 +75,7 @@ class TeacherAuthService {
         'phone': phone,
         'profile_picture_url': imageUrl ?? '',
         'qualifications': [qualifications],
-        'availability_slots': _formatAvailability(availability),
+        'availability_slots': availabilitySlots,
         'is_available': true,
         'overall_rating': 5.0, // Default as per schema
         'num_sessions': 0,
@@ -102,29 +94,5 @@ class TeacherAuthService {
       print('Error signing up teacher: $e');
       rethrow;
     }
-  }
-
-  List<Map<String, String>> _formatAvailability(
-    Map<String, dynamic> availability,
-  ) {
-    List<Map<String, String>> slots = [];
-    availability.forEach((day, times) {
-      if (times is Map && times['start'] != null && times['end'] != null) {
-        slots.add({
-          'day': day,
-          'start': _formatTimeOfDay(times['start']),
-          'end': _formatTimeOfDay(times['end']),
-        });
-      }
-    });
-    return slots;
-  }
-
-  String _formatTimeOfDay(dynamic time) {
-    if (time == null) return '';
-    // Assuming time is TimeOfDay or similar
-    final hour = time.hour.toString().padLeft(2, '0');
-    final minute = time.minute.toString().padLeft(2, '0');
-    return '$hour:$minute';
   }
 }

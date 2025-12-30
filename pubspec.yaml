@@ -114,6 +114,7 @@ dependencies:
   webview_flutter: ^4.13.0
   audioplayers: ^6.5.1
   supabase_flutter: ^2.10.3
+  fluttertoast: ^8.2.14
  
 
 

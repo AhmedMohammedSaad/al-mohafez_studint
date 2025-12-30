@@ -1,5 +1,5 @@
 import 'package:almohafez/almohafez/core/presentation/view/widgets/app_custom_image_view.dart';
-import 'package:almohafez/almohafez/core/routing/app_route.dart';
+
 import 'package:almohafez/almohafez_teacher/features/authentication/presentation/views/login_screen.dart';
 
 import 'package:flutter/material.dart';
@@ -13,6 +13,8 @@ import '../widgets/auth_header.dart';
 import '../widgets/auth_text_field.dart';
 import '../widgets/auth_button.dart';
 import 'package:almohafez/almohafez_teacher/features/authentication/data/teacher_auth_service.dart';
+import 'package:almohafez/almohafez_teacher/features/profile/data/models/teacher_profile_model.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -37,15 +39,209 @@ class _SignUpScreenState extends State<SignUpScreen> {
   String _selectedGender = 'male';
 
   // Availability schedule
-  final Map<String, Map<String, TimeOfDay?>> _availability = {
-    'saturday': {'start': null, 'end': null},
-    'sunday': {'start': null, 'end': null},
-    'monday': {'start': null, 'end': null},
-    'tuesday': {'start': null, 'end': null},
-    'wednesday': {'start': null, 'end': null},
-    'thursday': {'start': null, 'end': null},
-    'friday': {'start': null, 'end': null},
-  };
+  final List<AvailabilitySlot> _availabilitySlots = [];
+
+  // Helper to format time to 12-hour format with AM/PM (localized)
+  String _formatTime(int totalMinutes) {
+    if (!mounted) return '';
+    final now = DateTime.now();
+    final dt = DateTime(
+      now.year,
+      now.month,
+      now.day,
+      totalMinutes ~/ 60,
+      totalMinutes % 60,
+    );
+    return DateFormat('h:mm a', context.locale.toString()).format(dt);
+  }
+
+  List<Map<String, String>> _generateDailySlots() {
+    List<Map<String, String>> slots = [];
+    int currentMinutes = 4 * 60; // Start at 04:00 AM
+    const int sessionDuration = 60;
+    const int endOfDay = 24 * 60; // End at midnight
+
+    while (currentMinutes + sessionDuration <= endOfDay) {
+      int endMinutes = currentMinutes + sessionDuration;
+
+      final startHour = (currentMinutes ~/ 60).toString().padLeft(2, '0');
+      final startMinute = (currentMinutes % 60).toString().padLeft(2, '0');
+      final endHour = (endMinutes ~/ 60).toString().padLeft(2, '0');
+      final endMinute = (endMinutes % 60).toString().padLeft(2, '0');
+
+      // Localized display
+      final displayStart = _formatTime(currentMinutes);
+      final displayEnd = _formatTime(endMinutes);
+
+      slots.add({
+        'start': '$startHour:$startMinute',
+        'end': '$endHour:$endMinute',
+        'display': '$displayStart - $displayEnd',
+      });
+
+      currentMinutes = endMinutes;
+    }
+    return slots;
+  }
+
+  Future<void> _addAvailabilitySlot() async {
+    String? selectedDay;
+    List<Map<String, String>> selectedTimeSlots = [];
+    final List<Map<String, String>> allDailySlots = _generateDailySlots();
+
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              backgroundColor: AppColors.background,
+              title: Text('add_availability'.tr()),
+              content: SizedBox(
+                width: double.maxFinite,
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Instructions Card
+                      Container(
+                        padding: EdgeInsets.all(12.w),
+                        margin: EdgeInsets.only(bottom: 16.h),
+                        decoration: BoxDecoration(
+                          color: AppColors.primaryBlueViolet.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(8.r),
+                          border: Border.all(
+                            color: AppColors.primaryBlueViolet.withOpacity(0.3),
+                          ),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.info_outline,
+                                  color: AppColors.primaryBlueViolet,
+                                  size: 20.sp,
+                                ),
+                                SizedBox(width: 8.w),
+                                Text(
+                                  'availability_instructions_title'.tr(),
+                                  style: AppTextStyle.medium14.copyWith(
+                                    color: AppColors.primaryBlueViolet,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 8.h),
+                            Text(
+                              'availability_instructions_body'.tr(),
+                              style: AppTextStyle.regular12.copyWith(
+                                color: AppColors.textPrimary,
+                                height: 1.5,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      DropdownButton<String>(
+                        value: selectedDay,
+                        isExpanded: true,
+                        hint: Text('select_day'.tr()),
+                        items:
+                            [
+                                  'Monday',
+                                  'Tuesday',
+                                  'Wednesday',
+                                  'Thursday',
+                                  'Friday',
+                                  'Saturday',
+                                  'Sunday',
+                                ]
+                                .map(
+                                  (day) => DropdownMenuItem(
+                                    value: day,
+                                    child: Text(
+                                      'days_${day.toLowerCase()}'.tr(),
+                                    ),
+                                  ),
+                                )
+                                .toList(),
+                        onChanged: (v) => setState(() => selectedDay = v),
+                      ),
+                      SizedBox(height: 16.h),
+                      if (selectedDay != null) ...[
+                        Text('select_time_slots'.tr()),
+                        SizedBox(height: 8.h),
+                        Wrap(
+                          spacing: 8.0,
+                          runSpacing: 8.0,
+                          children: allDailySlots.map((slot) {
+                            final isSelected = selectedTimeSlots.any(
+                              (s) =>
+                                  s['start'] == slot['start'] &&
+                                  s['end'] == slot['end'],
+                            );
+                            return ChoiceChip(
+                              label: Text(slot['display']!),
+                              selected: isSelected,
+                              onSelected: (selected) {
+                                setState(() {
+                                  if (selected) {
+                                    selectedTimeSlots.add(slot);
+                                  } else {
+                                    selectedTimeSlots.removeWhere(
+                                      (s) =>
+                                          s['start'] == slot['start'] &&
+                                          s['end'] == slot['end'],
+                                    );
+                                  }
+                                });
+                              },
+                            );
+                          }).toList(),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text('cancel'.tr()),
+                ),
+                TextButton(
+                  onPressed: () {
+                    if (selectedDay != null && selectedTimeSlots.isNotEmpty) {
+                      final newSlots = selectedTimeSlots.map((slot) {
+                        return AvailabilitySlot(
+                          day: selectedDay!,
+                          start: slot['start']!,
+                          end: slot['end']!,
+                        );
+                      }).toList();
+
+                      Navigator.pop(context, newSlots);
+                    }
+                  },
+                  child: Text('add'.tr()),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    ).then((result) {
+      if (result != null && result is List<AvailabilitySlot>) {
+        setState(() {
+          _availabilitySlots.addAll(result);
+        });
+      }
+    });
+  }
 
   @override
   void dispose() {
@@ -367,7 +563,42 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ),
                       ),
                       SizedBox(height: 16.h),
-                      ..._buildAvailabilitySchedule(),
+
+                      // List of added slots
+                      ..._availabilitySlots.map(
+                        (slot) => Card(
+                          margin: EdgeInsets.only(bottom: 8.h),
+                          child: ListTile(
+                            title: Text('days_${slot.day.toLowerCase()}'.tr()),
+                            subtitle: Text('${slot.start} - ${slot.end}'),
+                            trailing: IconButton(
+                              icon: const Icon(Icons.delete, color: Colors.red),
+                              onPressed: () {
+                                setState(() {
+                                  _availabilitySlots.remove(slot);
+                                });
+                              },
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      SizedBox(height: 10.h),
+
+                      ElevatedButton.icon(
+                        onPressed: _addAvailabilitySlot,
+                        icon: Icon(Icons.add, color: Colors.white, size: 20.sp),
+                        label: Text(
+                          'add_slot'.tr(),
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primaryBlueViolet,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -595,115 +826,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
         });
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('فشل في اختيار الصورة'),
-          backgroundColor: AppColors.primaryError,
-        ),
+      Fluttertoast.showToast(
+        msg: 'فشل في اختيار الصورة',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: AppColors.primaryError,
+        textColor: Colors.white,
+        fontSize: 16.0,
       );
-    }
-  }
-
-  List<Widget> _buildAvailabilitySchedule() {
-    final days = [
-      {'key': 'saturday', 'name': 'السبت'},
-      {'key': 'sunday', 'name': 'الأحد'},
-      {'key': 'monday', 'name': 'الاثنين'},
-      {'key': 'tuesday', 'name': 'الثلاثاء'},
-      {'key': 'wednesday', 'name': 'الأربعاء'},
-      {'key': 'thursday', 'name': 'الخميس'},
-      {'key': 'friday', 'name': 'الجمعة'},
-    ];
-
-    return days.map((day) {
-      return Container(
-        margin: EdgeInsets.only(bottom: 12.h),
-        padding: EdgeInsets.all(12.w),
-        decoration: BoxDecoration(
-          color: AppColors.backgroundPrimary,
-          borderRadius: BorderRadius.circular(8.r),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              day['name']!,
-              style: AppTextStyle.medium14.copyWith(
-                color: AppColors.textPrimary,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            SizedBox(height: 8.h),
-            Row(
-              children: [
-                Expanded(child: _buildTimeSelector(day['key']!, 'start', 'من')),
-                SizedBox(width: 12.w),
-                Expanded(child: _buildTimeSelector(day['key']!, 'end', 'إلى')),
-              ],
-            ),
-          ],
-        ),
-      );
-    }).toList();
-  }
-
-  Widget _buildTimeSelector(String day, String type, String label) {
-    final time = _availability[day]![type];
-    return GestureDetector(
-      onTap: () => _selectTime(day, type),
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
-        decoration: BoxDecoration(
-          border: Border.all(color: AppColors.borderLight),
-          borderRadius: BorderRadius.circular(6.r),
-          color: AppColors.backgroundPrimary,
-        ),
-        child: Row(
-          children: [
-            Icon(
-              Icons.access_time,
-              size: 16.sp,
-              color: AppColors.textSecondary,
-            ),
-            SizedBox(width: 8.w),
-            Expanded(
-              child: Text(
-                time != null
-                    ? '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}'
-                    : label,
-                style: AppTextStyle.regular14.copyWith(
-                  color: time != null
-                      ? AppColors.textPrimary
-                      : AppColors.textSecondary,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Future<void> _selectTime(String day, String type) async {
-    final TimeOfDay? picked = await showTimePicker(
-      context: context,
-      initialTime: _availability[day]![type] ?? TimeOfDay.now(),
-      builder: (context, child) {
-        return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: ColorScheme.light(
-              primary: AppColors.primaryBlueViolet,
-            ),
-          ),
-          child: child!,
-        );
-      },
-    );
-
-    if (picked != null) {
-      setState(() {
-        _availability[day]![type] = picked;
-      });
     }
   }
 
@@ -713,41 +844,42 @@ class _SignUpScreenState extends State<SignUpScreen> {
     }
 
     if (!_acceptTerms) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('accept_terms_required'.tr()),
-          backgroundColor: AppColors.primaryError,
-        ),
+      Fluttertoast.showToast(
+        msg: 'accept_terms_required'.tr(),
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: AppColors.primaryError,
+        textColor: Colors.white,
+        fontSize: 16.0,
       );
       return;
     }
 
     // Validate profile image
     if (_profileImage == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('يرجى اختيار صورة شخصية'),
-          backgroundColor: AppColors.primaryError,
-        ),
+      Fluttertoast.showToast(
+        msg: 'يرجى اختيار صورة شخصية',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: AppColors.primaryError,
+        textColor: Colors.white,
+        fontSize: 16.0,
       );
       return;
     }
 
     // Validate availability schedule (at least one day should be selected)
-    bool hasAvailability = false;
-    for (var day in _availability.values) {
-      if (day['start'] != null && day['end'] != null) {
-        hasAvailability = true;
-        break;
-      }
-    }
-
-    if (!hasAvailability) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('يرجى تحديد الأوقات المتاحة ليوم واحد على الأقل'),
-          backgroundColor: AppColors.primaryError,
-        ),
+    if (_availabilitySlots.isEmpty) {
+      Fluttertoast.showToast(
+        msg: 'يرجى تحديد الأوقات المتاحة ليوم واحد على الأقل',
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: AppColors.primaryError,
+        textColor: Colors.white,
+        fontSize: 16.0,
       );
       return;
     }
@@ -767,16 +899,21 @@ class _SignUpScreenState extends State<SignUpScreen> {
         phone: _phoneController.text.trim(),
         gender: _selectedGender,
         qualifications: _qualificationsController.text.trim(),
-        availability: _availability,
+        availabilitySlots: _availabilitySlots
+            .map((e) => {'day': e.day, 'start': e.start, 'end': e.end})
+            .toList(), // Pass properly formatted slots
         profileImage: _profileImage,
       );
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('تم إنشاء الحساب بنجاح'),
-            backgroundColor: Colors.green,
-          ),
+        Fluttertoast.showToast(
+          msg: 'تم إنشاء الحساب بنجاح',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          fontSize: 16.0,
         );
         Navigator.push(
           context,
@@ -785,11 +922,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('sign_up_failed'.tr() + ': ${e.toString()}'),
-            backgroundColor: AppColors.primaryError,
-          ),
+        Fluttertoast.showToast(
+          msg: 'sign_up_failed'.tr() + ': ${e.toString()}',
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: AppColors.primaryError,
+          textColor: Colors.white,
+          fontSize: 16.0,
         );
       }
     } finally {

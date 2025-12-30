@@ -7,6 +7,7 @@ import '../../logic/profile_event.dart';
 import '../../logic/profile_state.dart';
 import 'package:almohafez/almohafez/core/theme/app_colors.dart';
 import 'package:almohafez/almohafez/core/theme/app_text_style.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class EditProfileScreen extends StatefulWidget {
   final String currentFirstName;
@@ -74,20 +75,26 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             setState(() => _isLoading = true);
           } else if (state is ProfileLoaded) {
             setState(() => _isLoading = false);
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('profile_updated_successfully'.tr()),
-                backgroundColor: Colors.green,
-              ),
+            Fluttertoast.showToast(
+              msg: 'profile_updated_successfully'.tr(),
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.TOP,
+              timeInSecForIosWeb: 1,
+              backgroundColor: Colors.green,
+              textColor: Colors.white,
+              fontSize: 16.0,
             );
             Navigator.pop(context);
           } else if (state is ProfileError) {
             setState(() => _isLoading = false);
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.message),
-                backgroundColor: AppColors.primaryError,
-              ),
+            Fluttertoast.showToast(
+              msg: state.message,
+              toastLength: Toast.LENGTH_LONG,
+              gravity: ToastGravity.TOP_RIGHT,
+              timeInSecForIosWeb: 1,
+              backgroundColor: AppColors.primaryError,
+              textColor: Colors.white,
+              fontSize: 16.0,
             );
           }
         },

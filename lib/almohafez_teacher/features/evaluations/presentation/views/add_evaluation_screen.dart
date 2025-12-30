@@ -9,6 +9,7 @@ import '../../../sessions/data/models/session_model.dart';
 import '../../data/models/evaluation_model.dart';
 import 'package:almohafez/almohafez/core/theme/app_colors.dart';
 import 'package:almohafez/almohafez/core/theme/app_text_style.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class AddEvaluationScreen extends StatefulWidget {
   final Session session;
@@ -399,20 +400,14 @@ class _AddEvaluationScreenState extends State<AddEvaluationScreen> {
       );
 
       // Show success message
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'تم حفظ التقييم بنجاح',
-            style: AppTextStyle.textStyle14Bold.copyWith(
-              color: AppColors.white,
-            ),
-          ),
-          backgroundColor: AppColors.greenColor,
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8.r),
-          ),
-        ),
+      Fluttertoast.showToast(
+        msg: 'تم حفظ التقييم بنجاح',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: AppColors.greenColor,
+        textColor: Colors.white,
+        fontSize: 16.0,
       );
 
       // Return to previous screen

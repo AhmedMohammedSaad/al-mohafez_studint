@@ -17,14 +17,15 @@ import 'almohafez_teacher/features/students/presentation/cubit/student_details_c
 import 'almohafez_teacher/features/students/data/repositories/student_details_repo.dart';
 import 'almohafez_teacher/features/sessions/presentation/cubit/sessions_cubit.dart';
 import 'almohafez_teacher/features/sessions/data/repositories/sessions_repo.dart';
+import 'almohafez/core/utils/app_consts.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
 
   await Supabase.initialize(
-    url: 'https://tghyxcxvvnvkcaflsohk.supabase.co',
-    anonKey: 'sb_secret_3nsmTWIOuaNwrpGwA3HG1w_JlyPDnUj',
+    url: AppConst.supabaseUrl,
+    anonKey: AppConst.supabaseAnonKey,
   );
 
   // Initialize nb_utils for SharedPreferences

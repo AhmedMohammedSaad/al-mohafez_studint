@@ -225,7 +225,7 @@ class _SessionDetailsScreenState extends State<SessionDetailsScreen>
               radius: 50,
               backgroundColor: Colors.white.withOpacity(0.2),
               backgroundImage: _session!.tutorImageUrl.isNotEmpty
-                  ? AssetImage(_session!.tutorImageUrl)
+                  ? NetworkImage(_session!.tutorImageUrl)
                   : null,
               child: _session!.tutorImageUrl.isEmpty
                   ? Icon(
@@ -781,7 +781,7 @@ class _SessionDetailsScreenState extends State<SessionDetailsScreen>
   }
 
   void _showRatingDialog() {
-    if (_session == null) return;
+    // if (_session == null) return;
 
     print('📝 Opening rating dialog for session: ${_session!.id}');
 

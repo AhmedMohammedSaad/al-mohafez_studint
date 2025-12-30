@@ -113,6 +113,11 @@ class SessionsRepo {
       status: status,
       meetingUrl: json['meeting_url'],
       notes: json['notes'],
+      rating: json['rating'] != null
+          ? (json['rating'] as num).toDouble()
+          : null,
+      feedback: json['feedback'],
+      tutorNotes: json['tutor_notes'],
     );
   }
 
@@ -168,9 +173,59 @@ class SessionsRepo {
           .from('teachers')
           .update({'overall_rating': newOverallRating, 'comments': comments})
           .eq('id', tutorId);
+
+      // --- New: Insert into teacher_ratings ---
+      try {
+        // Fetch student name
+        String studentName = 'Unknown';
+        try {
+          final profileData = await _supabase
+              .from('profiles')
+              .select('first_name, last_name')
+              .eq('id', userId)
+              .single();
+          studentName =
+              '${profileData['first_name']} ${profileData['last_name'] ?? ''}'
+                  .trim();
+        } catch (e) {
+          print('Error fetching student name: $e');
+        }
+
+        // Insert into teacher_ratings
+        await _supabase.from('teacher_ratings').insert({
+          'student_id': userId,
+          'student_name': studentName,
+          'teacher_id': tutorId,
+          'rating': rating.round(), // Assuming int4 as per schema description
+          'session_id': sessionId,
+          'comment': comment,
+          // 'created_at': default now()
+        });
+      } catch (e) {
+        print('Error inserting into teacher_ratings: $e');
+        // We log but don't rethrow to ensure the other updates (bookings) usually succeed
+        // or rethrow if this is critical. Assuming critical for now?
+        // Actually, if this fails, we might still want the booking to be marked rated.
+        // But let's log it.
+      }
+      // ----------------------------------------
+
+      // Also update the specific session (booking) with the rating
+      await _updateSessionRating(sessionId, rating, comment);
     } catch (e) {
       print('Error submitting rating: $e');
       throw Exception('Failed to submit rating: $e');
     }
+  }
+
+  Future<void> _updateSessionRating(
+    String sessionId,
+    double rating,
+    String? comment,
+  ) async {
+    await _supabase
+        .from('bookings')
+        .update({'rating': rating, 'feedback': comment})
+        .eq('id', sessionId);
   }
 }

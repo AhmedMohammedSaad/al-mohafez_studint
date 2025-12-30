@@ -1,16 +1,16 @@
 import 'package:almohafez/almohafez/core/presentation/view/widgets/app_custom_image_view.dart';
 import 'package:almohafez/almohafez/core/routing/app_route.dart';
 import 'package:almohafez/almohafez/features/authentication/presentation/views/login_screen.dart';
+import 'package:almohafez/almohafez_teacher/features/authentication/presentation/views/login_screen.dart'
+    hide LoginScreen;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:almohafez/almohafez/core/theme/app_colors.dart';
 import 'package:almohafez/almohafez/core/theme/app_text_style.dart';
-import '../../../../core/services/navigation_service/global_navigation_service.dart';
 import '../widgets/auth_header.dart';
 import '../widgets/auth_text_field.dart';
 import '../widgets/auth_button.dart';
-import '../widgets/social_login_button.dart';
 import '../../data/auth_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../../core/utils/supabase_error_handler.dart';
@@ -417,7 +417,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   void _navigateToLogin() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => LoginScreen()),
+      MaterialPageRoute(builder: (context) => const LoginScreen()),
     );
   }
 }

@@ -1,17 +1,14 @@
-import 'package:almohafez/almohafez/core/helper/lifecycle_maneger/shardpref.dart';
-import 'package:almohafez/almohafez/features/authentication/presentation/views/login_screen.dart';
-import 'package:almohafez/almohafez/features/profile/presentation/views/change_password_screen.dart';
 import 'package:almohafez/almohafez/features/profile/presentation/views/edit_profile_screen.dart';
 import 'package:almohafez/almohafez/features/profile/presentation/views/contact_us_screen.dart';
+import 'package:almohafez/almohafez_teacher/features/authentication/presentation/views/login_screen.dart';
+import 'package:almohafez/almohafez_teacher/features/profile/presentation/views/change_password_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import '../../logic/profile_bloc.dart';
 import '../../logic/profile_event.dart';
 import '../../logic/profile_state.dart';
-import '../../../../core/routing/app_route.dart';
 import 'action_button_widget.dart';
 
 class ActionButtonsWidget extends StatelessWidget {

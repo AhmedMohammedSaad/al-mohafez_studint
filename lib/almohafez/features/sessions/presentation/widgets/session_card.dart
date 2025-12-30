@@ -12,12 +12,12 @@ class SessionCard extends StatefulWidget {
   final VoidCallback onRateSession;
 
   const SessionCard({
-    Key? key,
+    super.key,
     required this.session,
     required this.onTap,
     required this.onJoinSession,
     required this.onRateSession,
-  }) : super(key: key);
+  });
 
   @override
   State<SessionCard> createState() => _SessionCardState();
@@ -106,13 +106,19 @@ class _SessionCardState extends State<SessionCard> {
               Row(
                 children: [
                   // Tutor image
-                  AppCustomImageView(
-                    imagePath: widget.session.tutorImageUrl,
-                    height: 50,
-                    width: 50,
-                    radius: BorderRadius.circular(25),
-                    fit: BoxFit.cover,
-                    placeHolder: 'assets/images/shaegh.jpg', // Fallback
+                  InkWell(
+                    onTap: () {
+                      widget.onRateSession();
+                    },
+                    borderRadius: BorderRadius.circular(25),
+                    child: AppCustomImageView(
+                      imagePath: widget.session.tutorImageUrl,
+                      height: 50,
+                      width: 50,
+                      radius: BorderRadius.circular(25),
+                      fit: BoxFit.cover,
+                      placeHolder: 'assets/images/shaegh.jpg', // Fallback
+                    ),
                   ),
                   const SizedBox(width: 12),
 
@@ -272,7 +278,7 @@ class _SessionCardState extends State<SessionCard> {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(Icons.star, size: 16, color: Colors.amber),
+        Icon(Icons.star_rate_rounded, size: 16, color: Colors.amber),
         const SizedBox(width: 4),
         Text(
           widget.session.rating!.toStringAsFixed(1),
@@ -382,22 +388,9 @@ class _SessionCardState extends State<SessionCard> {
   }
 
   String _formatDateTime(DateTime dateTime) {
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
-    final sessionDate = DateTime(dateTime.year, dateTime.month, dateTime.day);
-
-    String dateStr;
-    if (sessionDate == today) {
-      dateStr = 'sessions_today'.tr();
-    } else if (sessionDate == today.add(const Duration(days: 1))) {
-      dateStr = 'sessions_tomorrow'.tr();
-    } else {
-      // Format date manually for Arabic
-      final day = dateTime.day.toString().padLeft(2, '0');
-      final month = dateTime.month.toString().padLeft(2, '0');
-      final year = dateTime.year.toString();
-      dateStr = '$day/$month/$year';
-    }
+    // Format to show Day Name only (e.g. Saturday) regardless of date
+    // This aligns with the "Fixed Weekly Days" business logic
+    final String dateStr = DateFormat('EEEE', 'ar').format(dateTime);
 
     // Format time manually for Arabic
     final hour = dateTime.hour.toString().padLeft(2, '0');

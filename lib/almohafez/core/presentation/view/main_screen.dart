@@ -109,14 +109,14 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      bottom: true,
-      left: false,
-      right: false,
-      top: false,
-      child: Scaffold(
-        key: scaffoldKey,
-        body: PersistentTabView(
+    return Scaffold(
+      key: scaffoldKey,
+      body: SafeArea(
+        bottom: true,
+        left: false,
+        right: false,
+        top: false,
+        child: PersistentTabView(
           navBarHeight: 80.h,
           //gestureNavigationEnabled: true,
           tabs: _navBarsItems(),

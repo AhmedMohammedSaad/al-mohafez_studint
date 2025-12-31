@@ -276,16 +276,16 @@ class StudentCardWidget extends StatelessWidget {
     );
   }
 
-  Color _getLevelColor(String level) {
-    switch (level) {
-      case 'مبتدئ':
-        return Colors.blue;
-      case 'متوسط':
-        return Colors.orange;
-      case 'متقدم':
-        return Colors.green;
-      default:
-        return AppColors.primaryBlueViolet;
-    }
-  }
+  // Color _getLevelColor(String level) {
+  //   switch (level) {
+  //     case 'مبتدئ':
+  //       return Colors.blue;
+  //     case 'متوسط':
+  //       return Colors.orange;
+  //     case 'متقدم':
+  //       return Colors.green;
+  //     default:
+  //       return AppColors.primaryBlueViolet;
+  //   }
+  // }
 }

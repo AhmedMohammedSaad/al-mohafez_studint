@@ -8,6 +8,7 @@ import '../../../../core/services/navigation_service/global_navigation_service.d
 import '../widgets/auth_header.dart';
 import '../widgets/auth_text_field.dart';
 import '../widgets/auth_button.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
@@ -294,11 +295,14 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     } catch (e) {
       // TODO: Handle password reset error
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('reset_link_failed'.tr()),
-            backgroundColor: AppColors.primaryError,
-          ),
+        Fluttertoast.showToast(
+          msg: 'reset_link_failed'.tr(),
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: AppColors.primaryError,
+          textColor: Colors.white,
+          fontSize: 16.0,
         );
       }
     } finally {
@@ -312,11 +316,14 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
   void _openEmailApp() {
     // TODO: Implement opening email app
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('opening_email_app'.tr()),
-        backgroundColor: AppColors.primaryBlueViolet,
-      ),
+    Fluttertoast.showToast(
+      msg: 'opening_email_app'.tr(),
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
+      timeInSecForIosWeb: 1,
+      backgroundColor: AppColors.primaryBlueViolet,
+      textColor: Colors.white,
+      fontSize: 16.0,
     );
   }
 
@@ -330,20 +337,26 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       await Future.delayed(const Duration(seconds: 1));
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('reset_email_resent'.tr()),
-            backgroundColor: AppColors.primarySuccess,
-          ),
+        Fluttertoast.showToast(
+          msg: 'reset_email_resent'.tr(),
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: AppColors.primarySuccess,
+          textColor: Colors.white,
+          fontSize: 16.0,
         );
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('resend_failed'.tr()),
-            backgroundColor: AppColors.primaryError,
-          ),
+        Fluttertoast.showToast(
+          msg: 'resend_failed'.tr(),
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: AppColors.primaryError,
+          textColor: Colors.white,
+          fontSize: 16.0,
         );
       }
     } finally {

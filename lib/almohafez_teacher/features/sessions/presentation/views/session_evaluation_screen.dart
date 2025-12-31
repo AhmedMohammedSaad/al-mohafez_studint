@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' hide Session;
 import 'package:almohafez/almohafez/core/theme/app_colors.dart';
 import 'package:almohafez/almohafez/core/theme/app_text_style.dart';
@@ -90,20 +91,26 @@ class _SessionEvaluationContentState extends State<_SessionEvaluationContent> {
             _populateFromEvaluation(state.evaluation!);
           }
           if (state is SessionEvaluationSaved) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('تم حفظ التقييم بنجاح'),
-                backgroundColor: Colors.green,
-              ),
+            Fluttertoast.showToast(
+              msg: 'تم حفظ التقييم بنجاح',
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIosWeb: 1,
+              backgroundColor: Colors.green,
+              textColor: Colors.white,
+              fontSize: 16.0,
             );
             Navigator.pop(context, true);
           }
           if (state is SessionEvaluationError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('حدث خطأ: ${state.message}'),
-                backgroundColor: Colors.red,
-              ),
+            Fluttertoast.showToast(
+              msg: 'حدث خطأ: ${state.message}',
+              toastLength: Toast.LENGTH_LONG,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIosWeb: 1,
+              backgroundColor: Colors.red,
+              textColor: Colors.white,
+              fontSize: 16.0,
             );
           }
         },

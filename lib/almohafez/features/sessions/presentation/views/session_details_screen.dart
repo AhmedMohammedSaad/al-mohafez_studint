@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'dart:async';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import '../../data/models/session_model.dart';
 import '../../data/services/sessions_service.dart';
 
@@ -751,11 +752,14 @@ class _SessionDetailsScreenState extends State<SessionDetailsScreen>
   void _joinSession() async {
     // Check if meeting URL exists
     if (_session?.meetingUrl == null || _session!.meetingUrl!.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('meeting_url_missing'.tr()),
-          backgroundColor: Colors.red,
-        ),
+      Fluttertoast.showToast(
+        msg: 'meeting_url_missing'.tr(),
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0,
       );
       return;
     }
@@ -771,11 +775,14 @@ class _SessionDetailsScreenState extends State<SessionDetailsScreen>
         throw 'Could not launch $_session!.meetingUrl';
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('${'session_join_error'.tr()}: $e'),
-          backgroundColor: Colors.red,
-        ),
+      Fluttertoast.showToast(
+        msg: '${'session_join_error'.tr()}: $e',
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0,
       );
     }
   }
@@ -816,19 +823,25 @@ class _SessionDetailsScreenState extends State<SessionDetailsScreen>
 
           if (mounted) {
             if (success) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('session_rating_success'.tr()),
-                  backgroundColor: Colors.green,
-                ),
+              Fluttertoast.showToast(
+                msg: 'session_rating_success'.tr(),
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.BOTTOM,
+                timeInSecForIosWeb: 1,
+                backgroundColor: Colors.green,
+                textColor: Colors.white,
+                fontSize: 16.0,
               );
               _loadSessionDetails(); // Reload to show updated rating
             } else {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('session_rating_error'.tr()),
-                  backgroundColor: Colors.red,
-                ),
+              Fluttertoast.showToast(
+                msg: 'session_rating_error'.tr(),
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.BOTTOM,
+                timeInSecForIosWeb: 1,
+                backgroundColor: Colors.red,
+                textColor: Colors.white,
+                fontSize: 16.0,
               );
             }
           }
@@ -839,8 +852,14 @@ class _SessionDetailsScreenState extends State<SessionDetailsScreen>
 
   void _addNote() {
     // TODO: Implement add note functionality
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('session_add_note_coming_soon'.tr())),
+    Fluttertoast.showToast(
+      msg: 'session_add_note_coming_soon'.tr(),
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
+      timeInSecForIosWeb: 1,
+      backgroundColor: Colors.grey,
+      textColor: Colors.white,
+      fontSize: 16.0,
     );
   }
 
@@ -870,19 +889,25 @@ class _SessionDetailsScreenState extends State<SessionDetailsScreen>
           _session?.id ?? '',
           _session?.status.name ?? '',
         );
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('session_cancelled_success'.tr()),
-            backgroundColor: Colors.orange,
-          ),
+        Fluttertoast.showToast(
+          msg: 'session_cancelled_success'.tr(),
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.orange,
+          textColor: Colors.white,
+          fontSize: 16.0,
         );
         _loadSessionDetails(); // Refresh data
       } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('${'session_cancel_error'.tr()}: $e'),
-            backgroundColor: Colors.red,
-          ),
+        Fluttertoast.showToast(
+          msg: '${'session_cancel_error'.tr()}: $e',
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0,
         );
       }
     }

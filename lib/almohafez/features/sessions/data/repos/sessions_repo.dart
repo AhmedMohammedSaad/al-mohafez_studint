@@ -210,22 +210,12 @@ class SessionsRepo {
       }
       // ----------------------------------------
 
-      // Also update the specific session (booking) with the rating
-      await _updateSessionRating(sessionId, rating, comment);
+      // usage of _updateSessionRating removed as columns missing in DB
     } catch (e) {
       print('Error submitting rating: $e');
       throw Exception('Failed to submit rating: $e');
     }
   }
 
-  Future<void> _updateSessionRating(
-    String sessionId,
-    double rating,
-    String? comment,
-  ) async {
-    await _supabase
-        .from('bookings')
-        .update({'rating': rating, 'feedback': comment})
-        .eq('id', sessionId);
-  }
+  // _updateSessionRating removed
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import '../../data/models/session_model.dart';
 import '../../data/models/session_rating_model.dart';
 import '../../data/services/sessions_service.dart';
@@ -131,7 +132,7 @@ class _SessionRatingScreenState extends State<SessionRatingScreen> {
           _buildRatingSection(),
 
           // Tags section
-          _buildTagsSection(),
+          // _buildTagsSection(),
 
           // Feedback section
           _buildFeedbackSection(),
@@ -284,83 +285,83 @@ class _SessionRatingScreenState extends State<SessionRatingScreen> {
     );
   }
 
-  Widget _buildTagsSection() {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16),
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'session_rating_what_liked'.tr(),
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF2E7D32),
-            ),
-          ),
+  // Widget _buildTagsSection() {
+  //   return Container(
+  //     margin: const EdgeInsets.symmetric(horizontal: 16),
+  //     padding: const EdgeInsets.all(20),
+  //     decoration: BoxDecoration(
+  //       color: Colors.white,
+  //       borderRadius: BorderRadius.circular(12),
+  //       boxShadow: [
+  //         BoxShadow(
+  //           color: Colors.black.withOpacity(0.1),
+  //           blurRadius: 8,
+  //           offset: const Offset(0, 4),
+  //         ),
+  //       ],
+  //     ),
+  //     child: Column(
+  //       crossAxisAlignment: CrossAxisAlignment.start,
+  //       children: [
+  //         Text(
+  //           'session_rating_what_liked'.tr(),
+  //           style: const TextStyle(
+  //             fontSize: 18,
+  //             fontWeight: FontWeight.bold,
+  //             color: Color(0xFF2E7D32),
+  //           ),
+  //         ),
 
-          const SizedBox(height: 16),
+  //         const SizedBox(height: 16),
 
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: _availableTags.map((tag) {
-              final isSelected = _selectedTags.contains(tag);
-              return GestureDetector(
-                onTap: () {
-                  setState(() {
-                    if (isSelected) {
-                      _selectedTags.remove(tag);
-                    } else {
-                      _selectedTags.add(tag);
-                    }
-                  });
-                },
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
-                  ),
-                  decoration: BoxDecoration(
-                    color: isSelected
-                        ? const Color(0xFF2E7D32)
-                        : Colors.grey[100],
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                      color: isSelected
-                          ? const Color(0xFF2E7D32)
-                          : Colors.grey[300]!,
-                    ),
-                  ),
-                  child: Text(
-                    tag,
-                    style: TextStyle(
-                      color: isSelected ? Colors.white : Colors.grey[700],
-                      fontWeight: isSelected
-                          ? FontWeight.bold
-                          : FontWeight.normal,
-                    ),
-                  ),
-                ),
-              );
-            }).toList(),
-          ),
-        ],
-      ),
-    );
-  }
+  //         Wrap(
+  //           spacing: 8,
+  //           runSpacing: 8,
+  //           children: _availableTags.map((tag) {
+  //             final isSelected = _selectedTags.contains(tag);
+  //             return GestureDetector(
+  //               onTap: () {
+  //                 setState(() {
+  //                   if (isSelected) {
+  //                     _selectedTags.remove(tag);
+  //                   } else {
+  //                     _selectedTags.add(tag);
+  //                   }
+  //                 });
+  //               },
+  //               child: Container(
+  //                 padding: const EdgeInsets.symmetric(
+  //                   horizontal: 16,
+  //                   vertical: 8,
+  //                 ),
+  //                 decoration: BoxDecoration(
+  //                   color: isSelected
+  //                       ? const Color(0xFF2E7D32)
+  //                       : Colors.grey[100],
+  //                   borderRadius: BorderRadius.circular(20),
+  //                   border: Border.all(
+  //                     color: isSelected
+  //                         ? const Color(0xFF2E7D32)
+  //                         : Colors.grey[300]!,
+  //                   ),
+  //                 ),
+  //                 child: Text(
+  //                   tag,
+  //                   style: TextStyle(
+  //                     color: isSelected ? Colors.white : Colors.grey[700],
+  //                     fontWeight: isSelected
+  //                         ? FontWeight.bold
+  //                         : FontWeight.normal,
+  //                   ),
+  //                 ),
+  //               ),
+  //             );
+  //           }).toList(),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   Widget _buildFeedbackSection() {
     return Container(
@@ -476,11 +477,14 @@ class _SessionRatingScreenState extends State<SessionRatingScreen> {
 
   Future<void> _submitRating() async {
     if (_rating == 0) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('session_rating_select_rating'.tr()),
-          backgroundColor: Colors.orange,
-        ),
+      Fluttertoast.showToast(
+        msg: 'session_rating_select_rating'.tr(),
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.orange,
+        textColor: Colors.white,
+        fontSize: 16.0,
       );
       return;
     }
@@ -507,21 +511,27 @@ class _SessionRatingScreenState extends State<SessionRatingScreen> {
       await SessionsService.submitSessionRating(ratingModel);
 
       // Show success message
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('session_rating_success'.tr()),
-          backgroundColor: Colors.green,
-        ),
+      Fluttertoast.showToast(
+        msg: 'session_rating_success'.tr(),
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.green,
+        textColor: Colors.white,
+        fontSize: 16.0,
       );
 
       // Navigate back
       Navigator.pop(context, true);
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('${'session_rating_error'.tr()}: $e'),
-          backgroundColor: Colors.red,
-        ),
+      Fluttertoast.showToast(
+        msg: '${'session_rating_error'.tr()}: $e',
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0,
       );
     } finally {
       setState(() {

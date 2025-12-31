@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'action_button_widget.dart';
 import '../../data/models/teacher_profile_model.dart';
 import '../views/edit_profile_screen.dart';
@@ -71,9 +72,15 @@ class ActionButtonsWidget extends StatelessWidget {
 
   void _handleEditProfile(BuildContext context) {
     if (profile == null) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Wait for profile to load')));
+      Fluttertoast.showToast(
+        msg: 'Wait for profile to load',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.grey,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
       return;
     }
     Navigator.push(

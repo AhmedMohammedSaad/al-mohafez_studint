@@ -14,6 +14,7 @@ import '../widgets/auth_button.dart';
 import '../../data/auth_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../../core/utils/supabase_error_handler.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -351,11 +352,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
     }
 
     if (!_acceptTerms) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('accept_terms_required'.tr()),
-          backgroundColor: AppColors.primaryError,
-        ),
+      Fluttertoast.showToast(
+        msg: 'accept_terms_required'.tr(),
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: AppColors.primaryError,
+        textColor: Colors.white,
+        fontSize: 16.0,
       );
       return;
     }
@@ -374,13 +378,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
       );
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              'sign_up_success'.tr(),
-            ), // Make sure to add this key to translations or use a hardcoded string for now
-            backgroundColor: Colors.green,
-          ),
+        Fluttertoast.showToast(
+          msg: 'sign_up_success'.tr(),
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          fontSize: 16.0,
         );
         Navigator.push(
           context,
@@ -389,20 +394,26 @@ class _SignUpScreenState extends State<SignUpScreen> {
       }
     } on AuthException catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(SupabaseErrorHandler.getErrorMessage(e)),
-            backgroundColor: AppColors.primaryError,
-          ),
+        Fluttertoast.showToast(
+          msg: SupabaseErrorHandler.getErrorMessage(e),
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: AppColors.primaryError,
+          textColor: Colors.white,
+          fontSize: 16.0,
         );
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('sign_up_failed'.tr()),
-            backgroundColor: AppColors.primaryError,
-          ),
+        Fluttertoast.showToast(
+          msg: 'sign_up_failed'.tr(),
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: AppColors.primaryError,
+          textColor: Colors.white,
+          fontSize: 16.0,
         );
       }
     } finally {

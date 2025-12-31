@@ -62,7 +62,6 @@ class SessionsRepo {
         tutorImage = teacherData['profile_picture_url'];
       }
     }
-
     // Parse date and time
     // selected_date is YYYY-MM-DD
     // selected_time_slot is "HH:mm - HH:mm"

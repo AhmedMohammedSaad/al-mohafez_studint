@@ -8,6 +8,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../data/repositories/competitions_repo.dart';
 import '../cubit/competitions_cubit.dart';
 import '../cubit/competitions_state.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 class CompetitionsSectionWidget extends StatelessWidget {
   const CompetitionsSectionWidget({super.key});
@@ -30,38 +31,42 @@ class _CompetitionsContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'current_competitions'.tr(),
-          style: TextStyle(
-            fontFamily: 'Cairo',
-            fontSize: 20.sp,
-            fontWeight: FontWeight.bold,
-            color: const Color(0xFF0A1D64),
-          ),
-        ),
-        SizedBox(height: 12.h),
-        BlocBuilder<CompetitionsCubit, CompetitionsState>(
-          builder: (context, state) {
-            if (state is CompetitionsLoading) {
-              return _buildLoadingCard();
-            }
+      children:
+          [
+                Text(
+                  'current_competitions'.tr(),
+                  style: TextStyle(
+                    fontFamily: 'Cairo',
+                    fontSize: 20.sp,
+                    fontWeight: FontWeight.bold,
+                    color: const Color(0xFF0A1D64),
+                  ),
+                ),
+                SizedBox(height: 12.h),
+                BlocBuilder<CompetitionsCubit, CompetitionsState>(
+                  builder: (context, state) {
+                    if (state is CompetitionsLoading) {
+                      return _buildLoadingCard();
+                    }
 
-            if (state is CompetitionsError) {
-              return _buildErrorCard(context);
-            }
+                    if (state is CompetitionsError) {
+                      return _buildErrorCard(context);
+                    }
 
-            if (state is CompetitionsLoaded) {
-              if (state.competition == null) {
-                return _buildEmptyCard();
-              }
-              return _buildCompetitionCard(context, state.competition!);
-            }
+                    if (state is CompetitionsLoaded) {
+                      if (state.competition == null) {
+                        return _buildEmptyCard();
+                      }
+                      return _buildCompetitionCard(context, state.competition!);
+                    }
 
-            return const SizedBox.shrink();
-          },
-        ),
-      ],
+                    return const SizedBox.shrink();
+                  },
+                ),
+              ]
+              .animate()
+              .slideX(begin: 1, duration: 600.ms, curve: Curves.easeInOut)
+              .fadeIn(duration: 600.ms),
     );
   }
 

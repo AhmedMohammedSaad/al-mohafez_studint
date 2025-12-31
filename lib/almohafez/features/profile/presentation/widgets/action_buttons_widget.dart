@@ -9,6 +9,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../logic/profile_bloc.dart';
 import '../../logic/profile_event.dart';
 import '../../logic/profile_state.dart';
+import 'language_selection_dialog.dart';
+
 import 'action_button_widget.dart';
 
 class ActionButtonsWidget extends StatelessWidget {
@@ -18,115 +20,183 @@ class ActionButtonsWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        ActionButtonWidget(
-          title: 'profile_edit_data'.tr(),
-          icon: Icons.edit,
-          color: const Color(0xFF3B82F6),
-          onPressed: () => _handleEditProfile(context),
-        ),
+        _buildSectionTitle('profile_general'.tr()),
         SizedBox(height: 12.h),
-        ActionButtonWidget(
-          title: 'profile_change_password'.tr(),
-          icon: Icons.lock,
-          color: const Color(0xFF10B981),
-          onPressed: () => _handleChangePassword(context),
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16.r),
+          ),
+          child: Column(
+            children: [
+              ActionButtonWidget(
+                title: 'profile_edit_data'.tr(),
+                icon: Icons.person_outline,
+                color: const Color(0xFF0A1D64),
+                onPressed: () => _handleEditProfile(context),
+              ),
+              _buildDivider(),
+              ActionButtonWidget(
+                title: 'profile_change_language'.tr(),
+                icon: Icons.language,
+                color: const Color(0xFF0A1D64),
+                onPressed: () => _handleChangeLanguage(context),
+              ),
+              _buildDivider(),
+              ActionButtonWidget(
+                title: 'profile_change_password'.tr(),
+                icon: Icons.lock_outline,
+                color: const Color(0xFF0A1D64),
+                showDivider: false,
+                onPressed: () => _handleChangePassword(context),
+              ),
+            ],
+          ),
         ),
+        SizedBox(height: 24.h),
+        _buildSectionTitle('profile_support'.tr()),
         SizedBox(height: 12.h),
-        ActionButtonWidget(
-          title: 'profile_contact_us'.tr(),
-          icon: Icons.support_agent,
-          color: const Color(0xFFF59E0B),
-          onPressed: () => _handleContactUs(context),
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16.r),
+          ),
+          child: Column(
+            children: [
+              ActionButtonWidget(
+                title: 'profile_contact_us'.tr(),
+                icon: Icons.headset_mic_outlined,
+                color: const Color(0xFF0A1D64),
+                onPressed: () => _handleContactUs(context),
+              ),
+              _buildDivider(),
+              ActionButtonWidget(
+                title: 'profile_delete_account'.tr(),
+                icon: Icons.delete_outline,
+                color: const Color(0xFFEF4444),
+                onPressed: () => _handleDeleteAccount(context),
+              ),
+            ],
+          ),
         ),
-        SizedBox(height: 12.h),
-        ActionButtonWidget(
-          title: 'profile_delete_account'.tr(),
-          icon: Icons.delete_forever,
-          color: const Color(0xFFEF4444),
-          onPressed: () => _handleDeleteAccount(context),
-        ),
-        SizedBox(height: 12.h),
+        SizedBox(height: 24.h),
         BlocBuilder<ProfileBloc, ProfileState>(
           builder: (context, state) {
-            return ActionButtonWidget(
-              title: 'profile_logout'.tr(),
-              icon: Icons.logout,
-              color: const Color(0xFF6B7280),
-              // onPressed: () => _handleLogout(context), // Re-enable logout later if needed
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (context) {
-                    return Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: AlertDialog(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16.r),
-                        ),
-                        title: Text(
-                          'profile_logout_title'.tr(),
-                          style: TextStyle(
-                            fontFamily: 'Cairo',
-                            fontSize: 18.sp,
-                            fontWeight: FontWeight.bold,
-                            color: const Color(0xFF0A1D64),
+            return Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16.r),
+              ),
+              child: ActionButtonWidget(
+                title: 'profile_logout'.tr(),
+                icon: Icons.logout,
+                color: const Color(0xFF0A1D64),
+                showDivider: false,
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: AlertDialog(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16.r),
                           ),
-                        ),
-                        content: Text(
-                          'profile_logout_message'.tr(),
-                          style: TextStyle(
-                            fontFamily: 'Cairo',
-                            fontSize: 14.sp,
-                            color: const Color(0xFF6B7280),
-                          ),
-                        ),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Navigator.of(context).pop(),
-                            child: Text(
-                              'profile_cancel'.tr(),
-                              style: TextStyle(
-                                fontFamily: 'Cairo',
-                                fontSize: 14.sp,
-                                fontWeight: FontWeight.w600,
-                                color: const Color(0xFF6B7280),
-                              ),
+                          title: Text(
+                            'profile_logout_title'.tr(),
+                            style: TextStyle(
+                              fontFamily: 'Cairo',
+                              fontSize: 18.sp,
+                              fontWeight: FontWeight.bold,
+                              color: const Color(0xFF0A1D64),
                             ),
                           ),
-                          ElevatedButton(
-                            onPressed: () async {
-                              Navigator.of(context).pop();
-
-                              context.read<ProfileBloc>().add(LogoutEvent());
-
-                              Navigator.of(context).pushAndRemoveUntil(
-                                MaterialPageRoute(
-                                  builder: (_) => LoginScreen(),
+                          content: Text(
+                            'profile_logout_message'.tr(),
+                            style: TextStyle(
+                              fontFamily: 'Cairo',
+                              fontSize: 14.sp,
+                              color: const Color(0xFF6B7280),
+                            ),
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.of(context).pop(),
+                              child: Text(
+                                'profile_cancel'.tr(),
+                                style: TextStyle(
+                                  fontFamily: 'Cairo',
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeight.w600,
+                                  color: const Color(0xFF6B7280),
                                 ),
-                                (route) => false,
-                              );
-                            },
-
-                            child: Text(
-                              "Confirm",
-                              style: TextStyle(
-                                fontFamily: 'Cairo',
-                                fontSize: 14.sp,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white,
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                );
-              },
+                            ElevatedButton(
+                              onPressed: () async {
+                                Navigator.of(context).pop();
+
+                                context.read<ProfileBloc>().add(LogoutEvent());
+
+                                Navigator.of(context).pushAndRemoveUntil(
+                                  MaterialPageRoute(
+                                    builder: (_) => LoginScreen(),
+                                  ),
+                                  (route) => false,
+                                );
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFFEF4444),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8.r),
+                                ),
+                              ),
+                              child: Text(
+                                'profile_logout_confirm'.tr(),
+                                style: TextStyle(
+                                  fontFamily: 'Cairo',
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
             );
           },
         ),
       ],
+    );
+  }
+
+  Widget _buildSectionTitle(String title) {
+    return Align(
+      alignment: AlignmentDirectional.centerStart,
+      child: Text(
+        title,
+        style: TextStyle(
+          fontFamily: 'Cairo',
+          fontSize: 16.sp,
+          fontWeight: FontWeight.bold,
+          color: const Color(0xFF0A1D64),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDivider() {
+    return Divider(
+      height: 1,
+      thickness: 1,
+      color: const Color(0xFFF3F4F6),
+      indent: 16.w,
+      endIndent: 16.w,
     );
   }
 
@@ -147,6 +217,13 @@ class ActionButtonsWidget extends StatelessWidget {
         ),
       );
     }
+  }
+
+  void _handleChangeLanguage(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => const LanguageSelectionDialog(),
+    );
   }
 
   void _handleChangePassword(BuildContext context) {

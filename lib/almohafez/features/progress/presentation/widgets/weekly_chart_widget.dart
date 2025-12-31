@@ -3,6 +3,7 @@ import '../../data/models/progress_model.dart';
 import 'chart_header_widget.dart';
 import 'no_data_widget.dart';
 import 'chart_painter_widget.dart';
+import 'y_axis_painter.dart';
 
 class DailyChartWidget extends StatelessWidget {
   final List<DailyPerformance> dailyData;
@@ -52,21 +53,35 @@ class DailyChartWidget extends StatelessWidget {
                 backgroundColor: Color(0xFF0077B6),
               ),
               const SizedBox(height: 16),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                reverse: true,
-                child: SizedBox(
-                  width:
-                      dailyData.length * 60.0 <
-                          MediaQuery.of(context).size.width
-                      ? MediaQuery.of(context).size.width -
-                            72 // Fill available width if few items
-                      : dailyData.length * 60.0,
-                  child: ChartPainterWidget(
-                    dailyData: dailyData,
+              const SizedBox(height: 16),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    width: 45,
                     height: height,
+                    child: CustomPaint(
+                      painter: YAxisPainter(dailyData: dailyData),
+                    ),
                   ),
-                ),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      // reverse: true, // Removed per user request to start from beginning
+                      child: SizedBox(
+                        width:
+                            dailyData.length * 60.0 <
+                                MediaQuery.of(context).size.width - 72
+                            ? MediaQuery.of(context).size.width - 72
+                            : dailyData.length * 60.0,
+                        child: ChartPainterWidget(
+                          dailyData: dailyData,
+                          height: height,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

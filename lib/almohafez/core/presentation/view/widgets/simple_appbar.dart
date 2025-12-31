@@ -1,11 +1,8 @@
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:nb_utils/nb_utils.dart';
 
-import '../../../../../generated/assets.dart';
 import 'package:almohafez/almohafez/core/theme/app_colors.dart';
-import 'app_custom_image_view.dart';
 
 class AppSimpleAppBar extends StatelessWidget implements PreferredSizeWidget {
   const AppSimpleAppBar({
@@ -50,16 +47,15 @@ class AppSimpleAppBar extends StatelessWidget implements PreferredSizeWidget {
         height: 40.h,
         alignment: Alignment.center,
         child: isBack == true
-            ? AppCustomImageView(
-                imagePath: context.locale.languageCode == 'ar'
-                    ? AssetData.svgRightArrowIcon
-                    : AssetData.svgLeftArrowIcon,
-                width: 24.w,
-                height: 24.h,
-                color: AppColors.primaryDark,
+            ? GestureDetector(
                 onTap: () {
                   finish(context);
                 },
+                child: Icon(
+                  Icons.arrow_back,
+                  size: 24.sp,
+                  color: AppColors.primaryDark,
+                ),
               )
             : null,
       ).paddingSymmetric(horizontal: 10.w),

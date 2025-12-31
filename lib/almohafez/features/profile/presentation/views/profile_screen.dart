@@ -1,8 +1,8 @@
-import 'package:almohafez/almohafez/features/profile/data/repos/profile_repo.dart';
 import 'package:almohafez/almohafez/features/profile/logic/profile_event.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'edit_profile_screen.dart';
 import '../widgets/profile_header_widget.dart';
 import '../widgets/statistics_cards_widget.dart';
 import '../widgets/action_buttons_widget.dart';
@@ -14,6 +14,9 @@ import '../../logic/profile_bloc.dart';
 
 import '../../logic/profile_state.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:nb_utils/nb_utils.dart';
+import '../../../../core/theme/app_colors.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -33,20 +36,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF9FAFB),
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        title: Text(
-          'profile_title'.tr(),
-          style: TextStyle(
-            fontFamily: 'Cairo',
-            fontSize: 22.sp,
-            fontWeight: FontWeight.bold,
-            color: const Color(0xFF0A1D64),
+      backgroundColor: const Color(0xFFF3F4F6),
+      extendBodyBehindAppBar: true,
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(60.h),
+        child: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          leading: const SizedBox(), // Hide back button if it's a main tab
+          title: Text(
+            'profile_title'.tr(),
+            style: TextStyle(
+              fontFamily: 'Cairo',
+              fontSize: 20.sp,
+              fontWeight: FontWeight.bold,
+              color: AppColors.primary,
+            ),
           ),
+          centerTitle: true,
         ),
-        centerTitle: true,
       ),
       body: BlocListener<ProfileBloc, ProfileState>(
         listener: (context, state) {
@@ -129,19 +137,72 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   physics: const AlwaysScrollableScrollPhysics(),
                   child: Column(
                     children: [
-                      ProfileHeaderWidget(
-                        fullName: profile.fullName,
-                        email: profile.email,
-                        avatarUrl: profile.avatarUrl,
+                      SizedBox(height: kToolbarHeight + 20.h),
+                      // Header Section with Glassmorphism effect or simple clean card
+                      Container(
+                        padding: EdgeInsets.all(20.w),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(24.r),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.05),
+                              blurRadius: 20,
+                              offset: const Offset(0, 10),
+                            ),
+                          ],
+                        ),
+                        child: ProfileHeaderWidget(
+                          fullName: profile.fullName,
+                          email: profile.email,
+                          avatarUrl: profile.avatarUrl,
+                          onEdit: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => EditProfileScreen(
+                                  currentFirstName: profile.firstName,
+                                  currentLastName: profile.lastName,
+                                  currentPhoneNumber: profile.phoneNumber,
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ).animate().fade().scale(
+                        duration: 400.ms,
+                        curve: Curves.easeOutBack,
                       ),
+
                       SizedBox(height: 24.h),
+
+                      // Statistics Section
                       StatisticsCardsWidget(
-                        sessionsCount: profile.totalSessions,
-                        totalRate: profile.averageScore,
-                      ),
+                            sessionsCount: profile.totalSessions,
+                            totalRate: profile.averageScore,
+                          )
+                          .animate()
+                          .fade(delay: 200.ms)
+                          .slideY(
+                            begin: 0.2,
+                            end: 0,
+                            duration: 500.ms,
+                            curve: Curves.easeOut,
+                          ),
+
                       SizedBox(height: 24.h),
-                      const ActionButtonsWidget(),
-                      SizedBox(height: 65.h),
+
+                      // Actions Section
+                      const ActionButtonsWidget()
+                          .animate()
+                          .fade(delay: 400.ms)
+                          .slideY(
+                            begin: 0.2,
+                            end: 0,
+                            duration: 500.ms,
+                            curve: Curves.easeOut,
+                          ),
+                      SizedBox(height: 100.h),
                     ],
                   ),
                 ),

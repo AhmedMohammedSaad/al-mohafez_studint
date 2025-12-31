@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 class WelcomeBarWidget extends StatelessWidget {
   const WelcomeBarWidget({super.key});
@@ -26,6 +27,29 @@ class WelcomeBarWidget extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                   color: const Color(0xFF0A1D64),
                 ),
+              ).animate().custom(
+                duration: 2000.ms,
+                builder: (context, value, child) {
+                  // We need the full text text to substring it
+                  String fullText = 'welcome_greeting'.tr(
+                    namedArgs: {'username': name},
+                  );
+                  int count = (value * fullText.length).toInt();
+                  String visibleText = fullText.substring(
+                    0,
+                    count.clamp(0, fullText.length),
+                  );
+
+                  return Text(
+                    visibleText,
+                    style: TextStyle(
+                      fontFamily: 'Cairo',
+                      fontSize: 22.sp,
+                      fontWeight: FontWeight.bold,
+                      color: const Color(0xFF0A1D64),
+                    ),
+                  );
+                },
               );
             },
           ),

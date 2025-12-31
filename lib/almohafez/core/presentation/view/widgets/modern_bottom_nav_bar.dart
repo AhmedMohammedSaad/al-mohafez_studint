@@ -17,7 +17,7 @@ class ModernBottomNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
+      margin: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
       decoration: BoxDecoration(
         color:
             navBarDecoration.color ?? const Color.fromARGB(255, 198, 218, 231),

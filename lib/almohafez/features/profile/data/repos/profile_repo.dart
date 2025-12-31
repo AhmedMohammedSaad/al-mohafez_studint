@@ -80,7 +80,8 @@ class ProfileRepo {
             .from('bookings')
             .select('id')
             .eq('student_id', user.id)
-            .eq('status', 'completed');
+            .neq('status', 'cancelled')
+            .neq('status', 'rejected');
 
         profileData['total_sessions'] = (bookingsList as List).length;
       } catch (e) {

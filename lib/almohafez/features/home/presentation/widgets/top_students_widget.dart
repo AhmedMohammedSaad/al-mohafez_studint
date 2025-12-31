@@ -6,6 +6,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../data/repositories/top_students_repo.dart';
 import '../cubit/top_students_cubit.dart';
 import '../cubit/top_students_state.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 class TopStudentsWidget extends StatelessWidget {
   const TopStudentsWidget({super.key});
@@ -97,10 +98,13 @@ class _TopStudentsContent extends StatelessWidget {
                     final student = state.students[index];
                     final rank = index + 1;
                     return _StudentCard(
-                      name: student.name,
-                      progress: student.progress,
-                      rank: rank,
-                    );
+                          name: student.name,
+                          progress: student.progress,
+                          rank: rank,
+                        )
+                        .animate()
+                        .fade(duration: 400.ms, delay: (100 * index).ms)
+                        .slideX(begin: 0.2, end: 0, curve: Curves.easeOut);
                   },
                 ),
               );

@@ -7,38 +7,30 @@ class ActionButtonWidget extends StatelessWidget {
   final Color color;
   final VoidCallback onPressed;
 
+  final bool showDivider;
+
   const ActionButtonWidget({
     super.key,
     required this.title,
     required this.icon,
     required this.color,
     required this.onPressed,
+    this.showDivider = true,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      height: 60.h,
-      child: ElevatedButton(
-        onPressed: onPressed,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.white,
-          foregroundColor: color,
-          elevation: 0,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14.r),
-            side: BorderSide(color: color.withValues(alpha: 0.2), width: 1),
-          ),
-          shadowColor: Colors.black.withValues(alpha: 0.05),
-        ),
+    return InkWell(
+      onTap: onPressed,
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
         child: Row(
           children: [
             Container(
               padding: EdgeInsets.all(8.w),
               decoration: BoxDecoration(
-                color: color.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(8.r),
+                color: const Color(0xFFF3F4F6),
+                shape: BoxShape.circle,
               ),
               child: Icon(icon, color: color, size: 20.sp),
             ),
@@ -48,15 +40,15 @@ class ActionButtonWidget extends StatelessWidget {
                 title,
                 style: TextStyle(
                   fontFamily: 'Cairo',
-                  fontSize: 16.sp,
+                  fontSize: 15.sp,
                   fontWeight: FontWeight.w600,
-                  color: const Color(0xFF0A1D64),
+                  color: const Color(0xFF1F2937),
                 ),
               ),
             ),
             Icon(
               Icons.arrow_forward_ios,
-              color: const Color(0xFF6B7280),
+              color: const Color(0xFF9CA3AF),
               size: 16.sp,
             ),
           ],

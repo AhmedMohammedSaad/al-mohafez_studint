@@ -1,17 +1,24 @@
-import 'package:flutter/material.dart';
+import 'package:almohafez/almohafez/core/presentation/view/widgets/app_custom_image_view.dart';
+import 'package:almohafez/almohafez/core/presentation/view/widgets/app_default_text_form_field.dart';
+import 'package:almohafez/almohafez/core/presentation/view/widgets/main_button.dart';
+import 'package:almohafez/almohafez/core/presentation/view/widgets/simple_appbar.dart';
+import 'package:almohafez/almohafez/core/theme/app_colors.dart';
+import 'package:almohafez/almohafez/features/sessions/data/models/session_model.dart';
+import 'package:almohafez/almohafez/features/sessions/data/models/session_rating_model.dart';
+import 'package:almohafez/almohafez/features/sessions/data/services/sessions_service.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import '../../data/models/session_model.dart';
-import '../../data/models/session_rating_model.dart';
-import '../../data/services/sessions_service.dart';
-
+import 'package:nb_utils/nb_utils.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SessionRatingScreen extends StatefulWidget {
   final String sessionId;
 
-  const SessionRatingScreen({Key? key, required this.sessionId})
-    : super(key: key);
+  const SessionRatingScreen({super.key, required this.sessionId});
 
   @override
   State<SessionRatingScreen> createState() => _SessionRatingScreenState();
@@ -23,20 +30,9 @@ class _SessionRatingScreenState extends State<SessionRatingScreen> {
   bool _isSubmitting = false;
   String? _errorMessage;
 
-  int _rating = 0;
+  double _rating = 0;
   final TextEditingController _feedbackController = TextEditingController();
   final List<String> _selectedTags = [];
-
-  final List<String> _availableTags = [
-    'session_rating_tag_excellent',
-    'session_rating_tag_helpful',
-    'session_rating_tag_clear',
-    'session_rating_tag_patient',
-    'session_rating_tag_skilled',
-    'session_rating_tag_inspiring',
-    'session_rating_tag_organized',
-    'session_rating_tag_interactive',
-  ];
 
   @override
   void initState() {
@@ -73,17 +69,16 @@ class _SessionRatingScreenState extends State<SessionRatingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'session_rating_title'.tr(),
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
+      backgroundColor: AppColors.backgroundPrimary,
+      appBar: AppSimpleAppBar(
+        title: 'session_rating_title'.tr(),
+        isBack: true,
+        backgroundColor: Colors.transparent,
+        titleStyle: TextStyle(
+          fontSize: 18.sp,
+          fontWeight: FontWeight.bold,
+          color: AppColors.primaryDark,
         ),
-        backgroundColor: const Color(0xFF2E7D32),
-        elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -98,24 +93,22 @@ class _SessionRatingScreenState extends State<SessionRatingScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.error_outline, size: 64, color: Colors.grey[400]),
-          const SizedBox(height: 16),
+          Icon(Icons.error_outline, size: 64.sp, color: AppColors.grey),
+          16.height,
           Text(
             _errorMessage!,
-            style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+            style: TextStyle(fontSize: 16.sp, color: AppColors.textSecondary),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 16),
-          ElevatedButton(
-            onPressed: _loadSessionDetails,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF2E7D32),
-              foregroundColor: Colors.white,
-            ),
-            child: Text('sessions_retry'.tr()),
+          16.height,
+          AppDefaultButton(
+            buttonText: 'sessions_retry'.tr(),
+            ontap: _loadSessionDetails,
+            width: 150.w,
+            height: 40.h,
           ),
         ],
-      ),
+      ).animate().fade().scale(),
     );
   }
 
@@ -123,24 +116,35 @@ class _SessionRatingScreenState extends State<SessionRatingScreen> {
     if (_session == null) return const SizedBox();
 
     return SingleChildScrollView(
+      padding: EdgeInsets.only(bottom: 24.h),
       child: Column(
         children: [
           // Header with tutor info
-          _buildHeader(),
+          _buildHeader().animate().fade().slideY(
+            begin: -0.2,
+            end: 0,
+            duration: 400.ms,
+          ),
 
           // Rating section
-          _buildRatingSection(),
-
-          // Tags section
-          // _buildTagsSection(),
+          _buildRatingSection()
+              .animate()
+              .fade(delay: 200.ms)
+              .slideY(begin: 0.2, end: 0, duration: 400.ms),
 
           // Feedback section
-          _buildFeedbackSection(),
+          _buildFeedbackSection()
+              .animate()
+              .fade(delay: 400.ms)
+              .slideY(begin: 0.2, end: 0, duration: 400.ms),
 
           // Submit button
-          _buildSubmitButton(),
+          _buildSubmitButton()
+              .animate()
+              .fade(delay: 600.ms)
+              .slideY(begin: 0.2, end: 0, duration: 400.ms),
 
-          const SizedBox(height: 100),
+          SizedBox(height: 50.h),
         ],
       ),
     );
@@ -149,67 +153,90 @@ class _SessionRatingScreenState extends State<SessionRatingScreen> {
   Widget _buildHeader() {
     return Container(
       width: double.infinity,
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Color(0xFF2E7D32), Color(0xFF4CAF50)],
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-        ),
-      ),
+      decoration: BoxDecoration(color: AppColors.backgroundPrimary),
       child: Padding(
-        padding: const EdgeInsets.all(24),
+        padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
         child: Column(
           children: [
             // Tutor image
-            CircleAvatar(
-              radius: 40,
-              backgroundColor: Colors.white.withOpacity(0.2),
-              backgroundImage: _session!.tutorImageUrl.isNotEmpty
-                  ? NetworkImage(_session!.tutorImageUrl)
-                  : null,
-              child: _session!.tutorImageUrl.isEmpty
-                  ? Icon(
-                      Icons.person,
-                      size: 40,
-                      color: Colors.white.withOpacity(0.7),
-                    )
-                  : null,
+            Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: AppColors.primarySuccess.withOpacity(0.2),
+                  width: 4,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.primarySuccess.withOpacity(0.1),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: ClipOval(
+                child: AppCustomImageView(
+                  imagePath: _session!.tutorImageUrl,
+                  width: 100.w,
+                  height: 100.w,
+                  fit: BoxFit.cover,
+                ),
+              ),
             ),
 
-            const SizedBox(height: 16),
+            16.height,
 
             // Title
             Text(
               'session_rating_question'.tr(),
-              style: const TextStyle(
-                fontSize: 24,
+              style: TextStyle(
+                fontSize: 20.sp,
                 fontWeight: FontWeight.bold,
-                color: Colors.white,
+                color: AppColors.primaryDark,
               ),
               textAlign: TextAlign.center,
             ),
 
-            const SizedBox(height: 8),
+            8.height,
 
             // Tutor name and session type
-            Text(
-              '${'session_rating_with'.tr()} ${_session!.tutorName}',
-              style: TextStyle(
-                fontSize: 18,
-                color: Colors.white.withOpacity(0.9),
-              ),
+            RichText(
               textAlign: TextAlign.center,
+              text: TextSpan(
+                style: TextStyle(
+                  fontSize: 16.sp,
+                  color: AppColors.textSecondary,
+                  fontFamily: 'Cairo',
+                ),
+                children: [
+                  TextSpan(text: 'session_rating_with'.tr() + ' '),
+                  TextSpan(
+                    text: _session!.tutorName,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.primaryBlueViolet,
+                    ),
+                  ),
+                ],
+              ),
             ),
 
-            const SizedBox(height: 4),
+            4.height,
 
-            Text(
-              _session!.typeDisplayName,
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.white.withOpacity(0.8),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
+              decoration: BoxDecoration(
+                color: AppColors.primaryTurquoise.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(20),
               ),
-              textAlign: TextAlign.center,
+              child: Text(
+                _session!.typeDisplayName,
+                style: TextStyle(
+                  fontSize: 12.sp,
+                  color: AppColors.primaryTurquoise,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
             ),
           ],
         ),
@@ -219,203 +246,130 @@ class _SessionRatingScreenState extends State<SessionRatingScreen> {
 
   Widget _buildRatingSection() {
     return Container(
-      margin: const EdgeInsets.all(16),
-      padding: const EdgeInsets.all(24),
+      margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+      padding: EdgeInsets.all(24.w),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        color: AppColors.backgroundCard,
+        borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 8,
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
             offset: const Offset(0, 4),
           ),
         ],
+        border: Border.all(color: AppColors.borderColor),
       ),
       child: Column(
         children: [
           Text(
             'session_rating_rate_session'.tr(),
-            style: const TextStyle(
-              fontSize: 20,
+            style: TextStyle(
+              fontSize: 18.sp,
               fontWeight: FontWeight.bold,
-              color: Color(0xFF2E7D32),
+              color: AppColors
+                  .primaryDark, // Used Dark instead of Green for better readability
             ),
           ),
 
-          const SizedBox(height: 24),
+          24.height,
 
           // Star rating
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(5, (index) {
-              return GestureDetector(
-                onTap: () {
-                  setState(() {
-                    _rating = index + 1;
-                  });
-                },
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 4),
-                  child: Icon(
-                    index < _rating ? Icons.star : Icons.star_border,
-                    size: 40,
-                    color: Colors.amber,
-                  ),
-                ),
-              );
-            }),
+          RatingBar.builder(
+            initialRating: _rating,
+            minRating: 1,
+            direction: Axis.horizontal,
+            allowHalfRating: false,
+            itemCount: 5,
+            itemPadding: EdgeInsets.symmetric(horizontal: 4.0.w),
+            itemBuilder: (context, _) =>
+                Icon(Icons.star_rounded, color: AppColors.primaryGold),
+            onRatingUpdate: (rating) {
+              setState(() {
+                _rating = rating;
+              });
+            },
           ),
 
-          const SizedBox(height: 16),
+          16.height,
 
           // Rating description
-          if (_rating > 0)
-            Text(
-              _getRatingDescription(_rating),
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.grey[600],
-                fontWeight: FontWeight.w500,
-              ),
-              textAlign: TextAlign.center,
-            ),
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 300),
+            child: _rating > 0
+                ? Text(
+                    _getRatingDescription(_rating.toInt()),
+                    key: ValueKey<double>(_rating),
+                    style: TextStyle(
+                      fontSize: 16.sp,
+                      color: AppColors.primaryGold,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    textAlign: TextAlign.center,
+                  )
+                : SizedBox(height: 20.h),
+          ),
         ],
       ),
     );
   }
 
-  // Widget _buildTagsSection() {
-  //   return Container(
-  //     margin: const EdgeInsets.symmetric(horizontal: 16),
-  //     padding: const EdgeInsets.all(20),
-  //     decoration: BoxDecoration(
-  //       color: Colors.white,
-  //       borderRadius: BorderRadius.circular(12),
-  //       boxShadow: [
-  //         BoxShadow(
-  //           color: Colors.black.withOpacity(0.1),
-  //           blurRadius: 8,
-  //           offset: const Offset(0, 4),
-  //         ),
-  //       ],
-  //     ),
-  //     child: Column(
-  //       crossAxisAlignment: CrossAxisAlignment.start,
-  //       children: [
-  //         Text(
-  //           'session_rating_what_liked'.tr(),
-  //           style: const TextStyle(
-  //             fontSize: 18,
-  //             fontWeight: FontWeight.bold,
-  //             color: Color(0xFF2E7D32),
-  //           ),
-  //         ),
-
-  //         const SizedBox(height: 16),
-
-  //         Wrap(
-  //           spacing: 8,
-  //           runSpacing: 8,
-  //           children: _availableTags.map((tag) {
-  //             final isSelected = _selectedTags.contains(tag);
-  //             return GestureDetector(
-  //               onTap: () {
-  //                 setState(() {
-  //                   if (isSelected) {
-  //                     _selectedTags.remove(tag);
-  //                   } else {
-  //                     _selectedTags.add(tag);
-  //                   }
-  //                 });
-  //               },
-  //               child: Container(
-  //                 padding: const EdgeInsets.symmetric(
-  //                   horizontal: 16,
-  //                   vertical: 8,
-  //                 ),
-  //                 decoration: BoxDecoration(
-  //                   color: isSelected
-  //                       ? const Color(0xFF2E7D32)
-  //                       : Colors.grey[100],
-  //                   borderRadius: BorderRadius.circular(20),
-  //                   border: Border.all(
-  //                     color: isSelected
-  //                         ? const Color(0xFF2E7D32)
-  //                         : Colors.grey[300]!,
-  //                   ),
-  //                 ),
-  //                 child: Text(
-  //                   tag,
-  //                   style: TextStyle(
-  //                     color: isSelected ? Colors.white : Colors.grey[700],
-  //                     fontWeight: isSelected
-  //                         ? FontWeight.bold
-  //                         : FontWeight.normal,
-  //                   ),
-  //                 ),
-  //               ),
-  //             );
-  //           }).toList(),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
-
   Widget _buildFeedbackSection() {
     return Container(
-      margin: const EdgeInsets.all(16),
-      padding: const EdgeInsets.all(20),
+      margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+      padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        color: AppColors.backgroundCard,
+        borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 8,
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
             offset: const Offset(0, 4),
           ),
         ],
+        border: Border.all(color: AppColors.borderColor),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'session_rating_feedback_title'.tr(),
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF2E7D32),
-            ),
+          Row(
+            children: [
+              Icon(
+                Icons.edit_note_rounded,
+                color: AppColors.primaryBlueViolet,
+                size: 24.sp,
+              ),
+              8.width,
+              Text(
+                'session_rating_feedback_title'.tr(),
+                style: TextStyle(
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.primaryDark,
+                ),
+              ),
+            ],
           ),
 
-          const SizedBox(height: 8),
+          8.height,
 
           Text(
             'session_rating_feedback_subtitle'.tr(),
-            style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+            style: TextStyle(fontSize: 12.sp, color: AppColors.textSecondary),
           ),
 
-          const SizedBox(height: 16),
+          16.height,
 
-          TextField(
+          AppDefaultTextFormField(
             controller: _feedbackController,
+            type: TextInputType.multiline,
+            validate: (value) {
+              return null; // Optional
+            },
             maxLines: 4,
-            maxLength: 500,
-            decoration: InputDecoration(
-              hintText: 'session_rating_feedback_placeholder'.tr(),
-              hintStyle: TextStyle(color: Colors.grey[400]),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide(color: Colors.grey[300]!),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-                borderSide: const BorderSide(color: Color(0xFF2E7D32)),
-              ),
-              contentPadding: const EdgeInsets.all(16),
-            ),
+            hint: 'session_rating_feedback_placeholder'.tr(),
+            required: false,
           ),
         ],
       ),
@@ -426,34 +380,19 @@ class _SessionRatingScreenState extends State<SessionRatingScreen> {
     final canSubmit = _rating > 0 && !_isSubmitting;
 
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16),
+      margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
       width: double.infinity,
-      child: ElevatedButton(
-        onPressed: canSubmit ? _submitRating : null,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFF2E7D32),
-          foregroundColor: Colors.white,
-          disabledBackgroundColor: Colors.grey[300],
-          disabledForegroundColor: Colors.grey[600],
-          padding: const EdgeInsets.symmetric(vertical: 16),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-        ),
-        child: _isSubmitting
-            ? const SizedBox(
-                height: 20,
-                width: 20,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                ),
-              )
-            : Text(
-                'session_rating_submit'.tr(),
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+      child: AppDefaultButton(
+        buttonText: 'session_rating_submit'.tr(),
+        ontap: () {
+          if (canSubmit) _submitRating();
+        },
+        isLoading: _isSubmitting,
+        backgroundColor: canSubmit
+            ? AppColors.primarySuccess
+            : AppColors.disable,
+        textColor: Colors.white,
+        isAnimate: true,
       ),
     );
   }
@@ -482,7 +421,7 @@ class _SessionRatingScreenState extends State<SessionRatingScreen> {
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 1,
-        backgroundColor: Colors.orange,
+        backgroundColor: AppColors.primaryWarning,
         textColor: Colors.white,
         fontSize: 16.0,
       );
@@ -500,7 +439,7 @@ class _SessionRatingScreenState extends State<SessionRatingScreen> {
         studentId:
             Supabase.instance.client.auth.currentUser?.id ?? 'unknown_student',
         tutorId: _session!.tutorId,
-        rating: _rating.toDouble(),
+        rating: _rating,
         feedback: _feedbackController.text.trim().isNotEmpty
             ? _feedbackController.text.trim()
             : null,
@@ -516,27 +455,29 @@ class _SessionRatingScreenState extends State<SessionRatingScreen> {
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 1,
-        backgroundColor: Colors.green,
+        backgroundColor: AppColors.primarySuccess,
         textColor: Colors.white,
         fontSize: 16.0,
       );
 
       // Navigate back
-      Navigator.pop(context, true);
+      if (mounted) Navigator.pop(context, true);
     } catch (e) {
       Fluttertoast.showToast(
         msg: '${'session_rating_error'.tr()}: $e',
         toastLength: Toast.LENGTH_LONG,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 1,
-        backgroundColor: Colors.red,
+        backgroundColor: AppColors.primaryError,
         textColor: Colors.white,
         fontSize: 16.0,
       );
     } finally {
-      setState(() {
-        _isSubmitting = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isSubmitting = false;
+        });
+      }
     }
   }
 }

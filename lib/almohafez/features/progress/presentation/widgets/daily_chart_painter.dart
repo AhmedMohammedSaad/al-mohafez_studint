@@ -29,7 +29,7 @@ class DailyChartPainter extends CustomPainter {
     // Calculate dimensions (increased top margin for percentage labels)
     // Calculate dimensions (increased top margin for percentage labels)
     final chartHeight = size.height - 80;
-    final chartWidth = size.width - 40;
+    final chartWidth = size.width - 22;
 
     // Prevent division by zero if only one item
     final itemWidth = dailyData.length > 1
@@ -46,8 +46,7 @@ class DailyChartPainter extends CustomPainter {
         ? 100.0
         : (maxValue / 10).ceil() * 10.0;
 
-    // Draw Y-axis labels
-    _drawYAxisLabels(canvas, textPainter, chartHeight, scaledMaxValue);
+    // Draw Y-axis labels removed (handled by external widget)
 
     // Create gradient for line
     final gradient = LinearGradient(
@@ -77,29 +76,6 @@ class DailyChartPainter extends CustomPainter {
     );
   }
 
-  void _drawYAxisLabels(
-    Canvas canvas,
-    TextPainter textPainter,
-    double chartHeight,
-    double scaledMaxValue,
-  ) {
-    for (int i = 0; i <= 5; i++) {
-      final value = (scaledMaxValue / 5) * i;
-      final y = chartHeight - (chartHeight / 5) * i + 40;
-
-      textPainter.text = TextSpan(
-        text: '${value.toInt()}%',
-        style: const TextStyle(
-          color: Color(0xFF9E9E9E),
-          fontSize: 12,
-          fontFamily: 'Cairo',
-        ),
-      );
-      textPainter.layout();
-      textPainter.paint(canvas, Offset(5, y - textPainter.height / 2));
-    }
-  }
-
   Map<String, Path> _createChartPaths(
     double itemWidth,
     double chartHeight,
@@ -111,7 +87,7 @@ class DailyChartPainter extends CustomPainter {
     // Prepare points
     final points = <Offset>[];
     for (int i = 0; i < dailyData.length; i++) {
-      final x = 40 + i * itemWidth;
+      final x = 12 + i * itemWidth;
       final normalizedValue = dailyData[i].percentage / scaledMaxValue;
       final y = chartHeight - (normalizedValue * chartHeight) + 40;
       points.add(Offset(x, y));
@@ -218,8 +194,8 @@ class DailyChartPainter extends CustomPainter {
         : 0;
 
     for (int i = 0; i < dailyData.length; i++) {
-      final x = 40 + i * itemWidth;
-      final currentMaxX = 40 + (totalWidth * animationValue);
+      final x = 12 + i * itemWidth;
+      final currentMaxX = 12 + (totalWidth * animationValue);
 
       if (x > currentMaxX && dailyData.length > 1) continue;
 
@@ -263,14 +239,14 @@ class DailyChartPainter extends CustomPainter {
 
     for (int i = 0; i < dailyData.length; i++) {
       // Calculate x position for this point
-      final x = 40 + i * itemWidth;
+      final x = 12 + i * itemWidth;
 
       // If total width is 0 (single item), show immediately if animation started.
       // Otherwise, check if this x is within the currently animated width.
       // currentAnimatedWidth approx = totalWidth * animationValue
       // We add a small buffer so points pop in slightly after the line passes them.
 
-      final currentMaxX = 40 + (totalWidth * animationValue);
+      final currentMaxX = 12 + (totalWidth * animationValue);
 
       if (x > currentMaxX && dailyData.length > 1) continue;
 

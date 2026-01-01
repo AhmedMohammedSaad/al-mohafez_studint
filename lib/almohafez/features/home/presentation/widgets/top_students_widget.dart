@@ -49,21 +49,40 @@ class _TopStudentsContent extends StatelessWidget {
 
             if (state is TopStudentsError) {
               return SizedBox(
-                height: 120.h,
+                height: 150.h,
                 child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.error_outline, color: Colors.red, size: 32.sp),
-                      SizedBox(height: 8.h),
-                      TextButton.icon(
-                        onPressed: () {
-                          context.read<TopStudentsCubit>().loadTopStudents();
-                        },
-                        icon: const Icon(Icons.refresh),
-                        label: Text('retry'.tr()),
-                      ),
-                    ],
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20.w),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.error_outline,
+                          color: const Color(0xFFFF4C5E),
+                          size: 32.sp,
+                        ),
+                        SizedBox(height: 8.h),
+                        Text(
+                          state.message,
+                          style: TextStyle(
+                            fontFamily: 'Cairo',
+                            fontSize: 12.sp,
+                            color: Colors.grey,
+                          ),
+                          textAlign: TextAlign.center,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        SizedBox(height: 8.h),
+                        TextButton.icon(
+                          onPressed: () {
+                            context.read<TopStudentsCubit>().loadTopStudents();
+                          },
+                          icon: const Icon(Icons.refresh),
+                          label: Text('retry'.tr()),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               );

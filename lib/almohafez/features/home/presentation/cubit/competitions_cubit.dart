@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../data/repositories/competitions_repo.dart';
+import '../../../../core/utils/supabase_error_handler.dart';
 import 'competitions_state.dart';
 
 class CompetitionsCubit extends Cubit<CompetitionsState> {
@@ -13,7 +14,7 @@ class CompetitionsCubit extends Cubit<CompetitionsState> {
       final competition = await _repo.getCurrentCompetition();
       emit(CompetitionsLoaded(competition));
     } catch (e) {
-      emit(CompetitionsError(e.toString()));
+      emit(CompetitionsError(SupabaseErrorHandler.getErrorMessage(e)));
     }
   }
 }

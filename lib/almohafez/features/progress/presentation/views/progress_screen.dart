@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:shimmer/shimmer.dart';
+import '../../../../core/presentation/view/widgets/error_widget.dart';
 import '../widgets/circular_progress_widget.dart';
 import '../widgets/weekly_chart_widget.dart';
 import '../widgets/evaluations_list_widget.dart';
@@ -113,11 +114,9 @@ class _ProgressViewState extends State<_ProgressView>
         }
 
         if (state is ProgressError) {
-          return EmptyStateWidget(
+          return AppErrorWidget(
             message: state.message,
-            subtitle: 'progress_loading_error_subtitle'.tr(),
-            icon: Icons.error_outline,
-            // onRetry: () => context.read<ProgressCubit>().loadProgressData(),
+            onRefresh: () => context.read<ProgressCubit>().loadProgressData(),
           );
         }
 

@@ -18,6 +18,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/presentation/view/widgets/error_widget.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -78,52 +79,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
             if (state is ProfileLoading) {
               return _buildShimmerLoading();
             } else if (state is ProfileError) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.error_outline,
-                      color: Colors.redAccent,
-                      size: 60.sp,
-                    ),
-                    SizedBox(height: 16.h),
-                    Text(
-                      state.message,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontFamily: 'Cairo',
-                        fontSize: 16.sp,
-                        color: Colors.redAccent,
-                      ),
-                    ),
-                    SizedBox(height: 24.h),
-                    ElevatedButton.icon(
-                      onPressed: () {
-                        context.read<ProfileBloc>().add(LoadProfileEvent());
-                      },
-                      icon: const Icon(Icons.refresh, color: Colors.white),
-                      label: Text(
-                        'Retry', // You might want to localize this 'retry'.tr()
-                        style: TextStyle(
-                          fontFamily: 'Cairo',
-                          fontSize: 16.sp,
-                          color: Colors.white,
-                        ),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF0A1D64),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12.r),
-                        ),
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 24.w,
-                          vertical: 12.h,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+              return AppErrorWidget(
+                message: state.message,
+                onRefresh: () {
+                  context.read<ProfileBloc>().add(LoadProfileEvent());
+                },
               );
             } else if (state is ProfileLoaded) {
               final profile = state.profile;

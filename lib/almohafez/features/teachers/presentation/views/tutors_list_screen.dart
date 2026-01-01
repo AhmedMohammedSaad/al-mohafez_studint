@@ -6,6 +6,7 @@ import '../../data/repos/teachers_repo.dart';
 import '../../logic/teachers_cubit.dart';
 import '../../logic/teachers_state.dart';
 import 'package:shimmer/shimmer.dart';
+import '../../../../core/presentation/view/widgets/error_widget.dart';
 import '../widgets/tutor_card.dart';
 import 'tutor_profile_screen.dart';
 
@@ -48,7 +49,11 @@ class TutorsListScreen extends StatelessWidget {
             if (state is TeachersLoading) {
               return _buildLoadingWidget();
             } else if (state is TeachersError) {
-              return _buildErrorWidget(context, state.message);
+              return AppErrorWidget(
+                message: state.message,
+                onRefresh: () =>
+                    context.read<TeachersCubit>().fetchTeachers(gender: gender),
+              );
             } else if (state is TeachersLoaded) {
               if (state.teachers.isEmpty) {
                 return _buildEmptyWidget();
@@ -101,56 +106,6 @@ class TutorsListScreen extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-
-  Widget _buildErrorWidget(BuildContext context, String message) {
-    return Center(
-      child: Padding(
-        padding: EdgeInsets.all(20.w),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.error_outline,
-              size: 80.sp,
-              color: const Color(0xFFFF6B6B),
-            ),
-            SizedBox(height: 20.h),
-            Text(
-              message, // Display the actual error message
-              style: TextStyle(
-                fontFamily: 'Cairo',
-                fontSize: 16.sp,
-                color: const Color(0xFF5B6C9F),
-              ),
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(height: 30.h),
-            ElevatedButton(
-              onPressed: () {
-                context.read<TeachersCubit>().fetchTeachers(gender: gender);
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF00E0FF),
-                padding: EdgeInsets.symmetric(horizontal: 30.w, vertical: 12.h),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
-              ),
-              child: Text(
-                'teachers_retry_button'.tr(),
-                style: TextStyle(
-                  fontFamily: 'Cairo',
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 

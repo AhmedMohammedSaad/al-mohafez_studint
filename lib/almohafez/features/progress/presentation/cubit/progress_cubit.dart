@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../data/models/progress_model.dart';
 import '../../data/repos/progress_repo.dart';
+import '../../../../core/utils/supabase_error_handler.dart';
 
 part 'progress_state.dart';
 
@@ -19,7 +20,7 @@ class ProgressCubit extends Cubit<ProgressState> {
         emit(ProgressLoaded(data));
       }
     } catch (e) {
-      emit(ProgressError(e.toString()));
+      emit(ProgressError(SupabaseErrorHandler.getErrorMessage(e)));
     }
   }
 }

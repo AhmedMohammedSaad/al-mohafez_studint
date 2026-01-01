@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../data/repos/profile_repo.dart';
+import '../../../core/utils/supabase_error_handler.dart';
 import 'profile_event.dart';
 import 'profile_state.dart';
 
@@ -24,7 +25,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       emit(ProfileLoaded(profile));
     } catch (e) {
       print(e);
-      emit(ProfileError(e.toString()));
+      emit(ProfileError(SupabaseErrorHandler.getErrorMessage(e)));
     }
   }
 
@@ -44,7 +45,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       final profile = await _profileRepo.getProfile();
       emit(ProfileLoaded(profile));
     } catch (e) {
-      emit(ProfileError(e.toString()));
+      emit(ProfileError(SupabaseErrorHandler.getErrorMessage(e)));
       print(e.toString());
     }
   }
@@ -60,7 +61,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       final profile = await _profileRepo.getProfile();
       emit(ProfileLoaded(profile));
     } catch (e) {
-      emit(ProfileError(e.toString()));
+      emit(ProfileError(SupabaseErrorHandler.getErrorMessage(e)));
     }
   }
 
@@ -70,7 +71,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       await _profileRepo.logout();
       emit(ProfileLoggedOut());
     } catch (e) {
-      emit(ProfileError(e.toString()));
+      emit(ProfileError(SupabaseErrorHandler.getErrorMessage(e)));
     }
   }
 
@@ -83,7 +84,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       await _profileRepo.deleteAccount();
       emit(ProfileLoggedOut());
     } catch (e) {
-      emit(ProfileError(e.toString()));
+      emit(ProfileError(SupabaseErrorHandler.getErrorMessage(e)));
     }
   }
 }

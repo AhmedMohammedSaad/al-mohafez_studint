@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../data/repositories/top_students_repo.dart';
+import '../../../../core/utils/supabase_error_handler.dart';
 import 'top_students_state.dart';
 
 class TopStudentsCubit extends Cubit<TopStudentsState> {
@@ -13,7 +14,7 @@ class TopStudentsCubit extends Cubit<TopStudentsState> {
       final students = await _repo.getTopStudents();
       emit(TopStudentsLoaded(students));
     } catch (e) {
-      emit(TopStudentsError(e.toString()));
+      emit(TopStudentsError(SupabaseErrorHandler.getErrorMessage(e)));
     }
   }
 }

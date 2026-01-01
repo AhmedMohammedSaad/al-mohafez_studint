@@ -50,7 +50,7 @@ class _CompetitionsContent extends StatelessWidget {
                     }
 
                     if (state is CompetitionsError) {
-                      return _buildErrorCard(context);
+                      return _buildErrorCard(context, state.message);
                     }
 
                     if (state is CompetitionsLoaded) {
@@ -85,21 +85,41 @@ class _CompetitionsContent extends StatelessWidget {
     );
   }
 
-  Widget _buildErrorCard(BuildContext context) {
+  Widget _buildErrorCard(BuildContext context, String message) {
     return Container(
       width: double.infinity,
-      height: 140.h,
+      height: 160.h,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20.r),
         color: Colors.grey[200],
       ),
       child: Center(
-        child: TextButton.icon(
-          onPressed: () {
-            context.read<CompetitionsCubit>().loadCurrentCompetition();
-          },
-          icon: const Icon(Icons.refresh),
-          label: Text('retry'.tr()),
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16.w),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                message,
+                style: TextStyle(
+                  fontFamily: 'Cairo',
+                  fontSize: 12.sp,
+                  color: Colors.grey[600],
+                ),
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+              SizedBox(height: 8.h),
+              TextButton.icon(
+                onPressed: () {
+                  context.read<CompetitionsCubit>().loadCurrentCompetition();
+                },
+                icon: const Icon(Icons.refresh),
+                label: Text('retry'.tr()),
+              ),
+            ],
+          ),
         ),
       ),
     );

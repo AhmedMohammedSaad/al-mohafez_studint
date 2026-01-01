@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'sessions_state.dart';
 import '../data/repos/sessions_repo.dart';
 import '../data/models/session_model.dart';
+import '../../../core/utils/supabase_error_handler.dart';
 
 class SessionsCubit extends Cubit<SessionsState> {
   final SessionsRepo _sessionsRepo;
@@ -35,7 +36,7 @@ class SessionsCubit extends Cubit<SessionsState> {
         ),
       );
     } catch (e) {
-      emit(SessionsError(e.toString()));
+      emit(SessionsError(SupabaseErrorHandler.getErrorMessage(e)));
     }
   }
 }

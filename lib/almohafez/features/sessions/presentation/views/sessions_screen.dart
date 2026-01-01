@@ -14,6 +14,7 @@ import '../../../../core/routing/app_route.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shimmer/shimmer.dart';
+import '../../../../core/presentation/view/widgets/error_widget.dart';
 
 class SessionsScreen extends StatefulWidget {
   const SessionsScreen({super.key});
@@ -56,7 +57,10 @@ class _SessionsScreenState extends State<SessionsScreen>
           }
 
           if (state is SessionsError) {
-            return _buildErrorWidget(context, state.message);
+            return AppErrorWidget(
+              message: state.message,
+              onRefresh: () => context.read<SessionsCubit>().loadSessions(),
+            );
           }
 
           if (state is SessionsLoaded) {
@@ -65,28 +69,6 @@ class _SessionsScreenState extends State<SessionsScreen>
 
           return _buildShimmerLoading();
         },
-      ),
-    );
-  }
-
-  Widget _buildErrorWidget(BuildContext context, String message) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.error_outline, size: 64, color: Colors.grey[400]),
-          const SizedBox(height: 16),
-          Text(
-            message, // Or localize generic error
-            style: TextStyle(fontSize: 16, color: Colors.grey[600]),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 16),
-          ElevatedButton(
-            onPressed: () => context.read<SessionsCubit>().loadSessions(),
-            child: Text('sessions_retry'.tr()),
-          ),
-        ],
       ),
     );
   }

@@ -7,6 +7,7 @@ import 'package:almohafez/almohafez_teacher/features/sessions/presentation/cubit
 import 'package:almohafez/almohafez_teacher/features/sessions/presentation/cubit/sessions_state.dart';
 import 'package:almohafez/almohafez_teacher/features/students/presentation/cubit/teacher_students_cubit.dart';
 import 'package:almohafez/almohafez_teacher/features/students/presentation/cubit/teacher_students_state.dart';
+import 'package:shimmer/shimmer.dart';
 
 class QuickStatsWidget extends StatefulWidget {
   const QuickStatsWidget({super.key});
@@ -148,13 +149,18 @@ class _QuickStatsWidgetState extends State<QuickStatsWidget> {
                 child: Icon(icon, color: color, size: 20.sp),
               ),
               const Spacer(),
+              const Spacer(),
               isLoading
-                  ? SizedBox(
-                      width: 20.w,
-                      height: 20.h,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: color,
+                  ? Shimmer.fromColors(
+                      baseColor: color.withOpacity(0.4),
+                      highlightColor: color.withOpacity(0.1),
+                      child: Container(
+                        width: 30.w,
+                        height: 24.h,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(4.r),
+                        ),
                       ),
                     )
                   : Text(

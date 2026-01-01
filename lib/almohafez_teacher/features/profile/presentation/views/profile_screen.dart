@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:almohafez/almohafez/core/presentation/view/widgets/error_widget.dart';
 
 import '../widgets/profile_header_widget.dart';
@@ -34,7 +35,7 @@ class ProfileScreen extends StatelessWidget {
       body: BlocBuilder<TeacherProfileCubit, TeacherProfileState>(
         builder: (context, state) {
           if (state is TeacherProfileLoading) {
-            return const Center(child: CircularProgressIndicator());
+            return _buildLoadingState();
           } else if (state is TeacherProfileError) {
             return AppErrorWidget(
               message: state.message,
@@ -58,8 +59,66 @@ class ProfileScreen extends StatelessWidget {
             );
           }
           // Handle initial state or generic case by showing empty or loading
-          return const Center(child: CircularProgressIndicator());
+          return _buildLoadingState();
         },
+      ),
+    );
+  }
+
+  Widget _buildLoadingState() {
+    return SingleChildScrollView(
+      padding: EdgeInsets.all(16.w),
+      child: Shimmer.fromColors(
+        baseColor: Colors.grey[300]!,
+        highlightColor: Colors.grey[100]!,
+        child: Column(
+          children: [
+            // Profile Header Loading
+            Container(
+              height: 200.h,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20.r),
+              ),
+            ),
+            SizedBox(height: 24.h),
+
+            // Stats Cards Loading
+            Row(
+              children: List.generate(
+                3,
+                (index) => Expanded(
+                  child: Container(
+                    height: 100.h,
+                    margin: EdgeInsets.symmetric(horizontal: 4.w),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16.r),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: 10.h),
+
+            // Action Buttons Loading
+            Column(
+              children: List.generate(
+                4,
+                (index) => Container(
+                  height: 60.h,
+                  margin: EdgeInsets.only(bottom: 12.h),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16.r),
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: 65.h),
+          ],
+        ),
       ),
     );
   }

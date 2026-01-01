@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:almohafez/almohafez_teacher/features/students/presentation/cubit/teacher_students_cubit.dart';
 import 'package:almohafez/almohafez_teacher/features/students/presentation/cubit/teacher_students_state.dart';
 import 'package:almohafez/almohafez_teacher/features/sessions/presentation/cubit/sessions_cubit.dart';
@@ -120,12 +121,16 @@ class _StatisticsCardsWidgetState extends State<StatisticsCardsWidget> {
           Icon(icon, size: 40.sp, color: Colors.white),
           SizedBox(height: 16.h),
           isLoading
-              ? SizedBox(
-                  width: 24.w,
-                  height: 24.h,
-                  child: const CircularProgressIndicator(
-                    strokeWidth: 2,
-                    color: Colors.white,
+              ? Shimmer.fromColors(
+                  baseColor: Colors.white,
+                  highlightColor: Colors.white.withOpacity(0.5),
+                  child: Container(
+                    width: 40.w,
+                    height: 30.h,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
                   ),
                 )
               : Text(

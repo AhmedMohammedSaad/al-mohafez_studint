@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:characters/characters.dart';
 
 class WelcomeBarWidget extends StatelessWidget {
   const WelcomeBarWidget({super.key});
@@ -34,11 +35,12 @@ class WelcomeBarWidget extends StatelessWidget {
                   String fullText = 'welcome_greeting'.tr(
                     namedArgs: {'username': name},
                   );
-                  int count = (value * fullText.length).toInt();
-                  String visibleText = fullText.substring(
-                    0,
-                    count.clamp(0, fullText.length),
-                  );
+
+                  // Use characters to handle emojis and unicode correctly
+                  // invalid UTF-16 error happens when splitting surrogate pairs
+                  final textChars = fullText.characters;
+                  int count = (value * textChars.length).toInt();
+                  String visibleText = textChars.take(count).toString();
 
                   return Text(
                     visibleText,

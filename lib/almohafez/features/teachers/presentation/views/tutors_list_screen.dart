@@ -5,6 +5,7 @@ import 'package:easy_localization/easy_localization.dart';
 import '../../data/repos/teachers_repo.dart';
 import '../../logic/teachers_cubit.dart';
 import '../../logic/teachers_state.dart';
+import 'package:shimmer/shimmer.dart';
 import '../widgets/tutor_card.dart';
 import 'tutor_profile_screen.dart';
 
@@ -62,25 +63,44 @@ class TutorsListScreen extends StatelessWidget {
   }
 
   Widget _buildLoadingWidget() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          CircularProgressIndicator(
-            color: const Color(0xFF00E0FF),
-            strokeWidth: 3.w,
-          ),
-          SizedBox(height: 20.h),
-          Text(
-            'teachers_loading_message'.tr(),
-            style: TextStyle(
-              fontFamily: 'Cairo',
-              fontSize: 16.sp,
-              color: const Color(0xFF5B6C9F),
+    return Column(
+      children: [
+        // Hidden shimmer for count header to maintain layout or just space
+        Shimmer.fromColors(
+          baseColor: Colors.grey[300]!,
+          highlightColor: Colors.grey[100]!,
+          child: Container(
+            height: 40.h,
+            margin: EdgeInsets.all(16.w),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12.r),
             ),
           ),
-        ],
-      ),
+        ),
+        Expanded(
+          child: ListView.builder(
+            padding: EdgeInsets.symmetric(horizontal: 16.w),
+            itemCount: 6,
+            itemBuilder: (context, index) {
+              return Padding(
+                padding: EdgeInsets.only(bottom: 16.h),
+                child: Shimmer.fromColors(
+                  baseColor: Colors.grey[300]!,
+                  highlightColor: Colors.grey[100]!,
+                  child: Container(
+                    height: 120.h,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16.r),
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 

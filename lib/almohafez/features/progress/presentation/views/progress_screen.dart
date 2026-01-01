@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:shimmer/shimmer.dart';
 import '../widgets/circular_progress_widget.dart';
 import '../widgets/weekly_chart_widget.dart';
 import '../widgets/evaluations_list_widget.dart';
@@ -108,11 +109,7 @@ class _ProgressViewState extends State<_ProgressView>
     return BlocBuilder<ProgressCubit, ProgressState>(
       builder: (context, state) {
         if (state is ProgressLoading) {
-          return const Center(
-            child: CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF00E0FF)),
-            ),
-          );
+          return _buildShimmerLoading();
         }
 
         if (state is ProgressError) {
@@ -187,6 +184,56 @@ class _ProgressViewState extends State<_ProgressView>
               SizedBox(height: 20.h),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildShimmerLoading() {
+    return SingleChildScrollView(
+      padding: EdgeInsets.all(16.w),
+      child: Shimmer.fromColors(
+        baseColor: Colors.grey[300]!,
+        highlightColor: Colors.grey[100]!,
+        child: Column(
+          children: [
+            // Overall Progress Circle Shimmer
+            Container(
+              height: 200.h,
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white,
+              ),
+            ),
+            SizedBox(height: 24.h),
+
+            // Daily Chart Shimmer
+            Container(
+              height: 250.h,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16.r),
+              ),
+            ),
+            SizedBox(height: 24.h),
+
+            // Evaluations List Shimmer
+            ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: 3,
+              itemBuilder: (context, index) {
+                return Container(
+                  margin: EdgeInsets.only(bottom: 12.h),
+                  height: 100.h,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12.r),
+                  ),
+                );
+              },
+            ),
+          ],
         ),
       ),
     );

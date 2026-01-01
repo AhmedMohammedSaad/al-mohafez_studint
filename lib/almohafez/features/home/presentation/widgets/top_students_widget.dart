@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:shimmer/shimmer.dart';
 import '../../data/repositories/top_students_repo.dart';
 import '../cubit/top_students_cubit.dart';
 import '../cubit/top_students_state.dart';
@@ -43,10 +44,7 @@ class _TopStudentsContent extends StatelessWidget {
         BlocBuilder<TopStudentsCubit, TopStudentsState>(
           builder: (context, state) {
             if (state is TopStudentsLoading) {
-              return SizedBox(
-                height: 120.h,
-                child: const Center(child: CircularProgressIndicator()),
-              );
+              return _buildLoadingList();
             }
 
             if (state is TopStudentsError) {
@@ -114,6 +112,51 @@ class _TopStudentsContent extends StatelessWidget {
           },
         ),
       ],
+    );
+  }
+
+  Widget _buildLoadingList() {
+    return SizedBox(
+      height: 120.h,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: 5,
+        itemBuilder: (context, index) {
+          return Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(
+              width: 90.w,
+              margin: EdgeInsets.only(right: 12.w),
+              child: Column(
+                children: [
+                  SizedBox(height: 7.h),
+                  // Circle placeholder
+                  Container(
+                    width: 70.w,
+                    height: 70.h,
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  SizedBox(height: 8.h),
+                  // Text placeholder
+                  Container(
+                    width: 60.w,
+                    height: 14.h,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
 }

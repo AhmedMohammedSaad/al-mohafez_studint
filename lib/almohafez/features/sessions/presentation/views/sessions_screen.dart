@@ -13,6 +13,7 @@ import '../../../../core/services/navigation_service/global_navigation_service.d
 import '../../../../core/routing/app_route.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shimmer/shimmer.dart';
 
 class SessionsScreen extends StatefulWidget {
   const SessionsScreen({super.key});
@@ -51,7 +52,7 @@ class _SessionsScreenState extends State<SessionsScreen>
       body: BlocBuilder<SessionsCubit, SessionsState>(
         builder: (context, state) {
           if (state is SessionsLoading) {
-            return const Center(child: CircularProgressIndicator());
+            return _buildShimmerLoading();
           }
 
           if (state is SessionsError) {
@@ -62,7 +63,7 @@ class _SessionsScreenState extends State<SessionsScreen>
             return _buildContent(state);
           }
 
-          return const Center(child: CircularProgressIndicator());
+          return _buildShimmerLoading();
         },
       ),
     );
@@ -323,6 +324,29 @@ class _SessionsScreenState extends State<SessionsScreen>
       MaterialPageRoute(
         builder: (context) => SessionRatingScreen(sessionId: sessionId),
       ),
+    );
+  }
+
+  Widget _buildShimmerLoading() {
+    return ListView.builder(
+      padding: const EdgeInsets.only(top: 16, bottom: 70, left: 16, right: 16),
+      itemCount: 5,
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 12),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(
+              height: 140,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../data/models/student_model.dart';
 import '../cubit/teacher_students_cubit.dart';
 import '../cubit/teacher_students_state.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:almohafez/almohafez/core/theme/app_colors.dart';
 import 'package:almohafez/almohafez/core/theme/app_text_style.dart';
 import 'package:almohafez/almohafez/core/presentation/view/widgets/error_widget.dart';
@@ -101,7 +102,7 @@ class _StudentsScreenState extends State<StudentsScreen> {
               child: BlocBuilder<TeacherStudentsCubit, TeacherStudentsState>(
                 builder: (context, state) {
                   if (state is TeacherStudentsLoading) {
-                    return const Center(child: CircularProgressIndicator());
+                    return _buildShimmerLoading();
                   } else if (state is TeacherStudentsError) {
                     if (state.message.contains('User not logged in')) {
                       return const SizedBox.shrink();
@@ -230,6 +231,58 @@ class _StudentsScreenState extends State<StudentsScreen> {
           Text('جرب تغيير معايير البحث', style: AppTextStyle.font14GreyRegular),
         ],
       ),
+    );
+  }
+
+  Widget _buildShimmerLoading() {
+    return isGridView ? _buildShimmerGrid() : _buildShimmerList();
+  }
+
+  Widget _buildShimmerGrid() {
+    return GridView.builder(
+      padding: EdgeInsets.all(16.w),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        childAspectRatio: 0.8,
+        crossAxisSpacing: 12.w,
+        mainAxisSpacing: 12.h,
+      ),
+      itemCount: 6,
+      itemBuilder: (context, index) {
+        return Shimmer.fromColors(
+          baseColor: Colors.grey[300]!,
+          highlightColor: Colors.grey[100]!,
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16.r),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildShimmerList() {
+    return ListView.builder(
+      padding: EdgeInsets.all(16.w),
+      itemCount: 6,
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: EdgeInsets.only(bottom: 12.h),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(
+              height: 100.h,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16.r),
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

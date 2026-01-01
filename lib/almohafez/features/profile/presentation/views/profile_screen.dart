@@ -16,6 +16,7 @@ import '../../logic/profile_state.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:shimmer/shimmer.dart';
 import '../../../../core/theme/app_colors.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -75,7 +76,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         child: BlocBuilder<ProfileBloc, ProfileState>(
           builder: (context, state) {
             if (state is ProfileLoading) {
-              return const Center(child: CircularProgressIndicator());
+              return _buildShimmerLoading();
             } else if (state is ProfileError) {
               return Center(
                 child: Column(
@@ -210,6 +211,63 @@ class _ProfileScreenState extends State<ProfileScreen> {
             }
             return const SizedBox.shrink();
           },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildShimmerLoading() {
+    return SingleChildScrollView(
+      padding: EdgeInsets.all(16.w),
+      child: Shimmer.fromColors(
+        baseColor: Colors.grey[300]!,
+        highlightColor: Colors.grey[100]!,
+        child: Column(
+          children: [
+            SizedBox(height: kToolbarHeight + 20.h),
+            // Header Shimmer
+            Container(
+              height: 200.h,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(24.r),
+              ),
+            ),
+            SizedBox(height: 24.h),
+            // Statistics Shimmer
+            Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    height: 100.h,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16.r),
+                    ),
+                  ),
+                ),
+                SizedBox(width: 16.w),
+                Expanded(
+                  child: Container(
+                    height: 100.h,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16.r),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 24.h),
+            // Actions Shimmer
+            Container(
+              height: 300.h,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(24.r),
+              ),
+            ),
+          ],
         ),
       ),
     );

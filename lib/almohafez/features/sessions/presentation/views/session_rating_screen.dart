@@ -13,6 +13,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SessionRatingScreen extends StatefulWidget {
@@ -81,7 +82,7 @@ class _SessionRatingScreenState extends State<SessionRatingScreen> {
         ),
       ),
       body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? _buildShimmerLoading()
           : _errorMessage != null
           ? _buildErrorWidget()
           : _buildContent(),
@@ -479,5 +480,75 @@ class _SessionRatingScreenState extends State<SessionRatingScreen> {
         });
       }
     }
+  }
+
+  Widget _buildShimmerLoading() {
+    return SingleChildScrollView(
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+      child: Shimmer.fromColors(
+        baseColor: Colors.grey[300]!,
+        highlightColor: Colors.grey[100]!,
+        child: Column(
+          children: [
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16.r),
+              ),
+              child: Column(
+                children: [
+                  Container(
+                    width: 100.w,
+                    height: 100.w,
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.white,
+                    ),
+                  ),
+                  16.height,
+                  Container(width: 200.w, height: 24.h, color: Colors.white),
+                  8.height,
+                  Container(width: 150.w, height: 16.h, color: Colors.white),
+                  8.height,
+                  Container(
+                    width: 80.w,
+                    height: 24.h,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            16.height,
+            Container(
+              height: 150.h,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16.r),
+              ),
+            ),
+            16.height,
+            Container(
+              height: 200.h,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16.r),
+              ),
+            ),
+            16.height,
+            Container(
+              height: 50.h,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12.r),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

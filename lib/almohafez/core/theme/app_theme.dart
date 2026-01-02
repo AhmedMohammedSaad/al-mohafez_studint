@@ -4,10 +4,13 @@ import 'app_colors.dart';
 
 class AppTheme {
   /// ثيم تطبيق المحفظ الفاتح
-  static ThemeData appLightTheme(String fontFamily) => ThemeData(
+  static ThemeData appLightTheme(
+    String fontFamily, {
+    Color? scaffoldBackgroundColor,
+  }) => ThemeData(
     useMaterial3: true,
     fontFamily: fontFamily,
-    scaffoldBackgroundColor: AppColors.backgroundPrimary,
+    scaffoldBackgroundColor: scaffoldBackgroundColor ?? Colors.white,
     highlightColor: Colors.transparent,
     focusColor: Colors.transparent,
     hoverColor: Colors.transparent,
@@ -124,10 +127,13 @@ class AppTheme {
   );
 
   /// ثيم تطبيق المحفظ الداكن
-  static ThemeData appDarkTheme(String fontFamily) => ThemeData(
+  static ThemeData appDarkTheme(
+    String fontFamily, {
+    Color? scaffoldBackgroundColor,
+  }) => ThemeData(
     useMaterial3: true,
     fontFamily: fontFamily,
-    scaffoldBackgroundColor: AppColors.primaryDark,
+    scaffoldBackgroundColor: scaffoldBackgroundColor ?? AppColors.primaryDark,
     highlightColor: Colors.transparent,
     focusColor: Colors.transparent,
     hoverColor: Colors.transparent,

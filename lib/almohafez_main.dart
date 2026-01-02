@@ -1,4 +1,5 @@
 import 'package:almohafez/almohafez/core/presentation/view/main_screen.dart';
+import 'package:almohafez/almohafez/core/theme/app_colors.dart';
 import 'package:almohafez/almohafez/core/theme/app_theme.dart';
 import 'package:almohafez/almohafez/features/onboarding/presentation/views/welcome_onboarding_screen.dart';
 import 'package:almohafez/almohafez/features/sessions/data/repos/sessions_repo.dart';
@@ -74,6 +75,7 @@ class MyApp extends StatelessWidget {
         localizationsDelegates: context.localizationDelegates,
         debugShowCheckedModeBanner: false,
         theme: AppTheme.appLightTheme(
+          scaffoldBackgroundColor: AppColors.white,
           context.locale.languageCode == 'ar'
               ? FontFamily.cairo
               : FontFamily.roboto,

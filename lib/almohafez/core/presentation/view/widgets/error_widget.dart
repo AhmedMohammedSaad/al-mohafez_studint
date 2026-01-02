@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:almohafez/almohafez/core/theme/app_colors.dart';
 import 'package:almohafez/almohafez/core/theme/app_text_style.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 /// A reusable error widget that displays an error message with a refresh button.
 ///
@@ -36,19 +38,18 @@ class AppErrorWidget extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Error icon
-            Container(
-              padding: EdgeInsets.all(20.w),
-              decoration: BoxDecoration(
-                color: AppColors.primaryError.withValues(alpha: 0.1),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                icon ?? Icons.error_outline,
-                size: 48.sp,
-                color: AppColors.primaryError,
-              ),
-            ),
+            // Error illustration
+            if (icon != null)
+              Container(
+                padding: EdgeInsets.all(20.w),
+                decoration: BoxDecoration(
+                  color: AppColors.primaryError.withValues(alpha: 0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(icon, size: 48.sp, color: AppColors.primaryError),
+              )
+            else
+              Image.asset('assets/svgs/warning.gif', height: 150.h),
 
             SizedBox(height: 24.h),
 
@@ -61,19 +62,18 @@ class AppErrorWidget extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
 
-            SizedBox(height: 12.h),
+            // SizedBox(height: 12.h),
 
-            // Error message
-            Text(
-              message,
-              style: AppTextStyle.textStyle14Medium.copyWith(
-                color: AppColors.textSecondary,
-              ),
-              textAlign: TextAlign.center,
-              maxLines: 3,
-              overflow: TextOverflow.ellipsis,
-            ),
-
+            // // Error message
+            // Text(
+            //   message,
+            //   style: AppTextStyle.textStyle14Medium.copyWith(
+            //     color: AppColors.textSecondary,
+            //   ),
+            //   textAlign: TextAlign.center,
+            //   maxLines: 3,
+            //   overflow: TextOverflow.ellipsis,
+            // ),
             SizedBox(height: 32.h),
 
             // Refresh button

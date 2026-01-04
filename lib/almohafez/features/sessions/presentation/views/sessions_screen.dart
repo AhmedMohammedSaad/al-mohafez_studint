@@ -239,12 +239,12 @@ class _SessionsScreenState extends State<SessionsScreen>
   }
 
   void _navigateToSessionDetails(String sessionId) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => SessionDetailsScreen(sessionId: sessionId),
-      ),
-    );
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(
+    //     builder: (context) => SessionDetailsScreen(sessionId: sessionId),
+    //   ),
+    // );
   }
 
   void _joinSession(BuildContext context, String sessionId) async {

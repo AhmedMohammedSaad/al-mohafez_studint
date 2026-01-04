@@ -55,7 +55,7 @@ class AppDefaultButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Cache color calculations to avoid repeated operations
-    final Color defaultBackgroundColor = AppColors.primaryColor2;
+    final Color defaultBackgroundColor = AppColors.primaryTurquoise;
     const Color defaultTextColor = AppColors.whiteConstant;
 
     final Color actualBackgroundColor = isLoading

@@ -107,7 +107,7 @@ class _AppDefaultTextFormFieldState extends State<AppDefaultTextFormField> {
           Text(
             widget.label!,
             style: AppTextStyle.font14SecondaryW700.copyWith(
-              color: AppColors.primaryColor2,
+              color: AppColors.primary,
             ),
           ).paddingBottom(8.h),
         SizedBox(
@@ -180,7 +180,7 @@ class _AppDefaultTextFormFieldState extends State<AppDefaultTextFormField> {
                 borderRadius: BorderRadius.circular(widget.borderRadius ?? 12),
                 borderSide: BorderSide(
                   color: isFocus
-                      ? widget.borderColor ?? AppColors.primaryColor2
+                      ? widget.borderColor ?? AppColors.primary
                       : AppColors.grey.withValues(alpha: 0.3),
                   width: 1,
                 ),

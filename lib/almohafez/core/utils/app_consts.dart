@@ -6,8 +6,11 @@ import 'package:flutter/foundation.dart';
 
 class AppConst {
   static bool isDark = false;
+  static String apiUrlPayment =
+      'https://staging.fawaterk.com/api/v2/getPaymentmethods';
 
-  static String accessToken = '';
+  static String accessToken =
+      'b3f8a11d3a213ad9795d818e072aa518e4bf724b5dcb3c2e79';
   static String refreshToken = '';
   static String verificationId = '';
   static String resetToken = '';

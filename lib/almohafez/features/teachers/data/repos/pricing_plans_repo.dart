@@ -1,8 +1,14 @@
+import 'dart:developer';
+
+import 'package:almohafez/almohafez/core/data/network/web_service/api_service.dart';
+import 'package:almohafez/almohafez/core/utils/app_consts.dart';
+import 'package:almohafez/almohafez/features/teachers/data/models/pymint_id.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/pricing_plan_model.dart';
 
 class PricingPlansRepo {
   final _supabase = Supabase.instance.client;
+  final AppDio api = AppDio();
 
   /// Fetch all active pricing plans
   Future<List<PricingPlanModel>> getActivePlans() async {
@@ -51,6 +57,30 @@ class PricingPlansRepo {
       return PricingPlanModel.fromJson(response);
     } catch (e) {
       throw Exception('Failed to fetch plan: $e');
+    }
+  }
+
+  Future<void> getCardPymint() async {
+    try {
+      final res = await api.get(
+        path: AppConst.apiUrlGetPayment,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${AppConst.accessToken}',
+        },
+      );
+      final data = res.data;
+      // final mezaId = data['data'].map((e) => e);
+      final paymentMethodsResponse = PaymentMethodsResponse.fromJson(data);
+
+      log(
+        paymentMethodsResponse.data[1].paymentId.toString() +
+            " " +
+            paymentMethodsResponse.data[1].nameEn.toString(),
+      );
+    } catch (e) {
+      log(e.toString());
+      throw Exception(e);
     }
   }
 }

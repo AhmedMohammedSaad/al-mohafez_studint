@@ -1,6 +1,5 @@
 import 'package:almohafez/almohafez/core/data/network/web_service/api_service.dart';
 import 'package:almohafez/almohafez/core/utils/app_consts.dart';
-import 'package:almohafez/almohafez/core/utils/urls.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'payment_state.dart';
 
@@ -14,38 +13,51 @@ class PaymentCubit extends Cubit<PaymentState> {
     emit(PaymentMethodChanged(_selectedMethod));
   }
 
+  late String paymentUrl;
   Future<void> processPayment({
     String? couponCode,
     required double amount,
     Map<String, dynamic>? cardDetails,
     String? walletNumber,
+    String? name,
+    String? email,
+    String? phone,
+    String? address,
   }) async {
     emit(PaymentLoading());
     try {
-      if (_selectedMethod == PaymentMethodType.creditCard &&
-          cardDetails == null) {
-        emit(const PaymentFailure("Invalid Card Details"));
-        return;
-      }
-      if (_selectedMethod == PaymentMethodType.mobileWallet &&
-          (walletNumber == null || walletNumber.isEmpty)) {
-        emit(const PaymentFailure("Invalid Wallet Number"));
-        return;
-      }
-
       final response = await appDio.post(
-        path: AppConst.apiUrlPayment,
+        path: AppConst.apiUrlPostPayment,
         data: {
-          "amount": amount,
-          "couponCode": couponCode,
-          "paymentMethod": _selectedMethod.name,
+          "payment_method_id": 2,
+
+          "cartTotal": amount,
+          "currency": "EGP",
+          "customer": {
+            "first_name": name,
+            "last_name": "",
+            "email": email,
+            "phone": phone,
+            "address": address,
+          },
+          "redirectionUrls": {
+            "successUrl": "https://dev.fawaterk.com/success",
+            "failUrl": "https://dev.fawaterk.com/fail",
+            "pendingUrl": "https://dev.fawaterk.com/pending",
+          },
+          "cartItems": [
+            {"name": name, "price": amount, "quantity": "1"},
+          ],
         },
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ${AppConst.accessToken}',
         },
       );
-      emit(const PaymentSuccess("TRANS_MOCK_123456"));
+      // Assuming the API returns the URL in this structure
+      // Adjust based on actual API response if needed
+      paymentUrl = response.data["data"]["payment_data"]["redirectTo"];
+      emit(PaymentInitiated(paymentUrl));
     } catch (e) {
       emit(PaymentFailure("حدث خطأ اثناء معالجة الدفع"));
     }

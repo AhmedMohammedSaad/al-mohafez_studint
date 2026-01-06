@@ -2,6 +2,7 @@ import 'package:almohafez/almohafez/core/presentation/view/main_screen.dart';
 import 'package:almohafez/almohafez/core/theme/app_colors.dart';
 import 'package:almohafez/almohafez/core/theme/app_theme.dart';
 import 'package:almohafez/almohafez/features/onboarding/presentation/views/welcome_onboarding_screen.dart';
+import 'package:almohafez/almohafez/features/payment/presentation/cubit/payment_cubit.dart';
 import 'package:almohafez/almohafez/features/sessions/data/repos/sessions_repo.dart';
 import 'package:almohafez/almohafez/features/sessions/logic/sessions_cubit.dart';
 import 'package:almohafez/gen/fonts.gen.dart';
@@ -43,6 +44,7 @@ void main() async {
                 ProfileBloc(ProfileRepo())..add(LoadProfileEvent()),
           ),
           BlocProvider(create: (context) => SessionsCubit(SessionsRepo())),
+          BlocProvider(create: (context) => PaymentCubit()),
         ],
         child: MyApp(),
       ),

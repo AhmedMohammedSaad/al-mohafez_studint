@@ -17,3 +17,15 @@ class PricingPlansError extends PricingPlansState {
 
   PricingPlansError(this.message);
 }
+
+/// pymint
+
+class PymintSuccses extends PricingPlansState {}
+
+class PymintError extends PricingPlansState {
+  final String message;
+
+  PymintError(this.message);
+}
+
+class PymintLoding extends PricingPlansState {}

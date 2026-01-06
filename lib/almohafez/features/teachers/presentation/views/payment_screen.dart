@@ -56,7 +56,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
       },
       child: feature.PaymentScreen(
         amount: widget.bookingResponse.planPriceEgp.toDouble(),
-        onPaymentSuccess: (transactionId) {
+        onPaymentSuccess: () {
           _processBooking();
         },
       ),

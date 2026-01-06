@@ -36,6 +36,8 @@ class _BookingBottomSheetState extends State<BookingBottomSheet> {
     super.initState();
     // Load pricing plans from database
     context.read<PricingPlansCubit>().loadActivePlans();
+    //! pymint get cards
+    context.read<PricingPlansCubit>().getCardPymint();
     _loadWeeklySchedule();
   }
 
@@ -905,6 +907,7 @@ class _BookingBottomSheetState extends State<BookingBottomSheet> {
 
       // Navigate to payment screen
       Navigator.of(context).pop(); // Close bottom sheet
+
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (context) => BlocProvider(
@@ -919,6 +922,8 @@ class _BookingBottomSheetState extends State<BookingBottomSheet> {
           ),
         ),
       );
+      // //! pymint get cards
+      // context.read<BookingCubit>().getCardPymint();
     } catch (e) {
       setState(() {
         _errorMessage = 'booking_error_general'.tr();

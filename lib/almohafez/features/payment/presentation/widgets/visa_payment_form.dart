@@ -51,7 +51,7 @@ class VisaPaymentForm extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "Credit Card",
+                    "Visa Mastercard",
                     style: AppTextStyle.textStyle14Medium.copyWith(
                       color: Colors.white70,
                     ),

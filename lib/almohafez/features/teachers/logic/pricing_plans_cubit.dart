@@ -30,4 +30,15 @@ class PricingPlansCubit extends Cubit<PricingPlansState> {
       emit(PricingPlansError(e.toString()));
     }
   }
+
+  Future<void> getCardPymint() async {
+    emit(PymintLoding());
+
+    try {
+      await _repo.getCardPymint();
+      emit(PymintSuccses());
+    } catch (e) {
+      emit(PymintError(e.toString()));
+    }
+  }
 }

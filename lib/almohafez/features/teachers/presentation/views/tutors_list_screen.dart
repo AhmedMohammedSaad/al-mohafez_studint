@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -147,27 +148,27 @@ class TutorsListScreen extends StatelessWidget {
     return Column(
       children: [
         // عداد المحفظين
-        Container(
-          width: double.infinity,
-          margin: EdgeInsets.all(16.w),
-          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-          decoration: BoxDecoration(
-            color: const Color(0xFF00E0FF).withOpacity(0.1),
-            borderRadius: BorderRadius.circular(12.r),
-          ),
-          child: Text(
-            'teachers_found_count'.tr(
-              namedArgs: {'count': tutors.length.toString()},
-            ),
-            style: TextStyle(
-              fontFamily: 'Cairo',
-              fontSize: 14.sp,
-              fontWeight: FontWeight.w600,
-              color: const Color(0xFF0A1D64),
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ),
+        // Container(
+        //   width: double.infinity,
+        //   margin: EdgeInsets.all(16.w),
+        //   padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+        //   decoration: BoxDecoration(
+        //     color: const Color(0xFF00E0FF).withOpacity(0.1),
+        //     borderRadius: BorderRadius.circular(12.r),
+        //   ),
+        //   child: Text(
+        //     'teachers_found_count'.tr(
+        //       namedArgs: {'count': tutors.length.toString()},
+        //     ),
+        //     style: TextStyle(
+        //       fontFamily: 'Cairo',
+        //       fontSize: 14.sp,
+        //       fontWeight: FontWeight.w600,
+        //       color: const Color(0xFF0A1D64),
+        //     ),
+        //     textAlign: TextAlign.center,
+        //   ),
+        // ),
         // قائمة المحفظين
         Expanded(
           child: ListView.builder(
@@ -176,22 +177,29 @@ class TutorsListScreen extends StatelessWidget {
             itemBuilder: (context, index) {
               final tutor = tutors[index];
               return Padding(
-                padding: EdgeInsets.only(bottom: 16.h),
-                child: TutorCard(
-                  tutor: tutor,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => TutorProfileScreen(tutor: tutor),
-                      ),
-                    );
-                  },
-                ),
-              );
+                    padding: EdgeInsets.only(bottom: 16.h),
+                    child: TutorCard(
+                      tutor: tutor,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                TutorProfileScreen(tutor: tutor),
+                          ),
+                        );
+                      },
+                    ),
+                  )
+                  .animate(delay: (index > 5 ? 0 : index * 100).ms)
+                  .fade(duration: 500.ms)
+                  .slideY(begin: 0.2, end: 0, curve: Curves.easeOutQuad)
+                  .then()
+                  .shimmer(duration: 1200.ms);
             },
           ),
         ),
+        SizedBox(height: 70.h),
       ],
     );
   }

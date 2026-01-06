@@ -13,7 +13,6 @@ class PaymentCubit extends Cubit<PaymentState> {
     emit(PaymentMethodChanged(_selectedMethod));
   }
 
-  late String paymentUrl;
   Future<void> processPayment({
     String? couponCode,
     required double amount,
@@ -56,7 +55,7 @@ class PaymentCubit extends Cubit<PaymentState> {
       );
       // Assuming the API returns the URL in this structure
       // Adjust based on actual API response if needed
-      paymentUrl = response.data["data"]["payment_data"]["redirectTo"];
+      final paymentUrl = response.data["data"]["payment_data"]["redirectTo"];
       emit(PaymentInitiated(paymentUrl));
     } catch (e) {
       emit(PaymentFailure("حدث خطأ اثناء معالجة الدفع"));

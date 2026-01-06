@@ -28,12 +28,7 @@ class PaymentScreen extends StatefulWidget {
 class _PaymentScreenState extends State<PaymentScreen> {
   late final WebViewController _controller;
   bool _isWebPageLoading = true;
-
-  @override
-  void initState() {
-    super.initState();
-
-    // Get user data from ProfileBloc
+  getprofielPostData() async {
     final profileState = context.read<ProfileBloc>().state;
     String name = "Test User";
     String email = "test@example.com";
@@ -46,80 +41,24 @@ class _PaymentScreenState extends State<PaymentScreen> {
       phone = user.phoneNumber ?? "0123456789";
     }
 
-    context.read<PaymentCubit>().processPayment(
+    await context.read<PaymentCubit>().processPayment(
       amount: widget.amount,
       name: name,
       email: email,
       phone: phone,
       address: "N/A", // Address is not available in ProfileModel
     );
+  }
 
-    _controller = WebViewController()
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..setNavigationDelegate(
-        NavigationDelegate(
-          onProgress: (int progress) {
-            // Update loading bar.
-          },
-          onPageStarted: (String url) {
-            if (mounted) {
-              setState(() {
-                _isWebPageLoading = true;
-              });
-            }
-          },
-          onPageFinished: (String url) {
-            if (mounted) {
-              setState(() {
-                _isWebPageLoading = false;
-              });
-            }
-          },
-          onHttpError: (HttpResponseError error) {
-            Fluttertoast.showToast(
-              msg: "حدث خطأ اعد المحاولة",
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.TOP,
-              timeInSecForIosWeb: 3,
-              backgroundColor: Colors.red,
-              textColor: Colors.white,
-              fontSize: 16.0,
-            );
-            Navigator.pop(context);
-          },
-          onNavigationRequest: (NavigationRequest request) {
-            if (request.url.startsWith("https://dev.fawaterk.com/success")) {
-              widget.onPaymentSuccess();
-              Fluttertoast.showToast(
-                msg: "      تم الدفع بنجاح      ",
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.TOP,
-                timeInSecForIosWeb: 3,
-                backgroundColor: Colors.green,
-                textColor: Colors.white,
-                fontSize: 16.0,
-              );
-              Navigator.pop(context);
-            } else if (request.url.startsWith(
-              "https://dev.fawaterk.com/fail",
-            )) {
-              Fluttertoast.showToast(
-                msg: "        فشل الدفع        ",
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.TOP,
-                timeInSecForIosWeb: 3,
-                backgroundColor: Colors.red,
-                textColor: Colors.white,
-                fontSize: 16.0,
-              );
-              Navigator.pop(context);
-            }
-            return NavigationDecision.navigate;
-          },
-        ),
-      )
-      ..setBackgroundColor(Colors.transparent)
-      ..loadRequest(Uri.parse(context.read<PaymentCubit>().paymentUrl));
+  @override
+  void initState() {
+    super.initState();
+    getprofielPostData();
+
+    // Get user data from ProfileBloc
+    // Future.delayed(const Duration(seconds: 5), () {
+
+    // });
   }
 
   @override
@@ -129,7 +68,78 @@ class _PaymentScreenState extends State<PaymentScreen> {
       body: BlocBuilder<PaymentCubit, PaymentState>(
         builder: (context, state) {
           return BlocListener<PaymentCubit, PaymentState>(
-            listener: (context, state) {},
+            listener: (context, state) {
+              if (state is PaymentInitiated) {
+                _controller = WebViewController()
+                  ..setJavaScriptMode(JavaScriptMode.unrestricted)
+                  ..setNavigationDelegate(
+                    NavigationDelegate(
+                      onProgress: (int progress) {
+                        // Update loading bar.
+                      },
+                      onPageStarted: (String url) {
+                        if (mounted) {
+                          setState(() {
+                            _isWebPageLoading = true;
+                          });
+                        }
+                      },
+                      onPageFinished: (String url) {
+                        if (mounted) {
+                          setState(() {
+                            _isWebPageLoading = false;
+                          });
+                        }
+                      },
+                      onHttpError: (HttpResponseError error) {
+                        Fluttertoast.showToast(
+                          msg: "حدث خطأ اعد المحاولة",
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.TOP,
+                          timeInSecForIosWeb: 3,
+                          backgroundColor: Colors.red,
+                          textColor: Colors.white,
+                          fontSize: 16.0,
+                        );
+                        Navigator.pop(context);
+                      },
+                      onNavigationRequest: (NavigationRequest request) {
+                        if (request.url.startsWith(
+                          "https://dev.fawaterk.com/success",
+                        )) {
+                          widget.onPaymentSuccess();
+                          Fluttertoast.showToast(
+                            msg: "      تم الدفع بنجاح      ",
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.TOP,
+                            timeInSecForIosWeb: 3,
+                            backgroundColor: Colors.green,
+                            textColor: Colors.white,
+                            fontSize: 16.0,
+                          );
+                          Navigator.pop(context);
+                        } else if (request.url.startsWith(
+                          "https://dev.fawaterk.com/fail",
+                        )) {
+                          Fluttertoast.showToast(
+                            msg: "        فشل الدفع        ",
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.TOP,
+                            timeInSecForIosWeb: 3,
+                            backgroundColor: Colors.red,
+                            textColor: Colors.white,
+                            fontSize: 16.0,
+                          );
+                          Navigator.pop(context);
+                        }
+                        return NavigationDecision.navigate;
+                      },
+                    ),
+                  )
+                  ..setBackgroundColor(Colors.transparent)
+                  ..loadRequest(Uri.parse(state.paymentUrl));
+              }
+            },
             child: Padding(
               padding: EdgeInsets.all(16.0.w),
               child: Column(

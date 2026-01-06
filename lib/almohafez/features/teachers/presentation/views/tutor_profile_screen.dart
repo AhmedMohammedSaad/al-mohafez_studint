@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -46,104 +47,117 @@ class TutorProfileScreen extends StatelessWidget {
                     ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SizedBox(height: 60.h),
-                        // صورة المحفظ
-                        Container(
-                          width: 120.w,
-                          height: 120.h,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20.r),
-                            border: Border.all(color: Colors.white, width: 4),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.2),
-                                blurRadius: 10,
-                                offset: const Offset(0, 4),
-                              ),
-                            ],
-                          ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(16.r),
-                            child: tutor.profilePictureUrl.isNotEmpty
-                                ? Image.network(
-                                    tutor.profilePictureUrl,
-                                    fit: BoxFit.cover,
-                                    errorBuilder: (context, error, stackTrace) {
-                                      return Image.asset(
-                                        tutor.gender == 'male'
-                                            ? 'assets/images/shaegh.jpg'
-                                            : 'assets/images/niqab-5.jpg',
-                                        fit: BoxFit.cover,
-                                      );
-                                    },
-                                  )
-                                : Image.asset(
-                                    tutor.gender == 'male'
-                                        ? 'assets/images/shaegh.jpg'
-                                        : 'assets/images/niqab-5.jpg',
-                                    fit: BoxFit.cover,
+                      children:
+                          [
+                                SizedBox(height: 60.h),
+                                // صورة المحفظ
+                                Container(
+                                  width: 120.w,
+                                  height: 120.h,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20.r),
+                                    border: Border.all(
+                                      color: Colors.white,
+                                      width: 4,
+                                    ),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.2),
+                                        blurRadius: 10,
+                                        offset: const Offset(0, 4),
+                                      ),
+                                    ],
                                   ),
-                          ),
-                        ),
-                        SizedBox(height: 16.h),
-                        // اسم المحفظ
-                        Text(
-                          tutor.fullName,
-                          style: TextStyle(
-                            fontFamily: 'Cairo',
-                            fontSize: 22.sp,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
-                        SizedBox(height: 8.h),
-                        // التقييم وحالة التوفر
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.star,
-                              color: const Color(0xFFFFB800),
-                              size: 20.sp,
-                            ),
-                            SizedBox(width: 4.w),
-                            Text(
-                              tutor.overallRating.toStringAsFixed(1),
-                              style: TextStyle(
-                                fontFamily: 'Cairo',
-                                fontSize: 16.sp,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white,
-                              ),
-                            ),
-                            SizedBox(width: 16.w),
-                            Container(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 12.w,
-                                vertical: 6.h,
-                              ),
-                              decoration: BoxDecoration(
-                                color: tutor.isAvailable
-                                    ? const Color(0xFF4CAF50)
-                                    : const Color(0xFFFF6B6B),
-                                borderRadius: BorderRadius.circular(12.r),
-                              ),
-                              child: Text(
-                                tutor.isAvailable
-                                    ? 'teachers_available'.tr()
-                                    : 'teachers_unavailable'.tr(),
-                                style: TextStyle(
-                                  fontFamily: 'Cairo',
-                                  fontSize: 12.sp,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.white,
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(16.r),
+                                    child: tutor.profilePictureUrl.isNotEmpty
+                                        ? Image.network(
+                                            tutor.profilePictureUrl,
+                                            fit: BoxFit.cover,
+                                            errorBuilder: (context, error, stackTrace) {
+                                              return Image.asset(
+                                                tutor.gender == 'male'
+                                                    ? 'assets/images/shaegh.jpg'
+                                                    : 'assets/images/niqab-5.jpg',
+                                                fit: BoxFit.cover,
+                                              );
+                                            },
+                                          )
+                                        : Image.asset(
+                                            tutor.gender == 'male'
+                                                ? 'assets/images/shaegh.jpg'
+                                                : 'assets/images/niqab-5.jpg',
+                                            fit: BoxFit.cover,
+                                          ),
+                                  ),
                                 ),
+                                SizedBox(height: 16.h),
+                                // اسم المحفظ
+                                Text(
+                                  tutor.fullName,
+                                  style: TextStyle(
+                                    fontFamily: 'Cairo',
+                                    fontSize: 22.sp,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                SizedBox(height: 8.h),
+                                // التقييم وحالة التوفر
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.star,
+                                      color: const Color(0xFFFFB800),
+                                      size: 20.sp,
+                                    ),
+                                    SizedBox(width: 4.w),
+                                    Text(
+                                      tutor.overallRating.toStringAsFixed(1),
+                                      style: TextStyle(
+                                        fontFamily: 'Cairo',
+                                        fontSize: 16.sp,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    SizedBox(width: 16.w),
+                                    Container(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 12.w,
+                                        vertical: 6.h,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: tutor.isAvailable
+                                            ? const Color(0xFF4CAF50)
+                                            : const Color(0xFFFF6B6B),
+                                        borderRadius: BorderRadius.circular(
+                                          12.r,
+                                        ),
+                                      ),
+                                      child: Text(
+                                        tutor.isAvailable
+                                            ? 'teachers_available'.tr()
+                                            : 'teachers_unavailable'.tr(),
+                                        style: TextStyle(
+                                          fontFamily: 'Cairo',
+                                          fontSize: 12.sp,
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ]
+                              .animate(interval: 100.ms)
+                              .fade(duration: 600.ms)
+                              .slideY(
+                                begin: 0.3,
+                                end: 0,
+                                curve: Curves.easeOutBack,
                               ),
-                            ),
-                          ],
-                        ),
-                      ],
                     ),
                   ),
                 ),
@@ -154,26 +168,30 @@ class TutorProfileScreen extends StatelessWidget {
                   padding: EdgeInsets.all(20.w),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // إحصائيات سريعة
-                      // _buildStatsSection(),
-                      // SizedBox(height: 24.h),
-                      // النبذة التعريفية
-                      _buildBioSection(),
-                      SizedBox(height: 24.h),
-                      // المؤهلات
-                      _buildQualificationsSection(),
-                      SizedBox(height: 24.h),
-                      // أوقات التوفر
-                      _buildAvailabilitySection(),
-                      SizedBox(height: 24.h),
-                      // وسائل التواصل
-                      // _buildContactMethodsSection(),
-                      // SizedBox(height: 24.h),
-                      // المراجعات
-                      // _buildReviewsSection(),
-                      SizedBox(height: 300.h), // مساحة إضافية لزر الحجز
-                    ],
+                    children:
+                        [
+                              // إحصائيات سريعة
+                              // _buildStatsSection(),
+                              // SizedBox(height: 24.h),
+                              // النبذة التعريفية
+                              _buildBioSection(),
+                              SizedBox(height: 24.h),
+                              // المؤهلات
+                              _buildQualificationsSection(),
+                              SizedBox(height: 24.h),
+                              // أوقات التوفر
+                              _buildAvailabilitySection(),
+                              SizedBox(height: 24.h),
+                              // وسائل التواصل
+                              // _buildContactMethodsSection(),
+                              // SizedBox(height: 24.h),
+                              // المراجعات
+                              // _buildReviewsSection(),
+                              SizedBox(height: 300.h), // مساحة إضافية لزر الحجز
+                            ]
+                            .animate(interval: 100.ms, delay: 200.ms)
+                            .fade(duration: 500.ms)
+                            .slideX(begin: 0.1, end: 0, curve: Curves.easeOut),
                   ),
                 ),
               ),
@@ -186,51 +204,55 @@ class TutorProfileScreen extends StatelessWidget {
               bottom: 60,
               left: 0,
               right: 0,
-              child: Container(
-                padding: EdgeInsets.all(20.w),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      blurRadius: 10,
-                      offset: const Offset(0, -2),
-                    ),
-                  ],
-                ),
-                child: SizedBox(
-                  width: double.infinity,
-                  height: 60.h,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      _showBookingBottomSheet(context);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF00E0FF),
-                      foregroundColor: Colors.white,
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12.r),
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.calendar_today, size: 20.sp),
-                        SizedBox(width: 8.w),
-                        Text(
-                          'tutor_profile_book_session'.tr(),
-                          style: TextStyle(
-                            fontFamily: 'Cairo',
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.bold,
+              child:
+                  Container(
+                        padding: EdgeInsets.all(20.w),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.1),
+                              blurRadius: 10,
+                              offset: const Offset(0, -2),
+                            ),
+                          ],
+                        ),
+                        child: SizedBox(
+                          width: double.infinity,
+                          height: 60.h,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              _showBookingBottomSheet(context);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF00E0FF),
+                              foregroundColor: Colors.white,
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12.r),
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.calendar_today, size: 20.sp),
+                                SizedBox(width: 8.w),
+                                Text(
+                                  'tutor_profile_book_session'.tr(),
+                                  style: TextStyle(
+                                    fontFamily: 'Cairo',
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
+                      )
+                      .animate(delay: 600.ms)
+                      .slideY(begin: 1.0, end: 0, curve: Curves.easeOutBack)
+                      .fade(),
             ),
         ],
       ),

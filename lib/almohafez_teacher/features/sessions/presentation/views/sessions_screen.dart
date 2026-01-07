@@ -1,5 +1,4 @@
 import 'package:almohafez/almohafez_teacher/features/sessions/presentation/widgets/daily_sessions_widget.dart';
-import 'package:almohafez/almohafez_teacher/features/sessions/presentation/widgets/session_stats_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -12,7 +11,6 @@ import 'session_evaluation_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../presentation/cubit/sessions_cubit.dart';
 import '../../presentation/cubit/sessions_state.dart';
-import '../../../students/data/models/student_model.dart';
 
 class SessionsScreen extends StatefulWidget {
   const SessionsScreen({super.key});

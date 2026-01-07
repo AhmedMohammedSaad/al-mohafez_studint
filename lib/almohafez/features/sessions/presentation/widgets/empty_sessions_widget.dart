@@ -9,13 +9,13 @@ class EmptySessionsWidget extends StatelessWidget {
   final String? actionText;
 
   const EmptySessionsWidget({
-    Key? key,
+    super.key,
     required this.title,
     required this.subtitle,
     required this.icon,
     this.onActionPressed,
     this.actionText,
-  }) : super(key: key);
+  });
 
   // Factory constructors for common scenarios
   factory EmptySessionsWidget.noUpcomingSessions({

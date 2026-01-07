@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:characters/characters.dart';
 
 class WelcomeBarWidget extends StatelessWidget {
   const WelcomeBarWidget({super.key});

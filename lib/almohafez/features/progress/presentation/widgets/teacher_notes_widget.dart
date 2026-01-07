@@ -125,7 +125,7 @@ class _TeacherNotesWidgetState extends State<TeacherNotesWidget>
               ),
             )
           else
-            Container(
+            SizedBox(
               height: 120.h,
               child: Center(
                 child: Text(

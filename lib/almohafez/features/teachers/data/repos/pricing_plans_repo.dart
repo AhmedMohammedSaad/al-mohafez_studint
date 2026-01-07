@@ -74,9 +74,7 @@ class PricingPlansRepo {
       final paymentMethodsResponse = PaymentMethodsResponse.fromJson(data);
 
       log(
-        paymentMethodsResponse.data[1].paymentId.toString() +
-            " " +
-            paymentMethodsResponse.data[1].nameEn.toString(),
+        "${paymentMethodsResponse.data[1].paymentId} ${paymentMethodsResponse.data[1].nameEn}",
       );
     } catch (e) {
       log(e.toString());

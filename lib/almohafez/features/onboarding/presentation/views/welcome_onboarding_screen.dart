@@ -3,7 +3,6 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';
-import '../../../../core/services/navigation_service/global_navigation_service.dart';
 import '../widgets/app_logo_widget.dart';
 import '../widgets/central_illustration_widget.dart';
 import '../widgets/main_content_widget.dart';

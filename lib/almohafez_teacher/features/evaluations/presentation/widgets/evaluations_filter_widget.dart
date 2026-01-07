@@ -228,7 +228,7 @@ class EvaluationsFilterWidget extends StatelessWidget {
                         ],
                       ),
                     );
-                  }).toList(),
+                  }),
                 ],
                 onChanged: (value) {
                   if (value != null) {

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:nb_utils/nb_utils.dart';
 import 'package:almohafez/almohafez/core/theme/app_colors.dart';
 import 'package:almohafez/almohafez/core/theme/app_text_style.dart';
 

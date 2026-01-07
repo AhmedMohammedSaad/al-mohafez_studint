@@ -294,7 +294,7 @@ class EvaluationCardWidget extends StatelessWidget {
         Icon(icon, color: color, size: 16.sp),
         SizedBox(height: 4.h),
         Text(
-          '${score.toStringAsFixed(1)}',
+          score.toStringAsFixed(1),
           style: AppTextStyle.textStyle14.copyWith(
             fontWeight: FontWeight.bold,
             color: color,

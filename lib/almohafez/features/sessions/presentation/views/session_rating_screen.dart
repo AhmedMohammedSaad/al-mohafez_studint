@@ -11,7 +11,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -210,7 +209,7 @@ class _SessionRatingScreenState extends State<SessionRatingScreen> {
                   fontFamily: 'Cairo',
                 ),
                 children: [
-                  TextSpan(text: 'session_rating_with'.tr() + ' '),
+                  TextSpan(text: '${'session_rating_with'.tr()} '),
                   TextSpan(
                     text: _session!.tutorName,
                     style: TextStyle(

@@ -20,7 +20,7 @@ class StudentProgressChart extends StatelessWidget {
           SizedBox(height: 16.h),
 
           // مخطط دائري للتقدم الإجمالي
-          Container(
+          SizedBox(
             height: 120.h,
             child: Row(
               children: [

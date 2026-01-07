@@ -17,7 +17,7 @@ class ActionButtonWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: double.infinity,
       height: 60.h,
       child: ElevatedButton(

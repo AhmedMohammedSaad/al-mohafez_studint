@@ -188,8 +188,9 @@ class EvaluationStatistics {
     Map<String, int> topics = {};
 
     for (final eval in evaluations) {
-      if (eval.isExcellent) excellent++;
-      else if (eval.isGood) good++;
+      if (eval.isExcellent) {
+        excellent++;
+      } else if (eval.isGood) good++;
       else if (eval.needsImprovement) needsImprovement++;
 
       for (final topic in eval.topics) {

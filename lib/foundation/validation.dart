@@ -37,8 +37,9 @@ class AppTextFieldValidation {
       final int ascii = input.codeUnitAt(i);
       if ((ascii >= 65 && ascii <= 90) ||
           (ascii >= 97 && ascii <= 122) ||
-          ascii == 32)
+          ascii == 32) {
         continue;
+      }
       return true;
     }
     return false;

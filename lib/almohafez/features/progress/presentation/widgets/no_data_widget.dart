@@ -8,12 +8,12 @@ class NoDataWidget extends StatelessWidget {
   final Color? iconColor;
 
   const NoDataWidget({
-    Key? key,
+    super.key,
     required this.height,
     this.messageKey = 'progress_chart_no_data',
     this.icon,
     this.iconColor,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

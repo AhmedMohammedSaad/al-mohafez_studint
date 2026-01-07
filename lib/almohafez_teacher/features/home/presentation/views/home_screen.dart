@@ -4,7 +4,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../widgets/welcome_bar_widget.dart';
 import '../widgets/banner_carousel_widget.dart';
 import '../widgets/quick_stats_widget.dart';
-import '../widgets/sessions_overview_widget.dart';
 import '../widgets/competitions_section_widget.dart';
 import '../widgets/top_students_widget.dart';
 

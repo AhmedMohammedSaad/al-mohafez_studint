@@ -1,5 +1,3 @@
-import 'package:almohafez/almohafez/core/services/navigation_service/global_navigation_service.dart';
-import 'package:almohafez/almohafez_teacher/core/routing/app_route.dart';
 import 'package:almohafez/almohafez_teacher/features/authentication/presentation/views/login_screen.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';

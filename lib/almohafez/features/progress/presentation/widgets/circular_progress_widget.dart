@@ -51,7 +51,7 @@ class _CircularProgressWidgetState extends State<CircularProgressWidget>
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: 180.w,
       height: 180.w,
       child: Stack(

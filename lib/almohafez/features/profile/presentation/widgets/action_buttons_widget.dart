@@ -1,7 +1,7 @@
+import 'package:almohafez/almohafez/features/profile/presentation/views/change_password_screen.dart';
 import 'package:almohafez/almohafez/features/profile/presentation/views/edit_profile_screen.dart';
 import 'package:almohafez/almohafez/features/profile/presentation/views/contact_us_screen.dart';
 import 'package:almohafez/almohafez_teacher/features/authentication/presentation/views/login_screen.dart';
-import 'package:almohafez/almohafez_teacher/features/profile/presentation/views/change_password_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';

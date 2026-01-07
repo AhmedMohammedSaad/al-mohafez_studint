@@ -1,4 +1,3 @@
-import 'package:almohafez/almohafez/features/sessions/presentation/views/session_details_screen.dart';
 import 'package:almohafez/almohafez/features/sessions/presentation/views/session_rating_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';

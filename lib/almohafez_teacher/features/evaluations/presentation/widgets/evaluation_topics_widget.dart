@@ -162,7 +162,7 @@ class _EvaluationTopicsWidgetState extends State<EvaluationTopicsWidget> {
           ),
           SizedBox(height: 8.h),
 
-          Container(
+          SizedBox(
             height: 120.h,
             child: SingleChildScrollView(
               child: Wrap(

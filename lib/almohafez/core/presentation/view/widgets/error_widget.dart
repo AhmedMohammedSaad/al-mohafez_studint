@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:almohafez/almohafez/core/theme/app_colors.dart';
 import 'package:almohafez/almohafez/core/theme/app_text_style.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 
 /// A reusable error widget that displays an error message with a refresh button.
 ///

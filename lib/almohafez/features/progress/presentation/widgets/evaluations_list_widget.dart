@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:intl/intl.dart';
 import 'package:easy_localization/easy_localization.dart';
 import '../../data/models/progress_model.dart';
 
@@ -61,7 +60,7 @@ class EvaluationsListWidget extends StatelessWidget {
               },
             )
           else
-            Container(
+            SizedBox(
               height: 100.h,
               child: Center(
                 child: Text(

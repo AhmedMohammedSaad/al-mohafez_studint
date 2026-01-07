@@ -8,12 +8,12 @@ class ChartHeaderWidget extends StatelessWidget {
   final Color backgroundColor;
 
   const ChartHeaderWidget({
-    Key? key,
+    super.key,
     required this.titleKey,
     this.icon = Icons.trending_up,
     this.iconColor = const Color(0xFF0077B6),
     this.backgroundColor = const Color(0xFF0077B6),
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

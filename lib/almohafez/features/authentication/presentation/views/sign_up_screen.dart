@@ -1,8 +1,5 @@
 import 'package:almohafez/almohafez/core/presentation/view/widgets/app_custom_image_view.dart';
-import 'package:almohafez/almohafez/core/routing/app_route.dart';
 import 'package:almohafez/almohafez/features/authentication/presentation/views/login_screen.dart';
-import 'package:almohafez/almohafez_teacher/features/authentication/presentation/views/login_screen.dart'
-    hide LoginScreen;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';

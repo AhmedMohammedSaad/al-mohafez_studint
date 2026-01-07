@@ -4,13 +4,11 @@ import 'package:almohafez/almohafez/features/authentication/presentation/views/s
 import 'package:almohafez/almohafez/features/authentication/presentation/views/forgot_password_screen.dart';
 import 'package:almohafez/almohafez/features/onboarding/presentation/views/welcome_onboarding_screen.dart';
 import 'package:almohafez/almohafez/features/sessions/presentation/views/sessions_screen.dart';
-import 'package:almohafez/almohafez/features/sessions/presentation/views/session_details_screen.dart';
 import 'package:almohafez/almohafez/features/sessions/presentation/views/session_rating_screen.dart';
 
 import 'package:almohafez/almohafez/features/profile/presentation/views/edit_profile_screen.dart';
 import 'package:almohafez/almohafez/features/profile/presentation/views/change_password_screen.dart';
 import 'package:almohafez/almohafez/features/profile/presentation/views/contact_us_screen.dart';
-import 'package:almohafez/almohafez/features/teachers/presentation/views/payment_screen.dart';
 import '../../features/teachers/presentation/views/teachers_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';

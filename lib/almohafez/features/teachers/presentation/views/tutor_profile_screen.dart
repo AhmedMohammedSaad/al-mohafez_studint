@@ -3,7 +3,6 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nb_utils/nb_utils.dart';
 import '../../data/models/tutor_model.dart';
 import '../../logic/pricing_plans_cubit.dart';
 import '../../data/repos/pricing_plans_repo.dart';

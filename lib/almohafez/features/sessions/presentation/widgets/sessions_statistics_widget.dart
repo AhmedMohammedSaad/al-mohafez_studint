@@ -6,9 +6,9 @@ class SessionsStatisticsWidget extends StatelessWidget {
   final SessionsResponseModel sessionsData;
 
   const SessionsStatisticsWidget({
-    Key? key,
+    super.key,
     required this.sessionsData,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

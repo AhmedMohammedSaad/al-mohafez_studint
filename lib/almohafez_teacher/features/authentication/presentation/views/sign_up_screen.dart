@@ -358,7 +358,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                 // Gender Selection
                 DropdownButtonFormField<String>(
-                  value: _selectedGender,
+                  initialValue: _selectedGender,
                   decoration: InputDecoration(
                     labelText: 'gender'.tr(),
                     prefixIcon: Icon(
@@ -923,7 +923,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     } catch (e) {
       if (mounted) {
         Fluttertoast.showToast(
-          msg: 'sign_up_failed'.tr() + ': ${e.toString()}',
+          msg: '${'sign_up_failed'.tr()}: ${e.toString()}',
           toastLength: Toast.LENGTH_LONG,
           gravity: ToastGravity.BOTTOM,
           timeInSecForIosWeb: 1,

@@ -347,7 +347,7 @@ class _AddEvaluationScreenState extends State<AddEvaluationScreen> {
                 _isCompleted = value;
               });
             },
-            activeColor: AppColors.greenColor,
+            activeThumbColor: AppColors.greenColor,
             contentPadding: EdgeInsets.zero,
           ),
         ],

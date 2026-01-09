@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:almohafez/almohafez/core/data/local_data/caching_helper.dart';
-import 'package:almohafez/almohafez_teacher/features/profile/data/models/local_user_model.dart';
+import 'package:almohafez/almohafez/features/profile/data/models/local_user_model.dart';
 import 'package:flutter/foundation.dart';
 
 class AppConst {

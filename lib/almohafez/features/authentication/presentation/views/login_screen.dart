@@ -171,7 +171,12 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     SizedBox(width: 4.w),
                     GestureDetector(
-                      onTap: _navigateToSignUp,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => SignUpScreen()),
+                        );
+                      },
                       child: Text(
                         'sign_up'.tr(),
                         style: AppTextStyle.medium14.copyWith(
@@ -280,8 +285,4 @@ class _LoginScreenState extends State<LoginScreen> {
   // void _navigateToForgotPassword() {
   //   NavigationService.goTo(AppRouter.kForgotPasswordScreen);
   // }
-
-  void _navigateToSignUp() {
-    Navigator.push(context, MaterialPageRoute(builder: (_) => SignUpScreen()));
-  }
 }

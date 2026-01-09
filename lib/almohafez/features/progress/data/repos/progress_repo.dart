@@ -1,5 +1,5 @@
+import 'package:almohafez/almohafez/features/progress/data/models/session_evaluation_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:almohafez/almohafez_teacher/features/sessions/data/models/session_evaluation_model.dart';
 import '../models/progress_model.dart';
 
 class ProgressRepo {

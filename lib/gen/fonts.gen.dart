@@ -10,6 +10,6 @@
 class FontFamily {
   FontFamily._();
   static const String roboto = 'Roboto';
-  static const String robotoVariable = 'RobotoVariable';
-  static const String cairo = 'Cairo';
+  // static const String robotoVariable = 'RobotoVariable';
+  // static const String cairo = 'Cairo';
 }

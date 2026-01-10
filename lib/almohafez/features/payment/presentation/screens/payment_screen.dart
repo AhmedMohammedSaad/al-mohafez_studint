@@ -1,3 +1,4 @@
+import 'dart:developer';
 
 import 'package:almohafez/almohafez/features/payment/presentation/cubit/payment_cubit.dart';
 import 'package:almohafez/almohafez/features/payment/presentation/cubit/payment_state.dart';
@@ -18,7 +19,7 @@ class PaymentScreen extends StatefulWidget {
     required this.onPaymentSuccess,
   });
   final double amount;
-  final Function() onPaymentSuccess;
+  final Function(Map<String, String> transactionData) onPaymentSuccess;
 
   @override
   State<PaymentScreen> createState() => _PaymentScreenState();
@@ -90,23 +91,26 @@ class _PaymentScreenState extends State<PaymentScreen> {
                           });
                         }
                       },
-                      onHttpError: (HttpResponseError error) {
-                        Fluttertoast.showToast(
-                          msg: "حدث خطأ اعد المحاولة",
-                          toastLength: Toast.LENGTH_SHORT,
-                          gravity: ToastGravity.TOP,
-                          timeInSecForIosWeb: 3,
-                          backgroundColor: Colors.red,
-                          textColor: Colors.white,
-                          fontSize: 16.0,
-                        );
-                        Navigator.pop(context);
-                      },
+                      // onHttpError: (HttpResponseError error) {
+                      //   log("HTTP ERROR: ${error.response?.statusCode}");
+
+                      //   Fluttertoast.showToast(
+                      //     msg: "حدث خطأ اعد المحاولة",
+                      //     toastLength: Toast.LENGTH_SHORT,
+                      //     gravity: ToastGravity.TOP,
+                      //     timeInSecForIosWeb: 3,
+                      //     backgroundColor: Colors.red,
+                      //     textColor: Colors.white,
+                      //     fontSize: 16.0,
+                      //   );
+                      //   Navigator.pop(context);
+                      // },
                       onNavigationRequest: (NavigationRequest request) {
                         if (request.url.startsWith(
                           "https://dev.fawaterk.com/success",
                         )) {
-                          widget.onPaymentSuccess();
+                          final uri = Uri.parse(request.url);
+                          widget.onPaymentSuccess(uri.queryParameters);
                           Fluttertoast.showToast(
                             msg: "      تم الدفع بنجاح      ",
                             toastLength: Toast.LENGTH_SHORT,

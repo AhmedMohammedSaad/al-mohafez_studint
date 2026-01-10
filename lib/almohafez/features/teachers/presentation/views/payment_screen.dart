@@ -2,6 +2,7 @@ import 'package:almohafez/almohafez/core/presentation/view/widgets/main_button.d
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nb_utils/nb_utils.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../data/models/booking_response_model.dart';
 import '../../data/models/booking_request_model.dart';
@@ -12,6 +13,9 @@ import 'package:fluttertoast/fluttertoast.dart';
 // Import the new feature
 import 'package:almohafez/almohafez/features/payment/presentation/screens/payment_screen.dart'
     as feature;
+import '../../../payment/data/models/payment_record_model.dart';
+import '../../../payment/presentation/cubit/payment_cubit.dart';
+import '../../../payment/presentation/cubit/payment_state.dart';
 
 class PaymentScreen extends StatefulWidget {
   final BookingResponseModel bookingResponse;
@@ -34,31 +38,75 @@ class PaymentScreen extends StatefulWidget {
 }
 
 class _PaymentScreenState extends State<PaymentScreen> {
+  Map<String, String>? _paymentData;
+
   @override
   Widget build(BuildContext context) {
-    return BlocListener<BookingCubit, BookingState>(
-      listener: (context, state) {
-        if (state is BookingCreated) {
-          _showPaymentSuccessDialog();
-        } else if (state is BookingError) {
-          Fluttertoast.showToast(
-            msg: state.message,
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.BOTTOM,
-            timeInSecForIosWeb: 1,
-            backgroundColor: AppColors.primaryError,
-            textColor: Colors.white,
-            fontSize: 16.0,
-          );
-        }
-      },
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<PaymentCubit, PaymentState>(
+          listener: (context, state) {
+            if (state is PaymentRecordSaved) {
+              _showPaymentSuccessDialog();
+            } else if (state is PaymentFailure) {
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text('Error Saving Payment'),
+                  content: Text(state.message),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        // Still show success dialog because payment/booking succeeded?
+                        // Or let user decide.
+                        _showPaymentSuccessDialog();
+                      },
+                      child: const Text('OK'),
+                    ),
+                  ],
+                ),
+              );
+            }
+          },
+        ),
+      ],
       child: feature.PaymentScreen(
         amount: widget.bookingResponse.planPriceEgp.toDouble(),
-        onPaymentSuccess: () {
+        onPaymentSuccess: (transactionData) {
+          _paymentData = transactionData;
           _processBooking();
+          _handleBookingCreated();
         },
       ),
     );
+  }
+
+  void _handleBookingCreated() {
+    log(
+      "DEBUG: _handleBookingCreated called. User: ${Supabase.instance.client.auth.currentUser?.id}",
+    );
+    final user = Supabase.instance.client.auth.currentUser;
+    if (user == null) {
+      log("DEBUG: User is null, cannot save payment record.");
+      return;
+    }
+
+    final paymentRecord = PaymentRecordModel(
+      studentId: user.id,
+      amount: widget.bookingResponse.planPriceEgp.toDouble(),
+      currency: 'EGP',
+      status: 'completed',
+      paymentMethod: 'MasterCard',
+      transactionId: _paymentData?['paymentId'] ?? _paymentData?['invoice_id'],
+      paymentDetails: _paymentData,
+      createdAt: DateTime.now(),
+      paymentTime: DateTime.now(),
+      notes: widget.bookingResponse.notes,
+    );
+
+    log("DEBUG: Calling savePaymentRecord with: ${paymentRecord.toJson()}");
+    context.read<PaymentCubit>().savePaymentRecord(paymentRecord);
   }
 
   Future<void> _processBooking() async {

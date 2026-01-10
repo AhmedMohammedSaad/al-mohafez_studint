@@ -194,7 +194,7 @@ class _StudentCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 90.w,
+      width: 100.w,
       margin: EdgeInsets.only(right: 12.w),
       child: Column(
         children: [

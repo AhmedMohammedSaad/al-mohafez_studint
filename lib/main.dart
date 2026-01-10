@@ -1,11 +1,9 @@
 import 'package:almohafez/almohafez/core/presentation/view/main_screen.dart';
-import 'package:almohafez/almohafez/core/theme/app_colors.dart';
-import 'package:almohafez/almohafez/core/theme/app_theme.dart';
 import 'package:almohafez/almohafez/features/onboarding/presentation/views/welcome_onboarding_screen.dart';
+import 'package:almohafez/almohafez/features/payment/data/repos/payments_repo.dart';
 import 'package:almohafez/almohafez/features/payment/presentation/cubit/payment_cubit.dart';
 import 'package:almohafez/almohafez/features/sessions/data/repos/sessions_repo.dart';
 import 'package:almohafez/almohafez/features/sessions/logic/sessions_cubit.dart';
-import 'package:almohafez/gen/fonts.gen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -17,7 +15,10 @@ import 'package:almohafez/almohafez/core/presentation/view_model/cubit/app_cubit
 import 'package:almohafez/almohafez/features/profile/logic/profile_bloc.dart';
 import 'package:almohafez/almohafez/features/profile/data/repos/profile_repo.dart';
 import 'package:almohafez/almohafez/features/profile/logic/profile_event.dart';
+import 'package:almohafez/almohafez/features/profile/logic/profile_event.dart';
 import 'almohafez/core/utils/app_consts.dart';
+import 'package:almohafez/almohafez/features/teachers/logic/booking_cubit.dart';
+import 'package:almohafez/almohafez/features/teachers/data/repos/bookings_repo.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,13 +39,19 @@ void main() async {
       fallbackLocale: const Locale('ar'),
       child: MultiBlocProvider(
         providers: [
-          BlocProvider(create: (context) => AppCubit()),
           BlocProvider(
             create: (context) =>
                 ProfileBloc(ProfileRepo())..add(LoadProfileEvent()),
           ),
-          BlocProvider(create: (context) => SessionsCubit(SessionsRepo())),
+          BlocProvider(create: (context) => BookingCubit(BookingsRepo())),
+
           BlocProvider(create: (context) => PaymentCubit()),
+          BlocProvider(
+            create: (context) => SessionsCubit(
+              SessionsRepo(),
+              PaymentsRepoImpl(Supabase.instance.client),
+            ),
+          ),
         ],
         child: MyApp(),
       ),
@@ -76,12 +83,12 @@ class MyApp extends StatelessWidget {
         supportedLocales: context.supportedLocales,
         localizationsDelegates: context.localizationDelegates,
         debugShowCheckedModeBanner: false,
-        theme: AppTheme.appLightTheme(
-          scaffoldBackgroundColor: AppColors.white,
-          context.locale.languageCode == 'ar'
-              ? FontFamily.cairo
-              : FontFamily.roboto,
-        ),
+        // theme: AppTheme.appLightTheme(
+        // scaffoldBackgroundColor: AppColors.white,
+        // context.locale.languageCode == 'ar'
+        //     ? FontFamily.cairo
+        //     : FontFamily.roboto,
+        // ),
         // darkTheme: AppTheme.appDarkTheme(
         // context.locale.languageCode == 'ar'
         // ? FontFamily.cairo

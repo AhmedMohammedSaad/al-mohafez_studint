@@ -23,8 +23,6 @@ class PaymentMethodChanged extends PaymentState {
 class PaymentLoading extends PaymentState {}
 
 class PaymentSuccess extends PaymentState {
-  // final String url;
-
   const PaymentSuccess();
 
   @override
@@ -40,12 +38,13 @@ class PaymentFailure extends PaymentState {
   List<Object> get props => [message];
 }
 
-// ignore: must_be_immutable
 class PaymentInitiated extends PaymentState {
-  String paymentUrl;
+  final String paymentUrl;
 
-  PaymentInitiated(this.paymentUrl);
+  const PaymentInitiated(this.paymentUrl);
 
   @override
   List<Object> get props => [paymentUrl];
 }
+
+class PaymentRecordSaved extends PaymentState {}

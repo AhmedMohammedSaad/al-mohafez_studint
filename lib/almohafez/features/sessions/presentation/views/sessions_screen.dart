@@ -1,4 +1,6 @@
+import 'package:almohafez/almohafez/core/theme/app_colors.dart';
 import 'package:almohafez/almohafez/features/sessions/presentation/views/session_rating_screen.dart';
+import 'package:almohafez/almohafez/features/teachers/presentation/views/teachers_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -13,7 +15,9 @@ import '../../../../core/routing/app_route.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:shimmer/shimmer.dart';
 import '../../../../core/presentation/view/widgets/error_widget.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SessionsScreen extends StatefulWidget {
   const SessionsScreen({super.key});
@@ -27,8 +31,13 @@ class _SessionsScreenState extends State<SessionsScreen>
   late TabController _tabController;
 
   @override
+  @override
   void initState() {
     super.initState();
+    final userId = Supabase.instance.client.auth.currentUser?.id;
+    if (userId != null) {
+      context.read<SessionsCubit>().checkSubscriptionStatus(userId);
+    }
     context.read<SessionsCubit>().loadSessions();
 
     _tabController = TabController(length: 2, vsync: this);
@@ -41,33 +50,61 @@ class _SessionsScreenState extends State<SessionsScreen>
   }
 
   void _navigateToBooking() {
-    // Navigate to teachers list or home to start booking
-    NavigationService.push(AppRouter.kTeachersScreen);
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => TeachersScreen()),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(title: Text('nav_sessions'.tr())),
-      body: BlocBuilder<SessionsCubit, SessionsState>(
-        builder: (context, state) {
-          if (state is SessionsLoading) {
-            return _buildShimmerLoading();
-          }
-
-          if (state is SessionsError) {
-            return AppErrorWidget(
-              message: state.message,
-              onRefresh: () => context.read<SessionsCubit>().loadSessions(),
+      body: BlocListener<SessionsCubit, SessionsState>(
+        listener: (context, state) {
+          if (state is SubscriptionExpired) {
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (context) => AlertDialog(
+                title: Text('Subscription Expired'), // Or localized
+                content: Text(
+                  'Your monthly subscription has ended. Please renew to continue accessing sessions.',
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context); // Close dialog
+                      _navigateToBooking();
+                    },
+                    child: Text('Renew Now'),
+                  ),
+                ],
+              ),
             );
           }
-
-          if (state is SessionsLoaded) {
-            return _buildContent(state);
-          }
-
-          return _buildShimmerLoading();
         },
+        child: BlocBuilder<SessionsCubit, SessionsState>(
+          builder: (context, state) {
+            if (state is SessionsLoading) {
+              return _buildShimmerLoading();
+            }
+
+            if (state is SessionsError) {
+              return AppErrorWidget(
+                message: state.message,
+                onRefresh: () => context.read<SessionsCubit>().loadSessions(),
+              );
+            }
+
+            if (state is SessionsLoaded) {
+              return _buildContent(state);
+            }
+
+            return _buildShimmerLoading();
+          },
+        ),
       ),
     );
   }

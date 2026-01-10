@@ -19,7 +19,6 @@ class AppTextStyle {
     fontSize: 32.sp,
     fontWeight: FontWeight.w700,
     height: 1.2,
-    fontFamily: FontFamily.cairo,
   );
 
   static TextStyle get textStyle28Bold => TextStyle(
@@ -27,7 +26,6 @@ class AppTextStyle {
     fontSize: 28.sp,
     fontWeight: FontWeight.w700,
     height: 1.2,
-    fontFamily: FontFamily.cairo,
   );
 
   static TextStyle get textStyle24Bold => TextStyle(
@@ -35,7 +33,6 @@ class AppTextStyle {
     fontSize: 24.sp,
     fontWeight: FontWeight.w700,
     height: 1.3,
-    fontFamily: FontFamily.cairo,
   );
 
   static TextStyle get textStyle22Bold => TextStyle(
@@ -43,7 +40,6 @@ class AppTextStyle {
     fontSize: 22.sp,
     fontWeight: FontWeight.w600,
     height: 1.3,
-    fontFamily: FontFamily.cairo,
   );
 
   static TextStyle get textStyle20Bold => TextStyle(
@@ -51,7 +47,6 @@ class AppTextStyle {
     fontSize: 20.sp,
     fontWeight: FontWeight.w600,
     height: 1.3,
-    fontFamily: FontFamily.cairo,
   );
 
   static TextStyle get textStyle18Bold => TextStyle(
@@ -59,7 +54,6 @@ class AppTextStyle {
     fontSize: 18.sp,
     fontWeight: FontWeight.w600,
     height: 1.4,
-    fontFamily: FontFamily.cairo,
   );
 
   static TextStyle get textStyle16Bold => TextStyle(
@@ -67,7 +61,6 @@ class AppTextStyle {
     fontSize: 16.sp,
     fontWeight: FontWeight.w600,
     height: 1.4,
-    fontFamily: FontFamily.cairo,
   );
 
   static TextStyle get textStyle14Bold => TextStyle(
@@ -75,7 +68,6 @@ class AppTextStyle {
     fontSize: 14.sp,
     fontWeight: FontWeight.w600,
     height: 1.4,
-    fontFamily: FontFamily.cairo,
   );
 
   static TextStyle get textStyle12Bold => TextStyle(
@@ -83,7 +75,6 @@ class AppTextStyle {
     fontSize: 12.sp,
     fontWeight: FontWeight.w600,
     height: 1.4,
-    fontFamily: FontFamily.cairo,
   );
 
   // النصوص المتوسطة
@@ -92,7 +83,6 @@ class AppTextStyle {
     fontSize: 18.sp,
     fontWeight: FontWeight.w500,
     height: 1.4,
-    fontFamily: FontFamily.cairo,
   );
 
   static TextStyle get textStyle16Medium => TextStyle(
@@ -100,7 +90,6 @@ class AppTextStyle {
     fontSize: 16.sp,
     fontWeight: FontWeight.w500,
     height: 1.4,
-    fontFamily: FontFamily.cairo,
   );
 
   static TextStyle get textStyle14Medium => TextStyle(
@@ -108,7 +97,6 @@ class AppTextStyle {
     fontSize: 14.sp,
     fontWeight: FontWeight.w500,
     height: 1.4,
-    fontFamily: FontFamily.cairo,
   );
 
   static TextStyle get textStyle12Medium => TextStyle(
@@ -116,7 +104,6 @@ class AppTextStyle {
     fontSize: 12.sp,
     fontWeight: FontWeight.w500,
     height: 1.4,
-    fontFamily: FontFamily.cairo,
   );
 
   static TextStyle get textStyle10Medium => TextStyle(
@@ -124,7 +111,6 @@ class AppTextStyle {
     fontSize: 10.sp,
     fontWeight: FontWeight.w500,
     height: 1.4,
-    fontFamily: FontFamily.cairo,
   );
 
   // النصوص العادية
@@ -133,7 +119,6 @@ class AppTextStyle {
     fontSize: 16.sp,
     fontWeight: FontWeight.w400,
     height: 1.5,
-    fontFamily: FontFamily.cairo,
   );
 
   static TextStyle get textStyle14Regular => TextStyle(
@@ -141,7 +126,6 @@ class AppTextStyle {
     fontSize: 14.sp,
     fontWeight: FontWeight.w400,
     height: 1.5,
-    fontFamily: FontFamily.cairo,
   );
 
   static TextStyle get textStyle12Regular => TextStyle(
@@ -149,7 +133,6 @@ class AppTextStyle {
     fontSize: 12.sp,
     fontWeight: FontWeight.w400,
     height: 1.5,
-    fontFamily: FontFamily.cairo,
   );
 
   // أنماط خاصة للأزرار
@@ -158,7 +141,6 @@ class AppTextStyle {
     fontSize: 16.sp,
     fontWeight: FontWeight.w600,
     height: 1.2,
-    fontFamily: FontFamily.cairo,
   );
 
   static TextStyle get buttonTextMedium => TextStyle(
@@ -166,7 +148,6 @@ class AppTextStyle {
     fontSize: 14.sp,
     fontWeight: FontWeight.w600,
     height: 1.2,
-    fontFamily: FontFamily.cairo,
   );
 
   static TextStyle get buttonTextSmall => TextStyle(
@@ -174,7 +155,6 @@ class AppTextStyle {
     fontSize: 12.sp,
     fontWeight: FontWeight.w600,
     height: 1.2,
-    fontFamily: FontFamily.cairo,
   );
 
   // أنماط للنصوص الثانوية
@@ -183,7 +163,6 @@ class AppTextStyle {
     fontSize: 12.sp,
     fontWeight: FontWeight.w400,
     height: 1.4,
-    fontFamily: FontFamily.cairo,
   );
 
   static TextStyle get hintText => TextStyle(
@@ -191,7 +170,6 @@ class AppTextStyle {
     fontSize: 14.sp,
     fontWeight: FontWeight.w400,
     height: 1.4,
-    fontFamily: FontFamily.cairo,
   );
 
   // ========== الأنماط القديمة للتوافق ==========
@@ -462,91 +440,78 @@ class AppTextStyle {
     color: AppColors.primaryWhite,
     fontSize: 12.sp,
     fontWeight: FontWeight.w500,
-    fontFamily: FontFamily.cairo,
   );
 
   static TextStyle font12GreyMedium = TextStyle(
     color: AppColors.black,
     fontSize: 12.sp,
     fontWeight: FontWeight.w500,
-    fontFamily: FontFamily.cairo,
   );
 
   static TextStyle font14DarkBlueRegular = TextStyle(
     color: AppColors.primaryBlueViolet,
     fontSize: 14.sp,
     fontWeight: FontWeight.w400,
-    fontFamily: FontFamily.cairo,
   );
 
   static TextStyle font14GreyRegular = TextStyle(
     color: AppColors.grey,
     fontSize: 14.sp,
     fontWeight: FontWeight.w400,
-    fontFamily: FontFamily.cairo,
   );
 
   static TextStyle font10GreyRegular = TextStyle(
     color: AppColors.grey,
     fontSize: 10.sp,
     fontWeight: FontWeight.w400,
-    fontFamily: FontFamily.cairo,
   );
 
   static TextStyle font12DarkBlueMedium = TextStyle(
     color: AppColors.primaryBlueViolet,
     fontSize: 12.sp,
     fontWeight: FontWeight.w500,
-    fontFamily: FontFamily.cairo,
   );
 
   static TextStyle font14DarkBlueMedium = TextStyle(
     color: AppColors.primaryBlueViolet,
     fontSize: 14.sp,
     fontWeight: FontWeight.w500,
-    fontFamily: FontFamily.cairo,
   );
 
   static TextStyle font12GreyRegular = TextStyle(
     color: AppColors.grey,
     fontSize: 12.sp,
     fontWeight: FontWeight.w400,
-    fontFamily: FontFamily.cairo,
   );
 
   static TextStyle font14DarkBlueBold = TextStyle(
     color: AppColors.primaryDark,
     fontSize: 14.sp,
     fontWeight: FontWeight.w700,
-    fontFamily: FontFamily.cairo,
   );
 
   static TextStyle font16DarkBlueMedium = TextStyle(
     color: AppColors.primaryDark,
     fontSize: 16.sp,
     fontWeight: FontWeight.w500,
-    fontFamily: FontFamily.cairo,
   );
 
   static TextStyle font16DarkBlueBold = TextStyle(
     color: AppColors.primaryDark,
     fontSize: 16.sp,
     fontWeight: FontWeight.w700,
-    fontFamily: FontFamily.cairo,
   );
 
   static TextStyle font20DarkBlueBold = TextStyle(
     color: AppColors.primaryDark,
     fontSize: 20.sp,
     fontWeight: FontWeight.w700,
-    fontFamily: FontFamily.cairo,
   );
 
   static TextStyle font12DarkBlueRegular = TextStyle(
     color: AppColors.primaryDark,
     fontSize: 12.sp,
     fontWeight: FontWeight.w400,
-    fontFamily: FontFamily.cairo,
   );
   // Plain text styles (default weight)
   static TextStyle get textStyle20 => TextStyle(
@@ -554,7 +519,6 @@ class AppTextStyle {
     fontSize: 20.sp,
     fontWeight: FontWeight.w400,
     height: 1.4,
-    fontFamily: FontFamily.cairo,
   );
 
   static TextStyle get textStyle18 => TextStyle(
@@ -562,7 +526,6 @@ class AppTextStyle {
     fontSize: 18.sp,
     fontWeight: FontWeight.w400,
     height: 1.4,
-    fontFamily: FontFamily.cairo,
   );
 
   static TextStyle get textStyle16 => TextStyle(
@@ -570,7 +533,6 @@ class AppTextStyle {
     fontSize: 16.sp,
     fontWeight: FontWeight.w400,
     height: 1.4,
-    fontFamily: FontFamily.cairo,
   );
 
   static TextStyle get textStyle14 => TextStyle(
@@ -578,7 +540,6 @@ class AppTextStyle {
     fontSize: 14.sp,
     fontWeight: FontWeight.w400,
     height: 1.4,
-    fontFamily: FontFamily.cairo,
   );
 
   static TextStyle get textStyle12 => TextStyle(
@@ -586,7 +547,6 @@ class AppTextStyle {
     fontSize: 12.sp,
     fontWeight: FontWeight.w400,
     height: 1.4,
-    fontFamily: FontFamily.cairo,
   );
 
   static TextStyle get textStyle10 => TextStyle(
@@ -594,7 +554,6 @@ class AppTextStyle {
     fontSize: 10.sp,
     fontWeight: FontWeight.w400,
     height: 1.4,
-    fontFamily: FontFamily.cairo,
   );
 
   static TextStyle get textStyle8 => TextStyle(
@@ -602,7 +561,6 @@ class AppTextStyle {
     fontSize: 8.sp,
     fontWeight: FontWeight.w400,
     height: 1.4,
-    fontFamily: FontFamily.cairo,
   );
 }
 

@@ -21,3 +21,5 @@ class SessionsError extends SessionsState {
 
   SessionsError(this.message);
 }
+
+class SubscriptionExpired extends SessionsState {}

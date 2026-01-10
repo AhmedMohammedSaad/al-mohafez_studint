@@ -1,6 +1,9 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:almohafez/almohafez/core/data/network/web_service/api_service.dart';
 import 'package:almohafez/almohafez/core/utils/app_consts.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../data/models/payment_record_model.dart';
+import '../../data/repos/payments_repo.dart';
 import 'payment_state.dart';
 
 class PaymentCubit extends Cubit<PaymentState> {
@@ -8,6 +11,7 @@ class PaymentCubit extends Cubit<PaymentState> {
 
   PaymentMethodType _selectedMethod = PaymentMethodType.creditCard;
   final AppDio appDio = AppDio();
+
   void changePaymentMethod(PaymentMethodType method) {
     _selectedMethod = method;
     emit(PaymentMethodChanged(_selectedMethod));
@@ -28,8 +32,7 @@ class PaymentCubit extends Cubit<PaymentState> {
       final response = await appDio.post(
         path: AppConst.apiUrlPostPayment,
         data: {
-          "payment_method_id": 2,
-
+          "payment_method_id": 2, // 2 for Credit Card Fawaterek
           "cartTotal": amount,
           "currency": "EGP",
           "customer": {
@@ -53,12 +56,22 @@ class PaymentCubit extends Cubit<PaymentState> {
           'Authorization': 'Bearer ${AppConst.accessToken}',
         },
       );
-      // Assuming the API returns the URL in this structure
-      // Adjust based on actual API response if needed
+
       final paymentUrl = response.data["data"]["payment_data"]["redirectTo"];
       emit(PaymentInitiated(paymentUrl));
     } catch (e) {
-      emit(PaymentFailure("حدث خطأ اثناء معالجة الدفع"));
+      emit(PaymentFailure("حدث خطأ اثناء معالجة الدفع: $e"));
+    }
+  }
+
+  Future<void> savePaymentRecord(PaymentRecordModel paymentRecord) async {
+    emit(PaymentLoading());
+    try {
+      final paymentsRepo = PaymentsRepoImpl(Supabase.instance.client);
+      await paymentsRepo.savePaymentRecord(paymentRecord);
+      emit(PaymentRecordSaved());
+    } catch (e) {
+      emit(PaymentFailure("فشل في حفظ سجل الدفع: $e"));
     }
   }
 }

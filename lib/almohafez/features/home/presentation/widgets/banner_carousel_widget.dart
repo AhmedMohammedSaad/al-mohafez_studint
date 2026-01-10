@@ -152,7 +152,6 @@ class _BannerCarouselWidgetState extends State<BannerCarouselWidget> {
                       Text(
                         message,
                         style: TextStyle(
-                          fontFamily: 'Cairo',
                           fontSize: 14.sp,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,

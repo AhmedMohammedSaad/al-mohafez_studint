@@ -60,7 +60,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         title: Text(
           'edit_profile_title'.tr(),
           style: TextStyle(
-            fontFamily: 'Cairo',
             fontSize: 22.sp,
             fontWeight: FontWeight.bold,
             color: const Color(0xFF0A1D64),
@@ -177,7 +176,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       : Text(
                           'save_changes'.tr(),
                           style: TextStyle(
-                            fontFamily: 'Cairo',
                             fontSize: 16.sp,
                             fontWeight: FontWeight.bold,
                             color: Colors.white,
@@ -215,7 +213,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           keyboardType: keyboardType,
           style: TextStyle(
             color: Colors.black, // Ensure text is visible
-            fontFamily: 'Cairo',
           ),
           decoration: InputDecoration(
             hintText: hint,

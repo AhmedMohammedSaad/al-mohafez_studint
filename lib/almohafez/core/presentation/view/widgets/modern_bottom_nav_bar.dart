@@ -95,7 +95,6 @@ class ModernBottomNavBar extends StatelessWidget {
                             color: AppColors.primaryBlueViolet,
                             fontWeight: FontWeight.bold,
                             fontSize: 9.sp,
-                            fontFamily: 'Cairo',
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,

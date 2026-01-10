@@ -35,20 +35,12 @@ class NoDataWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             if (icon != null) ...[
-              Icon(
-                icon,
-                size: 48,
-                color: iconColor ?? Colors.grey[400],
-              ),
+              Icon(icon, size: 48, color: iconColor ?? Colors.grey[400]),
               const SizedBox(height: 16),
             ],
             Text(
               messageKey.tr(),
-              style: TextStyle(
-                fontFamily: 'Cairo',
-                fontSize: 14,
-                color: Colors.grey[600],
-              ),
+              style: TextStyle(fontSize: 14, color: Colors.grey[600]),
               textAlign: TextAlign.center,
             ),
           ],

@@ -29,7 +29,6 @@ class TutorsListScreen extends StatelessWidget {
           title: Text(
             'teachers'.tr(),
             style: TextStyle(
-              fontFamily: 'Cairo',
               fontSize: 20.sp,
               fontWeight: FontWeight.bold,
               color: const Color(0xFF0A1D64),
@@ -122,7 +121,6 @@ class TutorsListScreen extends StatelessWidget {
             Text(
               'teachers_empty_title'.tr(),
               style: TextStyle(
-                fontFamily: 'Cairo',
                 fontSize: 18.sp,
                 fontWeight: FontWeight.w600,
                 color: const Color(0xFF0A1D64),
@@ -131,11 +129,7 @@ class TutorsListScreen extends StatelessWidget {
             SizedBox(height: 10.h),
             Text(
               'teachers_empty_subtitle'.tr(),
-              style: TextStyle(
-                fontFamily: 'Cairo',
-                fontSize: 14.sp,
-                color: const Color(0xFF5B6C9F),
-              ),
+              style: TextStyle(fontSize: 14.sp, color: const Color(0xFF5B6C9F)),
               textAlign: TextAlign.center,
             ),
           ],
@@ -161,7 +155,7 @@ class TutorsListScreen extends StatelessWidget {
         //       namedArgs: {'count': tutors.length.toString()},
         //     ),
         //     style: TextStyle(
-        //       fontFamily: 'Cairo',
+        //
         //       fontSize: 14.sp,
         //       fontWeight: FontWeight.w600,
         //       color: const Color(0xFF0A1D64),

@@ -203,11 +203,7 @@ class DailyChartPainter extends CustomPainter {
       if (i % 2 == 0 || dailyData.length <= 7) {
         textPainter.text = TextSpan(
           text: dailyData[i].dayName,
-          style: const TextStyle(
-            color: Color(0xFF9E9E9E),
-            fontSize: 11,
-            fontFamily: 'Cairo',
-          ),
+          style: const TextStyle(color: Color(0xFF9E9E9E), fontSize: 11),
         );
         textPainter.layout();
         textPainter.paint(
@@ -295,7 +291,6 @@ class DailyChartPainter extends CustomPainter {
         color: Color(0xFF0077B6),
         fontSize: 12,
         fontWeight: FontWeight.bold,
-        fontFamily: 'Cairo',
       ),
     );
     textPainter.layout();

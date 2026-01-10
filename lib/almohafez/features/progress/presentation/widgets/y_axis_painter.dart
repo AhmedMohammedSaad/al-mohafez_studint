@@ -50,11 +50,7 @@ class YAxisPainter extends CustomPainter {
 
       textPainter.text = TextSpan(
         text: '${value.toInt()}%',
-        style: const TextStyle(
-          color: Color(0xFF9E9E9E),
-          fontSize: 12,
-          fontFamily: 'Cairo',
-        ),
+        style: const TextStyle(color: Color(0xFF9E9E9E), fontSize: 12),
       );
       textPainter.layout();
       // Align text to the right

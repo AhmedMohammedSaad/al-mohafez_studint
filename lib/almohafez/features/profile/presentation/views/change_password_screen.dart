@@ -41,7 +41,6 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
         title: Text(
           'change_password_title'.tr(),
           style: TextStyle(
-            fontFamily: 'Cairo',
             fontSize: 22.sp,
             fontWeight: FontWeight.bold,
             color: const Color(0xFF0A1D64),
@@ -227,7 +226,6 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                       : Text(
                           'change_password'.tr(),
                           style: TextStyle(
-                            fontFamily: 'Cairo',
                             fontSize: 16.sp,
                             fontWeight: FontWeight.bold,
                             color: Colors.white,

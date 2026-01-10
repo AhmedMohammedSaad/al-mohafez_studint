@@ -36,7 +36,6 @@ class _CompetitionsContent extends StatelessWidget {
                 Text(
                   'current_competitions'.tr(),
                   style: TextStyle(
-                    fontFamily: 'Cairo',
                     fontSize: 20.sp,
                     fontWeight: FontWeight.bold,
                     color: const Color(0xFF0A1D64),
@@ -101,11 +100,7 @@ class _CompetitionsContent extends StatelessWidget {
             children: [
               Text(
                 message,
-                style: TextStyle(
-                  fontFamily: 'Cairo',
-                  fontSize: 12.sp,
-                  color: Colors.grey[600],
-                ),
+                style: TextStyle(fontSize: 12.sp, color: Colors.grey[600]),
                 textAlign: TextAlign.center,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
@@ -149,11 +144,7 @@ class _CompetitionsContent extends StatelessWidget {
             SizedBox(height: 8.h),
             Text(
               'no_competitions'.tr(),
-              style: TextStyle(
-                fontFamily: 'Cairo',
-                fontSize: 16.sp,
-                color: Colors.white70,
-              ),
+              style: TextStyle(fontSize: 16.sp, color: Colors.white70),
             ),
           ],
         ),
@@ -247,7 +238,6 @@ class _CompetitionsContent extends StatelessWidget {
                           Text(
                             competition.name,
                             style: TextStyle(
-                              fontFamily: 'Cairo',
                               fontSize: 16.sp,
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
@@ -281,7 +271,6 @@ class _CompetitionsContent extends StatelessWidget {
                                   Text(
                                     'view_details'.tr(),
                                     style: TextStyle(
-                                      fontFamily: 'Cairo',
                                       fontSize: 12.sp,
                                       fontWeight: FontWeight.w600,
                                       color: const Color(0xFF764BA2),

@@ -61,11 +61,7 @@ class _MainScreenState extends State<MainScreen> {
           color: AppColors.darkGreen100,
         ),
         title: label,
-        textStyle: TextStyle(
-          fontSize: 10.sp,
-          fontWeight: FontWeight.w600,
-          fontFamily: 'Cairo',
-        ),
+        textStyle: TextStyle(fontSize: 10.sp, fontWeight: FontWeight.w600),
         activeForegroundColor: AppColors.primaryBlueViolet,
       ),
     );

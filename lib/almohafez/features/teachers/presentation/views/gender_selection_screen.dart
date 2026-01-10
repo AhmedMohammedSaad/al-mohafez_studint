@@ -17,7 +17,7 @@ class GenderSelectionScreen extends StatelessWidget {
       //   title: Text(
       //     'اختيار نوع المحفظ',
       //     style: TextStyle(
-      //       fontFamily: 'Cairo',
+      //
       //       fontSize: 22.sp,
       //       fontWeight: FontWeight.bold,
       //       color: const Color(0xFF0A1D64),
@@ -33,7 +33,6 @@ class GenderSelectionScreen extends StatelessWidget {
             Text(
               'teachers_gender_selection_title'.tr(),
               style: TextStyle(
-                fontFamily: 'Cairo',
                 fontSize: 18.sp,
                 fontWeight: FontWeight.w600,
                 color: const Color(0xFF5B6C9F),
@@ -137,7 +136,6 @@ class GenderSelectionScreen extends StatelessWidget {
                   Text(
                     title,
                     style: TextStyle(
-                      fontFamily: 'Cairo',
                       fontSize: 18.sp,
                       fontWeight: FontWeight.bold,
                       color: const Color(0xFF0A1D64),
@@ -147,7 +145,6 @@ class GenderSelectionScreen extends StatelessWidget {
                   Text(
                     subtitle,
                     style: TextStyle(
-                      fontFamily: 'Cairo',
                       fontSize: 14.sp,
                       color: const Color(0xFF5B6C9F),
                     ),

@@ -79,7 +79,6 @@ class TutorCard extends StatelessWidget {
                         child: Text(
                           tutor.fullName,
                           style: TextStyle(
-                            fontFamily: 'Cairo',
                             fontSize: 16.sp,
                             fontWeight: FontWeight.bold,
                             color: const Color(0xFF0A1D64),
@@ -105,7 +104,6 @@ class TutorCard extends StatelessWidget {
                       Text(
                         tutor.overallRating.toStringAsFixed(1),
                         style: TextStyle(
-                          fontFamily: 'Cairo',
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w600,
                           color: const Color(0xFF0A1D64),
@@ -123,7 +121,6 @@ class TutorCard extends StatelessWidget {
                           namedArgs: {'count': tutor.numSessions.toString()},
                         ),
                         style: TextStyle(
-                          fontFamily: 'Cairo',
                           fontSize: 14.sp,
                           color: const Color(0xFF5B6C9F),
                         ),
@@ -136,7 +133,6 @@ class TutorCard extends StatelessWidget {
                     Text(
                       tutor.qualifications.first,
                       style: TextStyle(
-                        fontFamily: 'Cairo',
                         fontSize: 12.sp,
                         color: const Color(0xFF5B6C9F),
                       ),
@@ -173,7 +169,6 @@ class TutorCard extends StatelessWidget {
             ? 'teachers_available'.tr()
             : 'teachers_unavailable'.tr(),
         style: TextStyle(
-          fontFamily: 'Cairo',
           fontSize: 10.sp,
           fontWeight: FontWeight.w600,
           color: tutor.isAvailable

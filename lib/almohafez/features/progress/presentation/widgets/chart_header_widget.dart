@@ -32,7 +32,6 @@ class ChartHeaderWidget extends StatelessWidget {
         Text(
           titleKey.tr(),
           style: const TextStyle(
-            fontFamily: 'Cairo',
             fontSize: 14,
             fontWeight: FontWeight.w600,
             color: Color(0xFF2E3A59),

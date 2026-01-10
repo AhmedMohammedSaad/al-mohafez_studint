@@ -34,7 +34,7 @@ class LanguageSelectionDialog extends StatelessWidget {
               style: TextStyle(
                 fontSize: 18.sp,
                 fontWeight: FontWeight.bold,
-                fontFamily: 'Cairo',
+
                 color: AppColors.primary,
               ),
             ),
@@ -94,7 +94,6 @@ class LanguageSelectionDialog extends StatelessWidget {
                 fontSize: 16.sp,
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                 color: isSelected ? AppColors.primary : Colors.black87,
-                fontFamily: 'Cairo',
               ),
             ),
             if (isSelected)

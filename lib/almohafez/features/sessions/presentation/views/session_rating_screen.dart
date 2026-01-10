@@ -206,7 +206,6 @@ class _SessionRatingScreenState extends State<SessionRatingScreen> {
                 style: TextStyle(
                   fontSize: 16.sp,
                   color: AppColors.textSecondary,
-                  fontFamily: 'Cairo',
                 ),
                 children: [
                   TextSpan(text: '${'session_rating_with'.tr()} '),

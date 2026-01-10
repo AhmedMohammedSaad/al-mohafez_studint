@@ -34,7 +34,6 @@ class _TopStudentsContent extends StatelessWidget {
         Text(
           'top_students_title'.tr(),
           style: TextStyle(
-            fontFamily: 'Cairo',
             fontSize: 20.sp,
             fontWeight: FontWeight.bold,
             color: const Color(0xFF0A1D64),
@@ -64,11 +63,7 @@ class _TopStudentsContent extends StatelessWidget {
                         SizedBox(height: 8.h),
                         Text(
                           state.message,
-                          style: TextStyle(
-                            fontFamily: 'Cairo',
-                            fontSize: 12.sp,
-                            color: Colors.grey,
-                          ),
+                          style: TextStyle(fontSize: 12.sp, color: Colors.grey),
                           textAlign: TextAlign.center,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
@@ -95,11 +90,7 @@ class _TopStudentsContent extends StatelessWidget {
                   child: Center(
                     child: Text(
                       'no_top_students'.tr(),
-                      style: TextStyle(
-                        fontFamily: 'Cairo',
-                        fontSize: 14.sp,
-                        color: Colors.grey,
-                      ),
+                      style: TextStyle(fontSize: 14.sp, color: Colors.grey),
                     ),
                   ),
                 );
@@ -268,7 +259,6 @@ class _StudentCard extends StatelessWidget {
           Text(
             name,
             style: TextStyle(
-              fontFamily: 'Cairo',
               fontSize: 14.sp,
               fontWeight: FontWeight.bold,
               color: const Color(0xFF0A1D64),

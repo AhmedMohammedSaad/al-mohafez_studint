@@ -6,6 +6,7 @@ import 'edit_profile_screen.dart';
 import '../widgets/profile_header_widget.dart';
 import '../widgets/statistics_cards_widget.dart';
 import '../widgets/action_buttons_widget.dart';
+import '../../../daily_content/presentation/widgets/daily_content_section.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/routing/app_route.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -49,7 +50,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
           title: Text(
             'profile_title'.tr(),
             style: TextStyle(
-              fontFamily: 'Cairo',
               fontSize: 20.sp,
               fontWeight: FontWeight.bold,
               color: AppColors.primary,
@@ -146,6 +146,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           .fade(delay: 200.ms)
                           .slideY(
                             begin: 0.2,
+                            end: 0,
+                            duration: 500.ms,
+                            curve: Curves.easeOut,
+                          ),
+
+                      SizedBox(height: 24.h),
+
+                      // Daily Content Section
+                      const DailyContentSection()
+                          .animate()
+                          .fade(delay: 300.ms)
+                          .slideX(
+                            begin: 0.1,
                             end: 0,
                             duration: 500.ms,
                             curve: Curves.easeOut,

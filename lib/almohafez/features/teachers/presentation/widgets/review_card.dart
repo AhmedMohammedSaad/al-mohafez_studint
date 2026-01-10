@@ -56,7 +56,6 @@ class ReviewCard extends StatelessWidget {
                     Text(
                       review.reviewer,
                       style: TextStyle(
-                        fontFamily: 'Cairo',
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w600,
                         color: const Color(0xFF0A1D64),
@@ -66,7 +65,7 @@ class ReviewCard extends StatelessWidget {
                     // Text(
                     //   _formatDate(review.date),
                     //   style: TextStyle(
-                    //     fontFamily: 'Cairo',
+                    //
                     //     fontSize: 12.sp,
                     //     color: const Color(0xFF5B6C9F),
                     //   ),
@@ -83,7 +82,6 @@ class ReviewCard extends StatelessWidget {
           Text(
             review.comment,
             style: TextStyle(
-              fontFamily: 'Cairo',
               fontSize: 14.sp,
               color: const Color(0xFF5B6C9F),
               height: 1.5,

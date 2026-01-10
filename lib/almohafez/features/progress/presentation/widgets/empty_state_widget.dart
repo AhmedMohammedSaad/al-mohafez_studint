@@ -38,7 +38,6 @@ class EmptyStateWidget extends StatelessWidget {
             Text(
               message,
               style: TextStyle(
-                fontFamily: 'Cairo',
                 fontSize: 18.sp,
                 fontWeight: FontWeight.w600,
                 color: const Color(0xFF2C2C2C),
@@ -50,7 +49,6 @@ class EmptyStateWidget extends StatelessWidget {
               Text(
                 subtitle!,
                 style: TextStyle(
-                  fontFamily: 'Cairo',
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w400,
                   color: const Color(0xFF8C8C8C),

@@ -31,7 +31,6 @@ class RecentSessionsWidget extends StatelessWidget {
               Text(
                 'progress_recent_sessions'.tr(),
                 style: TextStyle(
-                  fontFamily: 'Cairo',
                   fontSize: 18.sp,
                   fontWeight: FontWeight.w600,
                   color: const Color(0xFF2E3A59),
@@ -67,7 +66,6 @@ class RecentSessionsWidget extends StatelessWidget {
                 child: Text(
                   'progress_no_sessions'.tr(),
                   style: TextStyle(
-                    fontFamily: 'Cairo',
                     fontSize: 14.sp,
                     color: const Color(0xFF8C8C8C),
                   ),
@@ -122,7 +120,6 @@ class _SessionCard extends StatelessWidget {
                 Text(
                   _formatDate(session.date),
                   style: TextStyle(
-                    fontFamily: 'Cairo',
                     fontSize: 12.sp,
                     fontWeight: FontWeight.w500,
                     color: const Color(0xFF2C2C2C),
@@ -146,7 +143,6 @@ class _SessionCard extends StatelessWidget {
             child: Text(
               session.teacherName,
               style: TextStyle(
-                fontFamily: 'Cairo',
                 fontSize: 13.sp,
                 fontWeight: FontWeight.w500,
                 color: const Color(0xFF2C2C2C),

@@ -14,7 +14,6 @@ class ContactUsScreen extends StatelessWidget {
         title: Text(
           'contact_us_title'.tr(),
           style: TextStyle(
-            fontFamily: 'Cairo',
             fontSize: 22.sp,
             fontWeight: FontWeight.bold,
             color: const Color(0xFF0A1D64),
@@ -39,11 +38,7 @@ class ContactUsScreen extends StatelessWidget {
             Text(
               'contact_us_message'.tr(),
               textAlign: TextAlign.center,
-              style: TextStyle(
-                fontFamily: 'Cairo',
-                fontSize: 16.sp,
-                color: const Color(0xFF6B7280),
-              ),
+              style: TextStyle(fontSize: 16.sp, color: const Color(0xFF6B7280)),
             ),
             SizedBox(height: 32.h),
 
@@ -118,7 +113,6 @@ class ContactUsScreen extends StatelessWidget {
                   Text(
                     title,
                     style: TextStyle(
-                      fontFamily: 'Cairo',
                       fontSize: 16.sp,
                       fontWeight: FontWeight.bold,
                       color: const Color(0xFF0A1D64),
@@ -127,7 +121,6 @@ class ContactUsScreen extends StatelessWidget {
                   Text(
                     subtitle,
                     style: TextStyle(
-                      fontFamily: 'Cairo',
                       fontSize: 14.sp,
                       color: const Color(0xFF6B7280),
                     ),

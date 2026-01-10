@@ -22,7 +22,6 @@ class WelcomeBarWidget extends StatelessWidget {
               return Text(
                 'welcome_greeting'.tr(namedArgs: {'username': name}),
                 style: TextStyle(
-                  fontFamily: 'Cairo',
                   fontSize: 22.sp,
                   fontWeight: FontWeight.bold,
                   color: const Color(0xFF0A1D64),
@@ -44,7 +43,6 @@ class WelcomeBarWidget extends StatelessWidget {
                   return Text(
                     visibleText,
                     style: TextStyle(
-                      fontFamily: 'Cairo',
                       fontSize: 22.sp,
                       fontWeight: FontWeight.bold,
                       color: const Color(0xFF0A1D64),
@@ -58,7 +56,6 @@ class WelcomeBarWidget extends StatelessWidget {
           Text(
             'welcome_message'.tr(),
             style: TextStyle(
-              fontFamily: 'Cairo',
               fontSize: 16.sp,
               fontWeight: FontWeight.normal,
               color: const Color(0xFF5B6C9F),

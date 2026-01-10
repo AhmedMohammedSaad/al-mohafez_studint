@@ -29,13 +29,10 @@ class _CircularProgressWidgetState extends State<CircularProgressWidget>
       vsync: this,
     );
 
-    _animation = Tween<double>(
-      begin: 0.0,
-      end: widget.percentage / 100.0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeOut,
-    ));
+    _animation = Tween<double>(begin: 0.0, end: widget.percentage / 100.0)
+        .animate(
+          CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
+        );
 
     // Start animation when widget is built
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -65,7 +62,9 @@ class _CircularProgressWidgetState extends State<CircularProgressWidget>
               value: 1.0,
               strokeWidth: 12.w,
               backgroundColor: const Color(0xFFE5E5E5),
-              valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFFE5E5E5)),
+              valueColor: const AlwaysStoppedAnimation<Color>(
+                Color(0xFFE5E5E5),
+              ),
             ),
           ),
           // Animated progress circle
@@ -79,7 +78,9 @@ class _CircularProgressWidgetState extends State<CircularProgressWidget>
                   value: _animation.value,
                   strokeWidth: 12.w,
                   backgroundColor: Colors.transparent,
-                  valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF00E0FF)),
+                  valueColor: const AlwaysStoppedAnimation<Color>(
+                    Color(0xFF00E0FF),
+                  ),
                   strokeCap: StrokeCap.round,
                 ),
               );
@@ -95,7 +96,6 @@ class _CircularProgressWidgetState extends State<CircularProgressWidget>
                   return Text(
                     '${(_animation.value * 100).round()}%',
                     style: TextStyle(
-                      fontFamily: 'Cairo',
                       fontSize: 24.sp,
                       fontWeight: FontWeight.bold,
                       color: const Color(0xFF202020),
@@ -107,7 +107,6 @@ class _CircularProgressWidgetState extends State<CircularProgressWidget>
               Text(
                 'progress_overall_label'.tr(),
                 style: TextStyle(
-                  fontFamily: 'Cairo',
                   fontSize: 12.sp,
                   fontWeight: FontWeight.w400,
                   color: const Color(0xFF8C8C8C),

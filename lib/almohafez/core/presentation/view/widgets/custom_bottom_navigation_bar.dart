@@ -190,7 +190,6 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar>
                               child: AnimatedDefaultTextStyle(
                                 duration: const Duration(milliseconds: 200),
                                 style: TextStyle(
-                                  fontFamily: 'Cairo',
                                   fontSize: isActive ? 11.sp : 10.sp,
                                   fontWeight: isActive
                                       ? FontWeight.bold

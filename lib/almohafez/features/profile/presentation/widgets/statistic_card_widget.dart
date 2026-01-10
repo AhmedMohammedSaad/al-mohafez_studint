@@ -44,7 +44,6 @@ class StatisticCardWidget extends StatelessWidget {
           Text(
             value,
             style: TextStyle(
-              fontFamily: 'Cairo',
               fontSize: 18.sp,
               fontWeight: FontWeight.bold,
               color: const Color(0xFF0A1D64),
@@ -54,7 +53,6 @@ class StatisticCardWidget extends StatelessWidget {
           Text(
             title,
             style: TextStyle(
-              fontFamily: 'Cairo',
               fontSize: 12.sp,
               fontWeight: FontWeight.w500,
               color: const Color(0xFF6B7280),

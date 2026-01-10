@@ -6,10 +6,7 @@ import '../../data/models/progress_model.dart';
 class TeacherNotesWidget extends StatefulWidget {
   final List<TeacherNote> notes;
 
-  const TeacherNotesWidget({
-    super.key,
-    required this.notes,
-  });
+  const TeacherNotesWidget({super.key, required this.notes});
 
   @override
   State<TeacherNotesWidget> createState() => _TeacherNotesWidgetState();
@@ -35,14 +32,11 @@ class _TeacherNotesWidgetState extends State<TeacherNotesWidget>
         duration: const Duration(milliseconds: 300),
         vsync: this,
       );
-      
+
       final animation = Tween<double>(
         begin: 0.0,
         end: 1.0,
-      ).animate(CurvedAnimation(
-        parent: controller,
-        curve: Curves.easeInOut,
-      ));
+      ).animate(CurvedAnimation(parent: controller, curve: Curves.easeInOut));
 
       _animationControllers.add(controller);
       _fadeAnimations.add(animation);
@@ -91,7 +85,6 @@ class _TeacherNotesWidgetState extends State<TeacherNotesWidget>
           Text(
             'progress_teacher_notes'.tr(),
             style: TextStyle(
-              fontFamily: 'Cairo',
               fontSize: 18.sp,
               fontWeight: FontWeight.w600,
               color: const Color(0xFF2E3A59),
@@ -131,7 +124,6 @@ class _TeacherNotesWidgetState extends State<TeacherNotesWidget>
                 child: Text(
                   'progress_no_teacher_notes'.tr(),
                   style: TextStyle(
-                    fontFamily: 'Cairo',
                     fontSize: 14.sp,
                     color: const Color(0xFF8C8C8C),
                   ),
@@ -157,10 +149,7 @@ class _NoteCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: const Color(0xFFE9F8FF),
         borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(
-          color: const Color(0xFFB3E5FC),
-          width: 1,
-        ),
+        border: Border.all(color: const Color(0xFFB3E5FC), width: 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -170,7 +159,6 @@ class _NoteCard extends StatelessWidget {
             child: Text(
               note.note,
               style: TextStyle(
-                fontFamily: 'Cairo',
                 fontSize: 13.sp,
                 fontWeight: FontWeight.w500,
                 color: const Color(0xFF404040),
@@ -185,7 +173,6 @@ class _NoteCard extends StatelessWidget {
             Text(
               _formatTimestamp(note.timestamp!),
               style: TextStyle(
-                fontFamily: 'Cairo',
                 fontSize: 10.sp,
                 fontWeight: FontWeight.w400,
                 color: const Color(0xFF8C8C8C),
@@ -208,9 +195,13 @@ class _NoteCard extends StatelessWidget {
       } else if (difference.inDays == 1) {
         return 'progress_time_yesterday'.tr();
       } else if (difference.inDays < 7) {
-        return 'progress_time_days_ago'.tr(args: [difference.inDays.toString()]);
+        return 'progress_time_days_ago'.tr(
+          args: [difference.inDays.toString()],
+        );
       } else {
-        return 'progress_time_weeks_ago'.tr(args: [(difference.inDays / 7).floor().toString()]);
+        return 'progress_time_weeks_ago'.tr(
+          args: [(difference.inDays / 7).floor().toString()],
+        );
       }
     } catch (e) {
       return timestamp;

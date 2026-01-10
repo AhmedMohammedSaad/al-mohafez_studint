@@ -39,7 +39,6 @@ class ActionButtonWidget extends StatelessWidget {
               child: Text(
                 title,
                 style: TextStyle(
-                  fontFamily: 'Cairo',
                   fontSize: 15.sp,
                   fontWeight: FontWeight.w600,
                   color: const Color(0xFF1F2937),

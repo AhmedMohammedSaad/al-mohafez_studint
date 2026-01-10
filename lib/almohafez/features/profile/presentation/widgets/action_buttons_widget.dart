@@ -105,7 +105,6 @@ class ActionButtonsWidget extends StatelessWidget {
                           title: Text(
                             'profile_logout_title'.tr(),
                             style: TextStyle(
-                              fontFamily: 'Cairo',
                               fontSize: 18.sp,
                               fontWeight: FontWeight.bold,
                               color: const Color(0xFF0A1D64),
@@ -114,7 +113,6 @@ class ActionButtonsWidget extends StatelessWidget {
                           content: Text(
                             'profile_logout_message'.tr(),
                             style: TextStyle(
-                              fontFamily: 'Cairo',
                               fontSize: 14.sp,
                               color: const Color(0xFF6B7280),
                             ),
@@ -125,7 +123,6 @@ class ActionButtonsWidget extends StatelessWidget {
                               child: Text(
                                 'profile_cancel'.tr(),
                                 style: TextStyle(
-                                  fontFamily: 'Cairo',
                                   fontSize: 14.sp,
                                   fontWeight: FontWeight.w600,
                                   color: const Color(0xFF6B7280),
@@ -154,7 +151,6 @@ class ActionButtonsWidget extends StatelessWidget {
                               child: Text(
                                 'profile_logout_confirm'.tr(),
                                 style: TextStyle(
-                                  fontFamily: 'Cairo',
                                   fontSize: 14.sp,
                                   fontWeight: FontWeight.w600,
                                   color: Colors.white,
@@ -181,7 +177,6 @@ class ActionButtonsWidget extends StatelessWidget {
       child: Text(
         title,
         style: TextStyle(
-          fontFamily: 'Cairo',
           fontSize: 16.sp,
           fontWeight: FontWeight.bold,
           color: const Color(0xFF0A1D64),
@@ -272,7 +267,6 @@ class ActionButtonsWidget extends StatelessWidget {
           title: Text(
             title,
             style: TextStyle(
-              fontFamily: 'Cairo',
               fontSize: 18.sp,
               fontWeight: FontWeight.bold,
               color: const Color(0xFF0A1D64),
@@ -280,11 +274,7 @@ class ActionButtonsWidget extends StatelessWidget {
           ),
           content: Text(
             message,
-            style: TextStyle(
-              fontFamily: 'Cairo',
-              fontSize: 14.sp,
-              color: const Color(0xFF6B7280),
-            ),
+            style: TextStyle(fontSize: 14.sp, color: const Color(0xFF6B7280)),
           ),
           actions: [
             TextButton(
@@ -292,7 +282,6 @@ class ActionButtonsWidget extends StatelessWidget {
               child: Text(
                 'profile_cancel'.tr(),
                 style: TextStyle(
-                  fontFamily: 'Cairo',
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w600,
                   color: const Color(0xFF6B7280),
@@ -310,7 +299,6 @@ class ActionButtonsWidget extends StatelessWidget {
               child: Text(
                 confirmText,
                 style: TextStyle(
-                  fontFamily: 'Cairo',
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w600,
                   color: Colors.white,

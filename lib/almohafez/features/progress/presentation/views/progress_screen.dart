@@ -85,7 +85,6 @@ class _ProgressViewState extends State<_ProgressView>
           Text(
             'progress_title'.tr(),
             style: TextStyle(
-              fontFamily: 'Cairo',
               fontSize: 22.sp,
               fontWeight: FontWeight.bold,
               color: const Color(0xFF2C2C2C),
@@ -95,7 +94,6 @@ class _ProgressViewState extends State<_ProgressView>
           Text(
             'progress_subtitle'.tr(),
             style: TextStyle(
-              fontFamily: 'Cairo',
               fontSize: 14.sp,
               fontWeight: FontWeight.w400,
               color: const Color(0xFF8C8C8C),

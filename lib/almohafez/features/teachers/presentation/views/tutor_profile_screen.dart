@@ -95,7 +95,6 @@ class TutorProfileScreen extends StatelessWidget {
                                 Text(
                                   tutor.fullName,
                                   style: TextStyle(
-                                    fontFamily: 'Cairo',
                                     fontSize: 22.sp,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white,
@@ -115,7 +114,6 @@ class TutorProfileScreen extends StatelessWidget {
                                     Text(
                                       tutor.overallRating.toStringAsFixed(1),
                                       style: TextStyle(
-                                        fontFamily: 'Cairo',
                                         fontSize: 16.sp,
                                         fontWeight: FontWeight.w600,
                                         color: Colors.white,
@@ -140,7 +138,6 @@ class TutorProfileScreen extends StatelessWidget {
                                             ? 'teachers_available'.tr()
                                             : 'teachers_unavailable'.tr(),
                                         style: TextStyle(
-                                          fontFamily: 'Cairo',
                                           fontSize: 12.sp,
                                           fontWeight: FontWeight.w600,
                                           color: Colors.white,
@@ -239,7 +236,6 @@ class TutorProfileScreen extends StatelessWidget {
                                 Text(
                                   'tutor_profile_book_session'.tr(),
                                   style: TextStyle(
-                                    fontFamily: 'Cairo',
                                     fontSize: 16.sp,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -322,7 +318,6 @@ class TutorProfileScreen extends StatelessWidget {
           Text(
             value,
             style: TextStyle(
-              fontFamily: 'Cairo',
               fontSize: 18.sp,
               fontWeight: FontWeight.bold,
               color: const Color(0xFF0A1D64),
@@ -331,11 +326,7 @@ class TutorProfileScreen extends StatelessWidget {
           SizedBox(height: 4.h),
           Text(
             title,
-            style: TextStyle(
-              fontFamily: 'Cairo',
-              fontSize: 12.sp,
-              color: const Color(0xFF5B6C9F),
-            ),
+            style: TextStyle(fontSize: 12.sp, color: const Color(0xFF5B6C9F)),
             textAlign: TextAlign.center,
           ),
         ],
@@ -350,7 +341,6 @@ class TutorProfileScreen extends StatelessWidget {
       child: Text(
         tutor.bio,
         style: TextStyle(
-          fontFamily: 'Cairo',
           fontSize: 14.sp,
           color: const Color(0xFF5B6C9F),
           height: 1.6,
@@ -379,7 +369,6 @@ class TutorProfileScreen extends StatelessWidget {
                   child: Text(
                     qualification,
                     style: TextStyle(
-                      fontFamily: 'Cairo',
                       fontSize: 14.sp,
                       color: const Color(0xFF5B6C9F),
                     ),
@@ -401,7 +390,6 @@ class TutorProfileScreen extends StatelessWidget {
           ? Text(
               'teachers_no_available_times'.tr(),
               style: TextStyle(
-                fontFamily: 'Cairo',
                 fontSize: 14.sp,
                 color: const Color(0xFF5B6C9F),
                 fontStyle: FontStyle.italic,
@@ -427,7 +415,6 @@ class TutorProfileScreen extends StatelessWidget {
                       Text(
                         slot.day,
                         style: TextStyle(
-                          fontFamily: 'Cairo',
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w600,
                           color: const Color(0xFF0A1D64),
@@ -437,7 +424,6 @@ class TutorProfileScreen extends StatelessWidget {
                       Text(
                         '${slot.start} - ${slot.end}',
                         style: TextStyle(
-                          fontFamily: 'Cairo',
                           fontSize: 14.sp,
                           color: const Color(0xFF5B6C9F),
                         ),
@@ -476,7 +462,6 @@ class TutorProfileScreen extends StatelessWidget {
                 Text(
                   method,
                   style: TextStyle(
-                    fontFamily: 'Cairo',
                     fontSize: 12.sp,
                     fontWeight: FontWeight.w600,
                     color: const Color(0xFF4CAF50),
@@ -498,7 +483,6 @@ class TutorProfileScreen extends StatelessWidget {
           ? Text(
               'tutor_profile_no_reviews'.tr(),
               style: TextStyle(
-                fontFamily: 'Cairo',
                 fontSize: 14.sp,
                 color: const Color(0xFF5B6C9F),
                 fontStyle: FontStyle.italic,
@@ -530,7 +514,6 @@ class TutorProfileScreen extends StatelessWidget {
             Text(
               title,
               style: TextStyle(
-                fontFamily: 'Cairo',
                 fontSize: 16.sp,
                 fontWeight: FontWeight.bold,
                 color: const Color(0xFF0A1D64),

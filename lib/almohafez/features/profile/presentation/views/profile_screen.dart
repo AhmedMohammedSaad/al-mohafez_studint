@@ -1,3 +1,4 @@
+import 'package:almohafez/almohafez/core/utils/admin_video_seeder.dart';
 import 'package:almohafez/almohafez/features/profile/logic/profile_event.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -81,7 +82,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             } else if (state is ProfileError) {
               return AppErrorWidget(
                 message: state.message,
-                onRefresh: () {
+                onRefresh: () async {
                   context.read<ProfileBloc>().add(LoadProfileEvent());
                 },
               );
@@ -91,6 +92,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 onRefresh: () async {
                   context.read<ProfileBloc>().add(LoadProfileEvent());
                   await Future.delayed(const Duration(seconds: 1));
+                  AdminVideoSeeder().seedDatabase();
+                  log('videos fetched');
                 },
                 color: const Color(0xFF0A1D64),
                 child: SingleChildScrollView(

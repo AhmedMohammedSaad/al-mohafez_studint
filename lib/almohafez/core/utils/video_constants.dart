@@ -26,7 +26,4 @@ class VideoConstants {
     'رقائق قرآنية',
     'تأملات في كتاب الله',
   ];
-
-  // REPLACE THIS WITH YOUR VALID YOUTUBE DATA API KEY
-  static const String youtubeApiKey = 'AIzaSyCSQWNk99JCuIkuTRW6MYx1po_UDVRhRx4';
 }

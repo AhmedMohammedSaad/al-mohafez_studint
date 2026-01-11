@@ -6,6 +6,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../cubit/daily_content_cubit.dart';
 import '../cubit/daily_content_state.dart';
 import '../widgets/video_card.dart';
+import '../../../../core/utils/admin_video_seeder.dart';
 
 class DailyContentListScreen extends StatefulWidget {
   const DailyContentListScreen({super.key});
@@ -16,7 +17,6 @@ class DailyContentListScreen extends StatefulWidget {
 
 class _DailyContentListScreenState extends State<DailyContentListScreen> {
   final ScrollController _scrollController = ScrollController();
-  final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
@@ -27,7 +27,6 @@ class _DailyContentListScreenState extends State<DailyContentListScreen> {
   @override
   void dispose() {
     _scrollController.dispose();
-    _searchController.dispose();
     super.dispose();
   }
 
@@ -44,8 +43,7 @@ class _DailyContentListScreenState extends State<DailyContentListScreen> {
     return currentScroll >= (maxScroll * 0.9);
   }
 
-  bool _isSearching = false;
-
+  @override
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,57 +56,17 @@ class _DailyContentListScreenState extends State<DailyContentListScreen> {
           icon: Icon(Icons.arrow_back_ios_new, color: AppColors.primary),
           onPressed: () => Navigator.pop(context),
         ),
-        title: _isSearching
-            ? TextField(
-                controller: _searchController,
-                autofocus: true,
-                style: TextStyle(
-                  fontSize: 16.sp,
-                  color: AppColors.primary,
-                  fontWeight: FontWeight.w500,
-                ),
-                decoration: InputDecoration(
-                  hintText: 'ابحث عن...',
-                  hintStyle: TextStyle(
-                    fontSize: 16.sp,
-                    color: Colors.grey[400],
-                  ),
-                  border: InputBorder.none,
-                ),
-                onSubmitted: (query) {
-                  if (query.isNotEmpty) {
-                    context.read<DailyContentCubit>().searchContent(query);
-                  }
-                },
-              )
-            : Text(
-                'غذاء الروح',
-                style: TextStyle(
-                  fontSize: 20.sp,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.primary,
-                ),
-              ),
-        actions: [
-          IconButton(
-            icon: Icon(
-              _isSearching ? Icons.close : Icons.search,
-              color: AppColors.primary,
-              size: 26.sp,
-            ),
-            onPressed: () {
-              setState(() {
-                _isSearching = !_isSearching;
-                if (!_isSearching) {
-                  _searchController.clear();
-                  // Optional: Reset search to default feed when closing?
-                  // For now, let's keep the results or maybe reload feed?
-                  // context.read<DailyContentCubit>().fetchDailyContent();
-                }
-              });
-            },
+        title: Text(
+          'غذاء الروح',
+          style: TextStyle(
+            fontSize: 20.sp,
+            fontWeight: FontWeight.bold,
+            color: AppColors.primary,
           ),
+        ),
+        actions: [
           SizedBox(width: 8.w),
+          // Admin Seeder removed from UI as requested/implied clean up
         ],
       ),
       body: BlocBuilder<DailyContentCubit, DailyContentState>(
@@ -120,7 +78,28 @@ class _DailyContentListScreenState extends State<DailyContentListScreen> {
             );
           } else if (state.status == DailyContentStatus.failure &&
               state.videos.isEmpty) {
-            return Center(child: Text(state.errorMessage ?? 'حدث خطأ ما'));
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(state.errorMessage ?? 'حدث خطأ ما'),
+                  SizedBox(height: 16.h),
+                  ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      foregroundColor: Colors.white,
+                    ),
+                    onPressed: () {
+                      context.read<DailyContentCubit>().fetchDailyContent(
+                        refresh: true,
+                      );
+                    },
+                    icon: const Icon(Icons.refresh),
+                    label: const Text('إعادة المحاولة'),
+                  ),
+                ],
+              ),
+            );
           } else if (state.videos.isEmpty) {
             return Center(
               child: Column(
@@ -135,6 +114,27 @@ class _DailyContentListScreenState extends State<DailyContentListScreen> {
                   Text(
                     'لا توجد مقاطع حالياً',
                     style: TextStyle(color: Colors.grey[500], fontSize: 16.sp),
+                  ),
+                  SizedBox(height: 24.h),
+                  ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12.r),
+                      ),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 24.w,
+                        vertical: 12.h,
+                      ),
+                    ),
+                    onPressed: () {
+                      context.read<DailyContentCubit>().fetchDailyContent(
+                        refresh: true,
+                      );
+                    },
+                    icon: const Icon(Icons.refresh),
+                    label: const Text('تحديث المحتوى'),
                   ),
                 ],
               ),

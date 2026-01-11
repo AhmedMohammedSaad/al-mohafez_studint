@@ -11,47 +11,45 @@ class DailyContentCubit extends Cubit<DailyContentState> {
     : super(const DailyContentState());
 
   Future<void> fetchDailyContent({bool refresh = false}) async {
-    // If loading and not forcing a refresh, ignore.
     if (state.status == DailyContentStatus.loading && !refresh) return;
 
-    // Picking a new random topic/sheikh if refreshing or initializing
     String query;
     String? channelId;
-    bool isRetry = false;
 
-    if (refresh || state.currentQuery == null) {
-      // DIVERSIFICATION LOGIC:
-      final random = Random();
-      final sheikh = VideoConstants
-          .sheikhNames[random.nextInt(VideoConstants.sheikhNames.length)];
-      final topic = VideoConstants
-          .searchKeywords[random.nextInt(VideoConstants.searchKeywords.length)];
+    // DETERMINING MODE:
+    // If we are already in "Standard Feed" mode (query == ''), keep it.
+    // Otherwise (Null, Random, or Specific Search), default to Random Feed on refresh/init.
 
-      channelId = VideoConstants.sheikhChannels[sheikh];
-      // Try specific search first
-      query = channelId != null ? topic : '$topic $sheikh';
+    bool isStandardFeed = state.currentQuery == '';
 
-      // Reset state for new fetch
-      emit(
-        state.copyWith(
-          status: DailyContentStatus.loading,
-          videos: refresh ? [] : state.videos, // Clear list on refresh
-          nextPageToken: null,
-        ),
-      );
+    if (isStandardFeed && refresh) {
+      query = '';
+      channelId = null;
+    } else if (refresh || state.currentQuery == null) {
+      // Default to Random Feed (RPC)
+      query = 'random_feed';
+      channelId = null;
     } else {
       // Pagination or re-fetch of same context
       query = state.currentQuery!;
       channelId = state.currentChannelId;
+    }
+
+    if (refresh) {
+      emit(
+        state.copyWith(
+          status: DailyContentStatus.loading,
+          videos: [], // Clear list on refresh
+          nextPageToken: null,
+        ),
+      );
+    } else {
       emit(state.copyWith(status: DailyContentStatus.loading));
     }
 
     final result = await getDailyContentUseCase(
       query: query,
       channelId: channelId,
-      // If refresh, pageToken should be null (handled by state reset above).
-      // If loading more, it's handled in loadMore().
-      // This function is primarily for INITIAL or REFRESH.
     );
 
     result.fold(
@@ -61,47 +59,44 @@ class DailyContentCubit extends Cubit<DailyContentState> {
           errorMessage: failure,
         ),
       ),
-      (response) async {
-        if (response.videos.isEmpty && (refresh || state.videos.isEmpty)) {
-          // RETRY LOGIC: If specific search returned nothing, try broader search
-          // 1. Try Global Sheikh Search (ignore topic)
-          // 2. Try Global Topic Search (ignore sheikh)
-          await _retryBroaderSearch(query, channelId);
-        } else {
-          emit(
-            state.copyWith(
-              status: DailyContentStatus.success,
-              videos: response.videos,
-              nextPageToken: response.nextPageToken,
-              hasReachedMax: response.nextPageToken == null,
-              currentQuery: query,
-              currentChannelId: channelId,
-            ),
-          );
-        }
+      (response) {
+        // If random feed returns empty (rare), we could handle retry, but RPC usually returns something.
+        emit(
+          state.copyWith(
+            status: DailyContentStatus.success,
+            videos: response.videos,
+            nextPageToken: response.nextPageToken,
+            hasReachedMax: response.nextPageToken == null,
+            currentQuery: query,
+            currentChannelId: channelId,
+          ),
+        );
       },
     );
   }
 
-  Future<void> _retryBroaderSearch(
-    String originalQuery,
-    String? originalChannelId,
-  ) async {
-    // If we were searching in a specific channel, try searching the Sheikh globally
-    final random = Random();
-    // Fallback to a very popular topic if all fails
-    String newQuery = VideoConstants
-        .searchKeywords[random.nextInt(VideoConstants.searchKeywords.length)];
-    String? newChannelId = null; // Go global
+  /// Fetches the full list of content (Standard Chronological Feed)
+  /// Used for "Show All" screen to support pagination.
+  /// Fetches the full list of content (Standard Chronological Feed)
+  /// Used for "Show All" screen to support pagination.
+  Future<void> fetchAllContent() async {
+    emit(
+      state.copyWith(
+        status: DailyContentStatus.loading,
+        videos: [],
+        nextPageToken: null, // Reset for fresh start
+        currentQuery:
+            'random_feed', // Use Random Feed for Show All too (per user request)
+        currentChannelId: null,
+      ),
+    );
 
-    // Try to derive sheikh name from context if possible, otherwise just random topic
-    // For simplicity, let's just search for a random Sheikh globally
-    final sheikh = VideoConstants
-        .sheikhNames[random.nextInt(VideoConstants.sheikhNames.length)];
-    newQuery = sheikh;
-
+    // User requested "Random from Flutter side" and "Bottom to Top".
+    // Using 'random_feed' (RPC) gets us random videos from the DB (server-side shuffle).
+    // This is better than client-side sorting of just 20 items.
+    // We effectively get a random page.
     final result = await getDailyContentUseCase(
-      query: newQuery,
+      query: 'random_feed',
       channelId: null,
     );
 
@@ -112,16 +107,21 @@ class DailyContentCubit extends Cubit<DailyContentState> {
           errorMessage: failure,
         ),
       ),
-      (response) => emit(
-        state.copyWith(
-          status: DailyContentStatus.success,
-          videos: response.videos,
-          nextPageToken: response.nextPageToken,
-          hasReachedMax: response.nextPageToken == null,
-          currentQuery: newQuery,
-          currentChannelId: null,
-        ),
-      ),
+      (response) {
+        // Additional Shuffle on Client Side (Flutter) as requested explicitly
+        final shuffledVideos = List.of(response.videos)..shuffle();
+
+        emit(
+          state.copyWith(
+            status: DailyContentStatus.success,
+            videos: shuffledVideos,
+            nextPageToken: response.nextPageToken,
+            hasReachedMax: response.nextPageToken == null,
+            currentQuery: 'random_feed',
+            currentChannelId: null,
+          ),
+        );
+      },
     );
   }
 

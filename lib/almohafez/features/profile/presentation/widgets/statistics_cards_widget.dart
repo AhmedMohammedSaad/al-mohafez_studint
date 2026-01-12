@@ -38,14 +38,7 @@ class StatisticsCardsWidget extends StatelessWidget {
         SizedBox(width: 12.w),
         Expanded(
           child: StatisticCardWidget(
-            // Rename Attendance -> Total Rate (or Progress)
-            // User said: "Total Rate" or "Progress"
-            // Let's use a translation key that reflects this, or hardcode/dynamic string if key not available.
-            // Using 'profile_attendance_rate' key for now but we might need to change the arb file or text.
-            // Assuming 'profile_attendance_rate' translates to "Attendance", user wants "Total Rate".
-            // Since I cannot easily edit ARB right now without seeing it, I'll use a new key or English fallback if needed.
-            // But let's assume we can just change the widget text or standard key.
-            title: 'total_rate'.tr(), // New key or fallback
+            title: 'total_rate'.tr(),
             value: '${totalRate.toStringAsFixed(1)}%',
             icon: Icons.trending_up,
             color: const Color(0xFFF59E0B),
